@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		80DDCA34184F05B300284F59 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 80DDCA33184F05B300284F59 /* main.c */; };
 		80DDCA36184F05B300284F59 /* HomCalculation.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 80DDCA35184F05B300284F59 /* HomCalculation.1 */; };
+		80DDCA3D184F0D6500284F59 /* simplex.c in Sources */ = {isa = PBXBuildFile; fileRef = 80DDCA3C184F0D6500284F59 /* simplex.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -28,6 +29,8 @@
 		80DDCA30184F05B300284F59 /* HomCalculation */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = HomCalculation; sourceTree = BUILT_PRODUCTS_DIR; };
 		80DDCA33184F05B300284F59 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		80DDCA35184F05B300284F59 /* HomCalculation.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = HomCalculation.1; sourceTree = "<group>"; };
+		80DDCA3C184F0D6500284F59 /* simplex.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = simplex.c; sourceTree = "<group>"; };
+		80DDCA3E184F0D7600284F59 /* simplex.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = simplex.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +65,8 @@
 			children = (
 				80DDCA33184F05B300284F59 /* main.c */,
 				80DDCA35184F05B300284F59 /* HomCalculation.1 */,
+				80DDCA3E184F0D7600284F59 /* simplex.h */,
+				80DDCA3C184F0D6500284F59 /* simplex.c */,
 			);
 			path = HomCalculation;
 			sourceTree = "<group>";
@@ -117,6 +122,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				80DDCA3D184F0D6500284F59 /* simplex.c in Sources */,
 				80DDCA34184F05B300284F59 /* main.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
