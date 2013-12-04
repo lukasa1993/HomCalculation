@@ -11,11 +11,16 @@
 
 typedef int SimplexElem;
 
-typedef struct Simplex
-{
-    int  vertices;
-    int  facets;
-    SimplexElem** simplexElemArray;
-} Simplex;
+typedef SimplexElem* Simplex;
+
+typedef Simplex* Facet;
+
+typedef struct SimplicialComplex {
+    int vertices;
+    int fasets;
+    Facet* Facets;
+} SimplicialComplex;
+
+
 
 #endif
