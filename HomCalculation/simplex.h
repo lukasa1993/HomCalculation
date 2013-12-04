@@ -13,12 +13,10 @@ typedef int SimplexElem;
 
 typedef SimplexElem* Simplex;
 
-typedef Simplex* Facet;
-
 typedef struct SimplicialComplex {
-    int vertices;
-    int fasets;
-    Facet* Facets;
+    int verticesCount;
+    int fasetsCount;
+    Simplex* facets;
 } SimplicialComplex;
 
 
