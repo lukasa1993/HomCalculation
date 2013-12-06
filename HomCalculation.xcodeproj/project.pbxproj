@@ -231,6 +231,7 @@
 				80DDCA3B184F05B300284F59 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
