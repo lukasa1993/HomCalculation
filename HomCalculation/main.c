@@ -13,9 +13,10 @@
 
 int main(int argc, const char * argv[])
 {
-    Simplex*  simplex = Init_Simplex(3, true);
+    int vertexCount   = 10;
+    Simplex*  simplex = Init_Simplex(vertexCount, true);
     Simplex** subSimp = AllSubSimplexses(simplex);
-    for (int i = 0; i < 1 << 3; ++i) {
+    for (int i = 0; i < 1 << vertexCount; ++i) {
         Simplex* simp = subSimp[i];
         for (int j = 0; j < simp->verticesCount; ++j) {
             printf(" %i ", simp->simplexRel[j]);

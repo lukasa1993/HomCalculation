@@ -10,6 +10,10 @@
 
 Simplex* Init_Simplex(int vertices, bool fill)
 {
+    if (vertices > ((sizeof(SimplexElem) * 8) - 2)) {
+        printf("\nSimplexElem StackOverflow\n");
+        exit(0);
+    }
     Simplex* simplex       = (Simplex*) malloc(sizeof(Simplex));
     simplex->verticesCount = vertices;
     simplex->simplexRel    = malloc(vertices * sizeof(SimplexElem));
@@ -33,7 +37,7 @@ Simplex** AllSubSimplexses(Simplex* simplex)
     Simplex** subSimplexes = malloc(a * sizeof(Simplex*));
     for (i = 0; i < a; ++i) {
         int tmpA = i, numberOfElemes = 0;
-        Simplex* simpl = Init_Simplex(simplex->verticesCount  * sizeof(SimplexElem), false);
+        Simplex* simpl = Init_Simplex(simplex->verticesCount, false);
         for (j = 0; j < (8 * sizeof(int)); ++j) {
             if (tmpA & 1 && j < simplex->verticesCount) {
                 simpl->simplexRel[numberOfElemes] = simplex->simplexRel[j];
