@@ -11,19 +11,26 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 
 typedef int SimplexElem;
 
-//typedef SimplexElem* Simplex;
-
 typedef struct Simplex {
-    int verticesCount;
+    int          verticesCount;
     SimplexElem* simplexRel;
 } Simplex;
 
-Simplex* Init_Simplex(int vertices, bool fill);
-void Dest_Simplex(Simplex* simplex);
+typedef struct Complex {
+    int       simplexCount;
+    Simplex** simplexes;
+} Complex;
 
-Simplex** AllSubSimplexses(Simplex* simplex);
+Simplex* Init_Simplex(int vertices, bool fill);
+void     Dest_Simplex(Simplex* simplex);
+
+Complex* AllSubSimplexses(Simplex* simplex);
+
+Complex* literalToComplex(char*    complexLiteral);
+char*    complexToLiteral(Complex* complex, bool pretty);
 
 #endif
