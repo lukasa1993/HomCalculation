@@ -31,8 +31,8 @@ int main(int argc, const char * argv[])
     
     Complex* complex1 = literalToComplex(firstComplex);
     Complex* complex2 = literalToComplex(secondComplex);
-    printf("%s\n", complexToLiteral(complex1, true));
-    printf("%s\n", complexToLiteral(complex2, true));
+    printf("First  Complex: %s\n", complexToLiteral(complex1, true));
+    printf("Second Complex: %s\n", complexToLiteral(complex2, true));
     
     printf("\nThe End!\n");
     return 0;
