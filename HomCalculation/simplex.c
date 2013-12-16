@@ -194,4 +194,29 @@ char* complexToLiteral(Complex* complex, bool pretty)
     return literal;
 }
 
+void swapElements(SimplexElem** find, SimplexElem** replace, int findReplaceLen, SimplexElem** array, int arrayLen)
+{
+    for (int i = 0; i < arrayLen; ++i) {
+        SimplexElem* elem = array[i];
+        for (int j = 0; j < findReplaceLen; ++j) {
+            SimplexElem* elem2 = find[j];
+            if (elem == elem2) {
+                array[i] = replace[j];
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
