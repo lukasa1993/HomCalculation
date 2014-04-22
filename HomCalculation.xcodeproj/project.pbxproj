@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		808FCC10190036C900BE0536 /* strmap.c in Sources */ = {isa = PBXBuildFile; fileRef = 808FCC0E190036C900BE0536 /* strmap.c */; };
 		80DDCA34184F05B300284F59 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 80DDCA33184F05B300284F59 /* main.c */; };
 		80DDCA3D184F0D6500284F59 /* simplex.c in Sources */ = {isa = PBXBuildFile; fileRef = 80DDCA3C184F0D6500284F59 /* simplex.c */; };
 /* End PBXBuildFile section */
@@ -24,6 +25,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		808FCC0E190036C900BE0536 /* strmap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = strmap.c; sourceTree = "<group>"; };
+		808FCC0F190036C900BE0536 /* strmap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = strmap.h; sourceTree = "<group>"; };
 		80DDCA30184F05B300284F59 /* HomCalculation */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = HomCalculation; sourceTree = BUILT_PRODUCTS_DIR; };
 		80DDCA33184F05B300284F59 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		80DDCA3C184F0D6500284F59 /* simplex.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = simplex.c; sourceTree = "<group>"; };
@@ -60,6 +63,8 @@
 		80DDCA32184F05B300284F59 /* HomCalculation */ = {
 			isa = PBXGroup;
 			children = (
+				808FCC0E190036C900BE0536 /* strmap.c */,
+				808FCC0F190036C900BE0536 /* strmap.h */,
 				80DDCA33184F05B300284F59 /* main.c */,
 				80DDCA3E184F0D7600284F59 /* simplex.h */,
 				80DDCA3C184F0D6500284F59 /* simplex.c */,
@@ -120,6 +125,7 @@
 			files = (
 				80DDCA3D184F0D6500284F59 /* simplex.c in Sources */,
 				80DDCA34184F05B300284F59 /* main.c in Sources */,
+				808FCC10190036C900BE0536 /* strmap.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
