@@ -21,12 +21,12 @@ int main(int argc, const char * argv[])
     
     printf("Complex Please:\t");
 //    scanf("%s", firstComplex);
-    firstComplex = "[[1,2], [2, 3] , [3, 4], [4, 5]]";
+    firstComplex = "[[1,2], [2, 3]]";
     printf("\n");
     
     printf("Second Complex Please:\t");
 //    scanf("%s", secondComplex);
-    secondComplex = "[[1,2], [2, 3] , [3, 4], [4, 5]]";
+    secondComplex = "[[1,2], [2, 3]]";
     printf("\n---- As We Saw it ---- \n");
     
     Complex* complex1 = literalToComplex(firstComplex);

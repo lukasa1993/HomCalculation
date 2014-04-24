@@ -19,7 +19,6 @@ typedef int SimplexElem;
 
 typedef struct Simplex {
     int          verticesCount;
-    int*         isomorphizmsEnumeration;
     SimplexElem* simplexRel;
     
 } Simplex;
