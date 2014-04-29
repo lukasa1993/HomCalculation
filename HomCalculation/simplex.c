@@ -8,6 +8,10 @@
 
 #include "simplex.h"
 
+#define method1    false // unionIntersection
+#define method2    true  // intersectionUnionUpper
+#define methodComp false // both
+
 StrMap *sm;
 
 
@@ -71,6 +75,10 @@ void saveComplex(Complex* comp, int k, int v) {
     key = concat(str_k, key);
     key = concat(key, str_V);
     
+    if (comp->simplexCount < k) {
+        printf("");
+    }
+    
 //    printf("\n----- Saving Complex %s for %s -----\n", complexToLiteral(comp, true), key);
     
     sm_put(sm, key, complexToLiteral(comp, false));
@@ -88,7 +96,6 @@ Complex* getComplex(int k, int v) {
     
     char buf[255];
     sm_get(sm, key, buf, sizeof(buf));
-    
     
     printf("\n----- Getting Complex %s for %s -----\n", buf, key);
     
@@ -132,15 +139,15 @@ Complex* FSI(Complex* A, Complex* B, int K, int V) {
     if (K == 1) {
         int prevSubsCount = 0;
         
-        for (int i = 0; i < A->simplexCount; i++) {
-            Simplex* sim = A->simplexes[i];
+        for (int i = 0; i < B->simplexCount; i++) {
+            Simplex* sim = B->simplexes[i];
             int expV = prevSubsCount + (1 << sim->verticesCount);
             if (V > prevSubsCount && expV > V) {
                 V = V - prevSubsCount;
                 if (complex->simplexCount == 0) {
                     complex = Init_Complex(K);
                 }
-                complex->simplexes[0] = simplexByExp(A->simplexes[i], V);
+                complex->simplexes[0] = simplexByExp(sim, V);
                 break;
             }
             prevSubsCount = expV - 1;
@@ -180,7 +187,7 @@ Complex* upperSimplexContainingDot(Complex* comp, Simplex* searchSimp) {
     return neibr;
 }
 
-Complex* mergeComplexes(Complex* a, Complex* b) {
+Complex* mergeComplexes(Complex* a, Complex* b, bool basic) {
     if (a->simplexCount == 0) {
         return b;
     }
@@ -196,7 +203,7 @@ Complex* mergeComplexes(Complex* a, Complex* b) {
                 unique = false;
             }
         }
-        if (unique) {
+        if (basic || unique) {
             merged->simplexes[mergedIndex] = b->simplexes[i];
             mergedIndex++;
         }
@@ -270,7 +277,7 @@ Complex* unionIntersection(Complex** posibilityList, int posibilityListLength) {
     int*     walkIndexes = malloc(posibilityListLength * sizeof(int));
     memset(walkIndexes, 0, posibilityListLength * sizeof(int));
     
-    printf("\n-- generation start -- \n");
+//    printf("\n-- generation start -- \n");
     
     Complex* unionIntersection      = Init_Complex(1);
     int      unionIntersectionIndex = 0;
@@ -289,19 +296,19 @@ Complex* unionIntersection(Complex** posibilityList, int posibilityListLength) {
             }
         }
         
-        printf("\nwalkIndexes");
-        printIntArray(walkIndexes, posibilityListLength);
+//        printf("\nwalkIndexes");
+//        printIntArray(walkIndexes, posibilityListLength);
         
-        for (int i = posibilityListLength - 1; i > 0; --i) {
-            if (walkIndexes[i] < posibilityList[i]->simplexCount) {
+        for (int i = posibilityListLength - 1; i >= 0; --i) {
+            if (walkIndexes[i] + 1 < posibilityList[i]->simplexCount) {
                 walkIndexes[i]++;
                 break;
             }
         }
         
-        printf("\nUnionComplex%s\n", complexToLiteral(comp, true));
-        printf("\nIntersectedSimplex%s\n", simplexToLiteral(buildIntersectedSimplex(comp)));
-        printf("");
+//        printf("\nUnionComplex%s\n", complexToLiteral(comp, true));
+//        printf("\nIntersectedSimplex%s\n", simplexToLiteral(buildIntersectedSimplex(comp)));
+//        printf("");
         
         if (unionIntersectionIndex >= unionIntersection->simplexCount) {
             unionIntersection->simplexCount = unionIntersectionIndex << 1;
@@ -316,10 +323,21 @@ Complex* unionIntersection(Complex** posibilityList, int posibilityListLength) {
     
 
     
-    printf("\nunionIntersection%s\n", complexToLiteral(unionIntersection, true));
+//    printf("\nunionIntersection%s\n", complexToLiteral(unionIntersection, true));
     
-    exit(0);
-    return NULL;
+    return unionIntersection;
+}
+
+Complex* intersectionUnionUpper(Complex** posibilityList, int posibilityListLength) {
+    Complex* unionIntersection      = Init_Complex(1);
+    int      unionIntersectionIndex = 0;
+    
+    for (int i = 0; i < posibilityListLength; ++i) {
+        Complex* comp = posibilityList[i];
+        printf("\n %s \n %s\n", complexToLiteral(comp, true), simplexToLiteral(buildIntersectedSimplex(comp)));
+    }
+    
+    return unionIntersection;
 }
 
 int CalculatePoints(Complex* comp) {
@@ -366,30 +384,68 @@ int CalculatePoints(Complex* comp) {
 int Hom_Match(Complex* A, Complex* B, Complex* P, int k, int V) {
     Simplex* temp   = Init_Simplex(1, false);
     temp->simplexRel[0] = (SimplexElem) k;
-    Complex* ANeibr = upperSimplexContainingDot(A, temp);
-    int ANeibrList  = CalculatePoints(ANeibr);
     
-    Complex** posibilityList      = malloc(P->simplexCount * sizeof(Complex));
+    Complex* ANeibr = upperSimplexContainingDot(A, temp);
+    
+    Complex** posibilityList       = malloc(P->simplexCount * sizeof(Complex));
     int       posibilityListLength = 0;
     
     Complex* BNeibr = Init_Complex(0);
     
-    for (int j = 0; j < ANeibrList && j < P->simplexCount; ++j) {
-        Simplex* prevSimplex = P->simplexes[j];
-        Complex* comp        = upperSimplexContainingDot(B, prevSimplex);
-        BNeibr               = mergeComplexes(BNeibr, comp);
+    for (int i = 0; i < ANeibr->simplexCount; ++i) {
+        Simplex* aNeibrSim  = ANeibr->simplexes[i];
+        Complex* BNeibrTemp = Init_Complex(0);
         
-        posibilityList[j]    = BNeibr;
-        posibilityListLength++;
+        for (int j = 0; j < aNeibrSim->verticesCount; ++j) {
+            SimplexElem elem = aNeibrSim->simplexRel[j];
+            int    elemIndex = elem - 1;
+            if (elem != (SimplexElem) k && elemIndex < P->simplexCount) {
+                Simplex* tempSim = P->simplexes[elemIndex];
+                Complex* comp    = upperSimplexContainingDot(B, tempSim);
+                BNeibrTemp       = mergeComplexes(BNeibrTemp, comp, false);
+                
+                posibilityList[posibilityListLength]    = BNeibrTemp;
+                posibilityListLength++;
+            }
+        }
+        
+        
     }
     
-    for (int i = 0; i < posibilityListLength; ++i) {
-      printf("posibilityList[%d] = %s\n", i, complexToLiteral(posibilityList[i], true));
-    }
+//    for (int j = 0; j < ANeibrList; ++j) {
+//        Simplex* aNeibrSim   = ANeibr->simplexes[j]
+//        Simplex* prevSimplex = P->simplexes[j];
+//        Complex* comp        = upperSimplexContainingDot(B, prevSimplex);
+//        BNeibr               = mergeComplexes(BNeibr, comp);
+//        
+//        posibilityList[j]    = BNeibr;
+//        posibilityListLength++;
+//    }
+    
+//    for (int i = 0; i < posibilityListLength; ++i) {
+//      printf("posibilityList[%d] = %s\n", i, complexToLiteral(posibilityList[i], true));
+//    }
     
     if (posibilityListLength > 1) {
-        BNeibr = unionIntersection(posibilityList, posibilityListLength);
+        if (method1) {
+            BNeibr = unionIntersection(posibilityList, posibilityListLength);
+        } else if(method2) {
+            BNeibr = intersectionUnionUpper(posibilityList, posibilityListLength);
+        } else if(methodComp) {
+            Complex* BNeibr1 = unionIntersection(posibilityList, posibilityListLength);
+            Complex* BNeibr2 = intersectionUnionUpper(posibilityList, posibilityListLength);
+            printf("\n %s \n %s \n", complexToLiteral(BNeibr1, true), complexToLiteral(BNeibr2, true));
+            if (strcasecmp(complexToLiteral(BNeibr1, false), complexToLiteral(BNeibr2, false)) != 0) {
+                printf("vai");
+            } else {
+                printf("\nYEA\n");
+            }
+        }
+    } else if (posibilityListLength > 0){
+        BNeibr = posibilityList[0];
     }
+    
+    printf("P: %s BNeib:%s K:%d\n", complexToLiteral(P, true), complexToLiteral(BNeibr, true), k);
     
     for (int j = 0; j < BNeibr->simplexCount; ++j) {
         Simplex* simp = BNeibr->simplexes[j];
@@ -399,7 +455,7 @@ int Hom_Match(Complex* A, Complex* B, Complex* P, int k, int V) {
             
             temp_Simp->simplexRel[0] = simp->simplexRel[l];
             temp->simplexes[0]       = temp_Simp;
-            saveComplex(mergeComplexes(P, temp), k, V);
+            saveComplex(mergeComplexes(P, temp, true), k, V);
 //            Dest_Complex(temp);
             
             V++;
@@ -409,7 +465,7 @@ int Hom_Match(Complex* A, Complex* B, Complex* P, int k, int V) {
         
         Complex* temp = Init_Complex(1);
         temp->simplexes[0] = simp;
-        saveComplex(mergeComplexes(P, temp), k, V);
+        saveComplex(mergeComplexes(P, temp, true), k, V);
 //        Dest_Complex(temp);
         V++;
     }
@@ -421,19 +477,21 @@ void Calculate_Hom(Complex* A, Complex* B) {
     int points = CalculatePoints(A);
     
     sm = sm_new(points);
-    
+    int lastV = 0;
     for (int k = 2; k <= points; ++k) {
         int V1 = 1, V = 1;
         Complex* P = Init_Complex(0);
         do {
             P = FSI(A, B, k - 1, V1);
             if (P != NULL && P->simplexCount > 0) {
-                printf("\nP -> %s,K = %d, V1 = %d\n", complexToLiteral(P, true), k, V1);
+//                printf("\nP -> %s,K = %d, V1 = %d\n", complexToLiteral(P, true), k, V1);
                 V = Hom_Match(A, B, P, k, V);
                 V1++;
             }
+            lastV = V1;
         } while (P != NULL && P->simplexCount > 0);
     }
+
 }
 
 
