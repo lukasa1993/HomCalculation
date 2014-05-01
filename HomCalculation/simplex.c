@@ -8,8 +8,8 @@
 
 #include "simplex.h"
 
-#define method1    false // unionIntersection
-#define method2    true  // intersectionUnionUpper
+#define method1    true // unionIntersection
+#define method2    false  // intersectionUnionUpper
 #define methodComp false // both
 
 StrMap *sm;
@@ -94,10 +94,10 @@ Complex* getComplex(int k, int v) {
     key = concat(str_k, key);
     key = concat(key, str_V);
     
-    char buf[255];
+    char buf[1024];
     sm_get(sm, key, buf, sizeof(buf));
     
-    printf("\n----- Getting Complex %s for %s -----\n", buf, key);
+//    printf("\n----- Getting Complex %s for %s -----\n", buf, key);
     
     return literalToComplex(buf);
 }
@@ -162,10 +162,6 @@ Complex* FSI(Complex* A, Complex* B, int K, int V) {
 Complex* upperSimplexContainingDot(Complex* comp, Simplex* searchSimp) {
     Complex* neibr   = Init_Complex(comp->simplexCount);
     int simplexCount = 0;
-    
-    if (searchSimp->verticesCount > 1) {
-        printf("");
-    }
     
     for (int i = 0; i < comp->simplexCount; ++i) {
         Simplex* simp = comp->simplexes[i];
@@ -328,16 +324,49 @@ Complex* unionIntersection(Complex** posibilityList, int posibilityListLength) {
     return unionIntersection;
 }
 
-Complex* intersectionUnionUpper(Complex** posibilityList, int posibilityListLength) {
-    Complex* unionIntersection      = Init_Complex(1);
+Complex* intersectionUnionUpper(Complex* B, Complex** posibilityList, int posibilityListLength) {
+    Complex* unionIntersection      = Init_Complex(posibilityListLength);
     int      unionIntersectionIndex = 0;
     
     for (int i = 0; i < posibilityListLength; ++i) {
         Complex* comp = posibilityList[i];
-        printf("\n %s \n %s\n", complexToLiteral(comp, true), simplexToLiteral(buildIntersectedSimplex(comp)));
+        Simplex* simp = Init_Simplex(1, false);
+        int  simIndex = 0;
+        for (int j = 0; j < comp->simplexCount; ++j) {
+            Simplex* tempSim = comp->simplexes[j];
+            
+            for (int l = 0; l < tempSim->verticesCount; ++l) {
+                SimplexElem elem = tempSim->simplexRel[l];
+                
+                bool unique = true;
+                for (int a = 0; a < simIndex; ++a) {
+                    SimplexElem checkElem = simp->simplexRel[a];
+                    if (elem == checkElem) {
+                        unique = false;
+                        break;
+                    }
+                }
+                
+                if (unique) {
+                    if (simIndex + 1 > simp->verticesCount) {
+                        simp->verticesCount = simp->verticesCount << 1;
+                        realloc(simp->simplexRel, simp->verticesCount * sizeof(SimplexElem));
+                        
+                    }
+                    simp->simplexRel[simIndex]  = elem;
+                    simIndex++;
+                }
+            }
+            
+        }
+        
+        simp->verticesCount = simIndex;
+        realloc(simp->simplexRel, simp->verticesCount * sizeof(SimplexElem));
+        unionIntersection->simplexes[unionIntersectionIndex] = simp;
+        unionIntersectionIndex++;
     }
     
-    return unionIntersection;
+    return upperSimplexContainingDot(B, buildIntersectedSimplex(unionIntersection));
 }
 
 int CalculatePoints(Complex* comp) {
@@ -385,6 +414,7 @@ int Hom_Match(Complex* A, Complex* B, Complex* P, int k, int V) {
     Simplex* temp   = Init_Simplex(1, false);
     temp->simplexRel[0] = (SimplexElem) k;
     
+
     Complex* ANeibr = upperSimplexContainingDot(A, temp);
     
     Complex** posibilityList       = malloc(P->simplexCount * sizeof(Complex));
@@ -430,10 +460,10 @@ int Hom_Match(Complex* A, Complex* B, Complex* P, int k, int V) {
         if (method1) {
             BNeibr = unionIntersection(posibilityList, posibilityListLength);
         } else if(method2) {
-            BNeibr = intersectionUnionUpper(posibilityList, posibilityListLength);
+            BNeibr = intersectionUnionUpper(B, posibilityList, posibilityListLength);
         } else if(methodComp) {
             Complex* BNeibr1 = unionIntersection(posibilityList, posibilityListLength);
-            Complex* BNeibr2 = intersectionUnionUpper(posibilityList, posibilityListLength);
+            Complex* BNeibr2 = intersectionUnionUpper(B, posibilityList, posibilityListLength);
             printf("\n %s \n %s \n", complexToLiteral(BNeibr1, true), complexToLiteral(BNeibr2, true));
             if (strcasecmp(complexToLiteral(BNeibr1, false), complexToLiteral(BNeibr2, false)) != 0) {
                 printf("vai");
@@ -445,10 +475,16 @@ int Hom_Match(Complex* A, Complex* B, Complex* P, int k, int V) {
         BNeibr = posibilityList[0];
     }
     
-    printf("P: %s BNeib:%s K:%d\n", complexToLiteral(P, true), complexToLiteral(BNeibr, true), k);
+//    printf("P: %s BNeib:%s K:%d\n", complexToLiteral(P, true), complexToLiteral(BNeibr, true), k);
     
     for (int j = 0; j < BNeibr->simplexCount; ++j) {
         Simplex* simp = BNeibr->simplexes[j];
+        
+        if (V == 23) {
+            printf("");
+        }
+    
+        
         for (int l = 0; l < simp->verticesCount; ++l) {
             Complex* temp      = Init_Complex(1);
             Simplex* temp_Simp = Init_Simplex(1, false);
@@ -487,11 +523,26 @@ void Calculate_Hom(Complex* A, Complex* B) {
 //                printf("\nP -> %s,K = %d, V1 = %d\n", complexToLiteral(P, true), k, V1);
                 V = Hom_Match(A, B, P, k, V);
                 V1++;
+            } else {
+                saveComplex(P, k, V);
             }
             lastV = V1;
         } while (P != NULL && P->simplexCount > 0);
     }
-
+    
+    printf("\n\n Result \n\n");
+    
+    for (int k = 2; k <= points; ++k) {
+        int V1 = 1;
+        Complex* P = NULL;
+        do {
+            P = FSI(A, B, k, V1);
+            if (P != NULL && P->simplexCount > 0) {
+                printf("\nFSI(A, B, %d, %d) = %s\n", k, V1, complexToLiteral(P, true));
+                V1++;
+            }
+        } while (P != NULL && P->simplexCount > 0);
+    }
 }
 
 
