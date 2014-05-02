@@ -33,7 +33,7 @@ void saveComplex(Complex* comp, int k, int v) {
     key = concat(str_k, key);
     key = concat(key, str_V);
     
-    printf("\n----- Saving Complex %s for %s -----\n", complexToLiteral(comp, true), key);
+//    printf("\n----- Saving Complex %s for %s -----\n", complexToLiteral(comp, true), key);
     
     sm_put(sm, key, complexToLiteral(comp, false));
 }
@@ -51,7 +51,7 @@ Complex* getComplex(int k, int v) {
     char buf[4096];
     sm_get(sm, key, buf, sizeof(buf));
     
-    printf("\n----- Getting Complex %s for %s -----\n", buf, key);
+//    printf("\n----- Getting Complex %s for %s -----\n", buf, key);
     
     return literalToComplex(buf);
 }
@@ -343,7 +343,6 @@ int Hom_Match(Complex* A, Complex* B, Complex* P, int k, int V) {
         V++;
         
     }
-    
     return V;
 }
 
