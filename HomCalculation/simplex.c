@@ -224,6 +224,19 @@ Complex* intersectionUnionUpper(Complex* B, Complex** posibilityList, int posibi
 }
 
 int CalculatePoints(Complex* comp) {
+    SimplexElem elem = -1;
+    
+    for (int i = 0; i < comp->simplexCount; ++i) {
+        Simplex* simp = getSimpexAt(comp, i);
+        for (int j = 0; j < simp->elementCount; ++j) {
+            SimplexElem elemMax = getElementAt(simp, j);
+            if (elemMax > elem) {
+                elem = elemMax;
+            }
+        }
+    }
+    return elem;
+    
     int points = 0;
     for (int i = 0; i < comp->simplexCount; ++i) {
         Simplex* sim = comp->simplexes[i];
@@ -272,10 +285,7 @@ int Hom_Match(Complex* A, Complex* B, Complex* P, int k, int V) {
     
     Complex** posibilityList       = malloc(P->simplexCount * sizeof(Complex));
     int       posibilityListLength = 0;
-    
-    if (k == 4 && V == 421) {
-        printf("");
-    }
+
     
     Complex* BNeibr = Init_Complex();
     
