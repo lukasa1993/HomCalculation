@@ -16,8 +16,8 @@ int main(int argc, const char * argv[])
 
     char* firstComplex  = (char*) malloc(MAX_STRING_LEN * sizeof(char));
     char* secondComplex = (char*) malloc(MAX_STRING_LEN * sizeof(char));
-    firstComplex = "[[1, 2, 3], [2, 4, 5], [5, 6], [4, 3], [3, 6]]";
-    secondComplex = "[[1, 2], [2, 3]]";
+    firstComplex  = "[[1, 2, 3], [2, 4, 5], [5, 6], [4, 3], [3, 6]]";
+    secondComplex = "[[1, 2, 3], [2, 4, 5], [5, 6], [4, 3], [3, 6]]";
     
     printf("Complex Please:\t%s", firstComplex);
 //    scanf("%s", firstComplex);

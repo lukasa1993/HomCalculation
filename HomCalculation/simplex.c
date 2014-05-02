@@ -33,7 +33,7 @@ void saveComplex(Complex* comp, int k, int v) {
     key = concat(str_k, key);
     key = concat(key, str_V);
     
-//    printf("\n----- Saving Complex %s for %s -----\n", complexToLiteral(comp, true), key);
+    printf("\n----- Saving Complex %s for %s -----\n", complexToLiteral(comp, true), key);
     
     sm_put(sm, key, complexToLiteral(comp, false));
 }
@@ -51,7 +51,7 @@ Complex* getComplex(int k, int v) {
     char buf[4096];
     sm_get(sm, key, buf, sizeof(buf));
     
-//    printf("\n----- Getting Complex %s for %s -----\n", buf, key);
+    printf("\n----- Getting Complex %s for %s -----\n", buf, key);
     
     return literalToComplex(buf);
 }
@@ -210,7 +210,10 @@ Complex* unionIntersection(Complex** posibilityList, int posibilityListLength) {
             }
         }
 
-        addSimplex(unionIntersection, buildIntersectedSimplex(comp));
+        Simplex* intersectedSimplex = buildIntersectedSimplex(comp);
+        if (intersectedSimplex->elementIndex > -1) {
+            addSimplex(unionIntersection, intersectedSimplex);
+        }
     } while (cont);
     
     return unionIntersection;
@@ -270,6 +273,10 @@ int Hom_Match(Complex* A, Complex* B, Complex* P, int k, int V) {
     Complex** posibilityList       = malloc(P->simplexCount * sizeof(Complex));
     int       posibilityListLength = 0;
     
+    if (k == 4 && V == 421) {
+        printf("");
+    }
+    
     Complex* BNeibr = Init_Complex();
     
     for (int i = 0; i < ANeibr->simplexCount; ++i) {
@@ -323,9 +330,10 @@ int Hom_Match(Complex* A, Complex* B, Complex* P, int k, int V) {
             saveComplex(mergeComplexes(P, temp, true), k, V);
 //            Dest_Complex(temp);
             
+            
             V++;
         }
-        
+
         
         
         Complex* temp = Init_Complex();
@@ -333,6 +341,7 @@ int Hom_Match(Complex* A, Complex* B, Complex* P, int k, int V) {
         saveComplex(mergeComplexes(P, temp, true), k, V);
 //        Dest_Complex(temp);
         V++;
+        
     }
     
     return V;
