@@ -6,8 +6,6 @@
 //  Copyright (c) 2013 Luka Dodelia. All rights reserved.
 //
 
-#include <stdio.h>
-#include <stdlib.h>
 #include "simplex.h"
 
 #define MAX_STRING_LEN 255
