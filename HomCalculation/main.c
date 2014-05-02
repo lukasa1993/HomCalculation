@@ -21,7 +21,7 @@ int main(int argc, const char * argv[])
     
     printf("Complex Please:\t");
 //    scanf("%s", firstComplex);
-    firstComplex = "[[1, 2], [2, 3], [1, 3]]";
+    firstComplex = "[[1, 2, 3], [2, 4, 5], [5, 6]]";
     printf("\n");
     
     printf("Second Complex Please:\t");

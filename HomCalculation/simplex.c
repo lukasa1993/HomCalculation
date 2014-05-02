@@ -75,10 +75,6 @@ void saveComplex(Complex* comp, int k, int v) {
     key = concat(str_k, key);
     key = concat(key, str_V);
     
-    if (comp->simplexCount < k) {
-        printf("");
-    }
-    
 //    printf("\n----- Saving Complex %s for %s -----\n", complexToLiteral(comp, true), key);
     
     sm_put(sm, key, complexToLiteral(comp, false));
@@ -474,23 +470,7 @@ int Hom_Match(Complex* A, Complex* B, Complex* P, int k, int V) {
                 posibilityListLength++;
             }
         }
-        
-        
     }
-    
-//    for (int j = 0; j < ANeibrList; ++j) {
-//        Simplex* aNeibrSim   = ANeibr->simplexes[j]
-//        Simplex* prevSimplex = P->simplexes[j];
-//        Complex* comp        = upperSimplexContainingDot(B, prevSimplex);
-//        BNeibr               = mergeComplexes(BNeibr, comp);
-//        
-//        posibilityList[j]    = BNeibr;
-//        posibilityListLength++;
-//    }
-    
-//    for (int i = 0; i < posibilityListLength; ++i) {
-//      printf("posibilityList[%d] = %s\n", i, complexToLiteral(posibilityList[i], true));
-//    }
     
     if (posibilityListLength > 1) {
         if (method1) {
@@ -511,15 +491,8 @@ int Hom_Match(Complex* A, Complex* B, Complex* P, int k, int V) {
         BNeibr = posibilityList[0];
     }
     
-//    printf("P: %s BNeib:%s K:%d\n", complexToLiteral(P, true), complexToLiteral(BNeibr, true), k);
-    
     for (int j = 0; j < BNeibr->simplexCount; ++j) {
         Simplex* simp = BNeibr->simplexes[j];
-        
-        if (V == 23) {
-            printf("");
-        }
-    
         
         for (int l = 0; l < simp->verticesCount; ++l) {
             Complex* temp      = Init_Complex(1);
