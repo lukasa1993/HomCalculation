@@ -149,7 +149,7 @@ Simplex* buildIntersectedSimplex(Complex* comp) {
     for (int i = 0; i < comp->simplexCount; ++i) {
         Simplex* simp = getSimpexAt(comp, i);
         for (int j = 0; j < simp->elementCount; ++j) {
-            SimplexElem simpElem = simp->elements[j];
+            SimplexElem simpElem = getElementAt(simp, j);
             
             for (int l = 0; l < comp->simplexCount; ++l) {
                 if (l == i) {
@@ -160,8 +160,8 @@ Simplex* buildIntersectedSimplex(Complex* comp) {
                     SimplexElem simpElem2 = simp2->elements[m];
                     if (simpElem == simpElem2) {
                         bool unique = true;
-                        for (int checkIndex = 0; checkIndex < intersectedSimplex->elementIndex; ++checkIndex) {
-                            SimplexElem checkElem = intersectedSimplex->elements[checkIndex];
+                        for (int checkIndex = 0; checkIndex < intersectedSimplex->elementCount; ++checkIndex) {
+                            SimplexElem checkElem = getElementAt(intersectedSimplex, checkIndex);
                             if (checkElem == simpElem) {
                                 unique = false;
                             }
@@ -187,7 +187,7 @@ Complex* unionIntersection(Complex** posibilityList, int posibilityListLength) {
 //    printf("\n-- generation start -- \n");
     
     Complex* unionIntersection      = Init_Complex();
-    int      unionIntersectionIndex = 0;
+
     bool cont = false;
     do {
         Complex* comp  = Init_Complex();
@@ -318,7 +318,7 @@ int Hom_Match(Complex* A, Complex* B, Complex* P, int k, int V) {
             
             addSimplex(temp, Init_Simplex());
             
-            addElement(getSimpexAt(temp, 0), getElementAt(simp, j));
+            addElement(getSimpexAt(temp, 0), getElementAt(simp, l));
             
             saveComplex(mergeComplexes(P, temp, true), k, V);
 //            Dest_Complex(temp);
