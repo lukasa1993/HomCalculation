@@ -366,7 +366,43 @@ Complex* intersectionUnionUpper(Complex* B, Complex** posibilityList, int posibi
         unionIntersectionIndex++;
     }
     
-    return upperSimplexContainingDot(B, buildIntersectedSimplex(unionIntersection));
+    Complex* final = Init_Complex(0);
+    int finalIndex = 0;
+    Simplex* simp  = buildIntersectedSimplex(unionIntersection);
+    
+    for (int i = 0; i < simp->verticesCount; ++i) {
+        SimplexElem elem1 = simp->simplexRel[i];
+        
+        for (int j = 0; j < B->simplexCount; ++j) {
+            Simplex* simp2  = B->simplexes[j];
+            Simplex* needed = Init_Simplex(simp2->verticesCount, false);
+            int neededIndex = 0;
+            for (int l = 0; l < simp2->verticesCount; ++l) {
+                SimplexElem elem2 = simp2->simplexRel[l];
+                if (elem1 == elem2) {
+                    needed->simplexRel[neededIndex] = elem2;
+                    neededIndex++;
+                }
+            }
+            
+            needed->verticesCount = neededIndex;
+            realloc(needed->simplexRel, needed->verticesCount * sizeof(SimplexElem));
+            
+            if (final->simplexCount < finalIndex + 1) {
+                final->simplexCount = finalIndex << 1;
+                realloc(final->simplexes, final->simplexCount * sizeof(Simplex));
+            }
+            
+            final->simplexes[finalIndex] = needed;
+            finalIndex++;
+        }
+        
+    }
+    
+    final->simplexCount = finalIndex;
+    realloc(final->simplexes, final->simplexCount * sizeof(Simplex));
+    
+    return final;
 }
 
 int CalculatePoints(Complex* comp) {
