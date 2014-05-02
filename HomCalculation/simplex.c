@@ -24,9 +24,9 @@ char* concat(char *s1, char *s2)
 }
 
 void saveComplex(Complex* comp, int k, int v) {
-    char str_k[10];
+    char str_k[100];
     sprintf(str_k, "%d", k);
-    char str_V[10];
+    char str_V[100];
     sprintf(str_V, "%d", v);
     
     char *key = "_";
@@ -39,16 +39,16 @@ void saveComplex(Complex* comp, int k, int v) {
 }
 
 Complex* getComplex(int k, int v) {
-    char str_k[10];
+    char str_k[100];
     sprintf(str_k, "%d", k);
-    char str_V[10];
+    char str_V[100];
     sprintf(str_V, "%d", v);
     
     char *key = "_";
     key = concat(str_k, key);
     key = concat(key, str_V);
     
-    char buf[1024];
+    char buf[4096];
     sm_get(sm, key, buf, sizeof(buf));
     
 //    printf("\n----- Getting Complex %s for %s -----\n", buf, key);
@@ -59,11 +59,12 @@ Complex* getComplex(int k, int v) {
 bool checkSimplexSubSimplex(Simplex* simplex, Simplex* subSimplex) {
     bool result = true;
     for (int i = 0; i < subSimplex->elementCount; ++i) {
-        SimplexElem subSimElem = subSimplex->elements[i];
+        SimplexElem subSimElem = getElementAt(subSimplex, i);
         
         bool elemMatch = false;
         for (int j = 0; j < simplex->elementCount; ++j) {
-            SimplexElem simElem = simplex->elements[j];
+            SimplexElem simElem = getElementAt(simplex, j);
+            
             if (subSimElem == simElem) {
                 elemMatch = true;
                 break;
@@ -79,19 +80,19 @@ bool checkSimplexSubSimplex(Simplex* simplex, Simplex* subSimplex) {
 }
 
 Complex* FSI(Complex* A, Complex* B, int K, int V) {
-    Complex* complex = Init_Complex(0);
+    Complex* complex = Init_Complex();
     if (K == 1) {
         int prevSubsCount = 0;
         
         for (int i = 0; i < B->simplexCount; i++) {
-            Simplex* sim = B->simplexes[i];
+            Simplex* sim = getSimpexAt(B, i);
             int expV = prevSubsCount + (1 << sim->elementCount);
             if (V > prevSubsCount && expV > V) {
                 V = V - prevSubsCount;
                 if (complex->simplexCount == 0) {
-                    complex = Init_Complex(K);
+                    complex = Init_Complex();
                 }
-                complex->simplexes[0] = simplexByExp(sim, V);
+                addSimplex(complex, simplexByExp(sim, V));
                 break;
             }
             prevSubsCount = expV - 1;
@@ -104,25 +105,15 @@ Complex* FSI(Complex* A, Complex* B, int K, int V) {
 }
 
 Complex* upperSimplexContainingDot(Complex* comp, Simplex* searchSimp) {
-    Complex* neibr   = Init_Complex(comp->simplexCount);
-    int simplexCount = 0;
+    Complex* neibr   = Init_Complex();
     
     for (int i = 0; i < comp->simplexCount; ++i) {
         Simplex* simp = comp->simplexes[i];
         
         if (checkSimplexSubSimplex(simp, searchSimp)) {
-            if(simplexCount > neibr->simplexCount) {
-                neibr->simplexCount  <<= 1;
-                realloc(neibr->simplexes, neibr->simplexCount * sizeof(Simplex));
-            }
-            
-            neibr->simplexes[simplexCount] = simp;
-            simplexCount++;
+            addSimplex(neibr, simp);
         }
     }
-    
-    neibr->simplexCount = simplexCount;
-    realloc(neibr->simplexes, neibr->simplexCount * sizeof(Simplex));
     
     return neibr;
 }
@@ -131,36 +122,32 @@ Complex* mergeComplexes(Complex* a, Complex* b, bool basic) {
     if (a->simplexCount == 0) {
         return b;
     }
-    Complex* merged        = Init_Complex(a->simplexCount + b->simplexCount);
+    Complex* merged        = Init_Complex();
     for (int i = 0; i < a->simplexCount; ++i) {
-        merged->simplexes[i] = a->simplexes[i];
+        addSimplex(merged, getSimpexAt(a, i));
     }
-    int mergedIndex = a->simplexCount;
+
     for (int i = 0; i < b->simplexCount; ++i) {
         bool unique = true;
-        for (int  j = 0; j < mergedIndex; ++j) {
+        for (int  j = 0; j < merged->simplexCount; ++j) {
             if (strcmp(simplexToLiteral(merged->simplexes[j]), simplexToLiteral(b->simplexes[i])) == 0) {
                 unique = false;
             }
         }
+        
         if (basic || unique) {
-            merged->simplexes[mergedIndex] = b->simplexes[i];
-            mergedIndex++;
+            addSimplex(merged, getSimpexAt(b, i));
         }
     }
     
-    merged->simplexCount = mergedIndex;
-    realloc(merged->simplexes, merged->simplexCount * sizeof(Simplex));
-
     return merged;
 }
 
 Simplex* buildIntersectedSimplex(Complex* comp) {
-    Simplex* intersectedSimplex      = Init_Simplex(1);
-    int      intersectedSimplexIndex = 0;
+    Simplex* intersectedSimplex      = Init_Simplex();
     
     for (int i = 0; i < comp->simplexCount; ++i) {
-        Simplex* simp = comp->simplexes[i];
+        Simplex* simp = getSimpexAt(comp, i);
         for (int j = 0; j < simp->elementCount; ++j) {
             SimplexElem simpElem = simp->elements[j];
             
@@ -172,13 +159,8 @@ Simplex* buildIntersectedSimplex(Complex* comp) {
                 for (int m = 0; m < simp2->elementCount; ++m) {
                     SimplexElem simpElem2 = simp2->elements[m];
                     if (simpElem == simpElem2) {
-                        if (intersectedSimplexIndex >= intersectedSimplex->elementCount) {
-                            intersectedSimplex->elementCount                   = intersectedSimplexIndex << 1;
-                            realloc(intersectedSimplex->elements, intersectedSimplex->elementCount);
-                        }
-                        
                         bool unique = true;
-                        for (int checkIndex = 0; checkIndex < intersectedSimplexIndex; ++checkIndex) {
+                        for (int checkIndex = 0; checkIndex < intersectedSimplex->elementIndex; ++checkIndex) {
                             SimplexElem checkElem = intersectedSimplex->elements[checkIndex];
                             if (checkElem == simpElem) {
                                 unique = false;
@@ -186,8 +168,7 @@ Simplex* buildIntersectedSimplex(Complex* comp) {
                         }
                         
                         if (unique) {
-                            intersectedSimplex->elements[intersectedSimplexIndex] = simpElem;
-                            intersectedSimplexIndex++;
+                            addElement(intersectedSimplex, simpElem);
                         }
                     }
                 }
@@ -195,9 +176,6 @@ Simplex* buildIntersectedSimplex(Complex* comp) {
             
         }
     }
-    
-    intersectedSimplex->elementCount = intersectedSimplexIndex;
-    realloc(intersectedSimplex->elements, intersectedSimplexIndex);
     
     return intersectedSimplex;
 }
@@ -208,25 +186,22 @@ Complex* unionIntersection(Complex** posibilityList, int posibilityListLength) {
     
 //    printf("\n-- generation start -- \n");
     
-    Complex* unionIntersection      = Init_Complex(1);
+    Complex* unionIntersection      = Init_Complex();
     int      unionIntersectionIndex = 0;
     bool cont = false;
     do {
-        Complex* comp  = Init_Complex(posibilityListLength);
+        Complex* comp  = Init_Complex();
         for (int i = 0; i < posibilityListLength; ++i) {
-            comp->simplexes[i] = posibilityList[i]->simplexes[walkIndexes[i]];
+            addSimplex(comp, getSimpexAt(posibilityList[i], walkIndexes[i]));
         }
         
         
         cont = false;
         for (int i = 0; i < posibilityListLength; ++i) {
-            if (walkIndexes[i] < posibilityList[i]->simplexCount - 1) {
+            if (walkIndexes[i] < posibilityList[i]->simplexIndex) {
                 cont = true;
             }
         }
-        
-//        printf("\nwalkIndexes");
-//        printIntArray(walkIndexes, posibilityListLength);
         
         for (int i = posibilityListLength - 1; i >= 0; --i) {
             if (walkIndexes[i] + 1 < posibilityList[i]->simplexCount) {
@@ -234,36 +209,20 @@ Complex* unionIntersection(Complex** posibilityList, int posibilityListLength) {
                 break;
             }
         }
-        
-//        printf("\nUnionComplex%s\n", complexToLiteral(comp, true));
-//        printf("\nIntersectedSimplex%s\n", simplexToLiteral(buildIntersectedSimplex(comp)));
-//        printf("");
-        
-        if (unionIntersectionIndex >= unionIntersection->simplexCount) {
-            unionIntersection->simplexCount = unionIntersectionIndex << 1;
-            realloc(unionIntersection->simplexes, unionIntersection->simplexCount);
-        }
-        unionIntersection->simplexes[unionIntersectionIndex]  = buildIntersectedSimplex(comp);
-        unionIntersectionIndex++;
+
+        addSimplex(unionIntersection, buildIntersectedSimplex(comp));
     } while (cont);
-
-    unionIntersection->simplexCount = unionIntersectionIndex;
-    realloc(unionIntersection->simplexes, unionIntersection->simplexCount);
-    
-
-    
-//    printf("\nunionIntersection%s\n", complexToLiteral(unionIntersection, true));
     
     return unionIntersection;
 }
 
 Complex* intersectionUnionUpper(Complex* B, Complex** posibilityList, int posibilityListLength) {
-    Complex* unionIntersection      = Init_Complex(posibilityListLength);
+    Complex* unionIntersection      = Init_Complex();
     int      unionIntersectionIndex = 0;
     
     for (int i = 0; i < posibilityListLength; ++i) {
         Complex* comp = posibilityList[i];
-        Simplex* simp = Init_Simplex(1);
+        Simplex* simp = Init_Simplex();
         int  simIndex = 0;
         for (int j = 0; j < comp->simplexCount; ++j) {
             Simplex* tempSim = comp->simplexes[j];
@@ -299,7 +258,7 @@ Complex* intersectionUnionUpper(Complex* B, Complex** posibilityList, int posibi
         unionIntersectionIndex++;
     }
     
-    Complex* final = Init_Complex(0);
+    Complex* final = Init_Complex();
     int finalIndex = 0;
     Simplex* simp  = buildIntersectedSimplex(unionIntersection);
     
@@ -308,7 +267,7 @@ Complex* intersectionUnionUpper(Complex* B, Complex** posibilityList, int posibi
         
         for (int j = 0; j < B->simplexCount; ++j) {
             Simplex* simp2  = B->simplexes[j];
-            Simplex* needed = Init_Simplex(simp2->elementCount);
+            Simplex* needed = Init_Simplex();
             int neededIndex = 0;
             for (int l = 0; l < simp2->elementCount; ++l) {
                 SimplexElem elem2 = simp2->elements[l];
@@ -344,7 +303,7 @@ int CalculatePoints(Complex* comp) {
         Simplex* sim = comp->simplexes[i];
         points += sim->elementCount;
     }
-    Simplex* tempSim = Init_Simplex(points);
+    Simplex* tempSim = Init_Simplex();
     points = 0;
     for (int i = 0; i < comp->simplexCount; ++i) {
         Simplex* sim = comp->simplexes[i];
@@ -380,26 +339,26 @@ int CalculatePoints(Complex* comp) {
 
 
 int Hom_Match(Complex* A, Complex* B, Complex* P, int k, int V) {
-    Simplex* temp   = Init_Simplex(1);
-    temp->elements[0] = (SimplexElem) k;
-    
+    Simplex* temp   = Init_Simplex();
+    addElement(temp, k);
 
     Complex* ANeibr = upperSimplexContainingDot(A, temp);
     
     Complex** posibilityList       = malloc(P->simplexCount * sizeof(Complex));
     int       posibilityListLength = 0;
     
-    Complex* BNeibr = Init_Complex(0);
+    Complex* BNeibr = Init_Complex();
     
     for (int i = 0; i < ANeibr->simplexCount; ++i) {
-        Simplex* aNeibrSim  = ANeibr->simplexes[i];
-        Complex* BNeibrTemp = Init_Complex(0);
+        Simplex* aNeibrSim  = getSimpexAt(ANeibr, i);
+        Complex* BNeibrTemp = Init_Complex();
         
         for (int j = 0; j < aNeibrSim->elementCount; ++j) {
-            SimplexElem elem = aNeibrSim->elements[j];
+            SimplexElem elem = getElementAt(aNeibrSim, j);
             int    elemIndex = elem - 1;
+            
             if (elem != (SimplexElem) k && elemIndex < P->simplexCount) {
-                Simplex* tempSim = P->simplexes[elemIndex];
+                Simplex* tempSim = getSimpexAt(P, elemIndex);
                 Complex* comp    = upperSimplexContainingDot(B, tempSim);
                 BNeibrTemp       = mergeComplexes(BNeibrTemp, comp, false);
                 
@@ -429,14 +388,15 @@ int Hom_Match(Complex* A, Complex* B, Complex* P, int k, int V) {
     }
     
     for (int j = 0; j < BNeibr->simplexCount; ++j) {
-        Simplex* simp = BNeibr->simplexes[j];
+        Simplex* simp = getSimpexAt(BNeibr, j);
         
         for (int l = 0; l < simp->elementCount; ++l) {
-            Complex* temp      = Init_Complex(1);
-            Simplex* temp_Simp = Init_Simplex(1);
+            Complex* temp      = Init_Complex();
             
-            temp_Simp->elements[0] = simp->elements[l];
-            temp->simplexes[0]       = temp_Simp;
+            addSimplex(temp, Init_Simplex());
+            
+            addElement(getSimpexAt(temp, 0), getElementAt(simp, j));
+            
             saveComplex(mergeComplexes(P, temp, true), k, V);
 //            Dest_Complex(temp);
             
@@ -445,8 +405,8 @@ int Hom_Match(Complex* A, Complex* B, Complex* P, int k, int V) {
         
         
         
-        Complex* temp = Init_Complex(1);
-        temp->simplexes[0] = simp;
+        Complex* temp = Init_Complex();
+        addSimplex(temp, simp);
         saveComplex(mergeComplexes(P, temp, true), k, V);
 //        Dest_Complex(temp);
         V++;
@@ -462,7 +422,7 @@ void Calculate_Hom(Complex* A, Complex* B) {
     int lastV = 0;
     for (int k = 2; k <= points; ++k) {
         int V1 = 1, V = 1;
-        Complex* P = Init_Complex(0);
+        Complex* P = Init_Complex();
         do {
             P = FSI(A, B, k - 1, V1);
             if (P != NULL && P->simplexCount > 0) {
@@ -493,127 +453,29 @@ void Calculate_Hom(Complex* A, Complex* B) {
 
 
 Simplex* simplexByExp(Simplex* simplex, int exp) {
-    int tmpA = exp, numberOfElemes = 0, j = 0;
-    Simplex* simpl = Init_Simplex(simplex->elementCount);
+    int tmpA = exp, j = 0;
+    Simplex* simpl = Init_Simplex();
     for (j = 0; j < (8 * sizeof(int)); ++j) {
         if (tmpA & 1 && j < simplex->elementCount) {
-            simpl->elements[numberOfElemes] = simplex->elements[j];
-            numberOfElemes++;
+            addElement(simpl, getElementAt(simplex, j));
         }
         tmpA >>= 1;
     }
-    realloc(simpl->elements, numberOfElemes * sizeof(SimplexElem));
-    simpl->elementCount  = numberOfElemes;
+
     return simpl;
 }
 
 Complex* AllSubSimplexses(Simplex* simplex)
 {
     int i, a = 1 << simplex->elementCount;
-    Complex*  complex     = Init_Complex(a);
+    Complex*  complex     = Init_Complex();
     for (i = 0; i < a; ++i) {
         Simplex* simpl = simplexByExp(simplex, i);
-        complex->simplexes[i] = simpl;
+        addSimplex(complex, simpl);
     }
 
     return complex;
 }
-
-Complex* literalToComplex(char* complexLiteral)
-{
-    Complex*  complex;
-    
-    int magicNumberSimplex    = 4;
-    int magicNumberComplex    = 4;
-    int magicNumberInput      = 4;
-    int bracketsCount         = 0;
-    int simplexi              = 0;
-    int simplexElemi          = 0;
-    
-    char* posibleSimplexElem  = (char*) malloc(magicNumberInput * sizeof(char));
-    int   posibleSimplexElemi = 0;
-    
-    for (int i = 0; i < strlen(complexLiteral); ++i) {
-        char  aChar = complexLiteral[i];
-        if (aChar == '[') {
-            if (bracketsCount == 0) {
-                complex  = Init_Complex(magicNumberComplex);
-            } else if (bracketsCount == 1) {
-                complex->simplexes[simplexi] = Init_Simplex(magicNumberSimplex);
-                if (simplexi > magicNumberComplex) {
-                    magicNumberComplex  <<= 1;
-                    complex->simplexCount = magicNumberComplex;
-                    realloc(complex->simplexes, complex->simplexCount * sizeof(complex));
-                }
-            }
-            bracketsCount++;
-        } else if (bracketsCount == 2 && aChar != ',' && aChar != ']' && aChar != '\0' && aChar != ' ') {
-            posibleSimplexElem[posibleSimplexElemi] = aChar;
-            posibleSimplexElemi++;
-            if (posibleSimplexElemi > magicNumberInput) {
-                magicNumberInput   <<= 1;
-                realloc(posibleSimplexElem, magicNumberInput * sizeof(char));
-            }
-        } else if (bracketsCount == 2 && aChar == ',') {
-            Simplex* simplex                  = complex->simplexes[simplexi];
-            realloc(posibleSimplexElem, posibleSimplexElemi * sizeof(char));
-            simplex->elements[simplexElemi] = atoi(posibleSimplexElem);
-            posibleSimplexElemi               = 0;
-            simplexElemi++;
-            if (simplexElemi > magicNumberSimplex) {
-                magicNumberSimplex   <<= 1;
-                simplex->elementCount = magicNumberSimplex;
-                realloc(simplex->elements, simplex->elementCount * sizeof(SimplexElem));
-            }
-        } else if (aChar == ']') {
-            if (bracketsCount == 2) {
-                Simplex* simplex       = complex->simplexes[simplexi];
-                
-                realloc(posibleSimplexElem, posibleSimplexElemi * sizeof(char)); // grabing last element
-                simplex->elements[simplexElemi] = atoi(posibleSimplexElem);
-                simplexElemi++;
-                
-                simplex->elementCount = simplexElemi;
-                realloc(simplex->elements, simplex->elementCount * sizeof(SimplexElem));
-                simplexi++;
-                simplexElemi        = 0;
-                posibleSimplexElemi = 0;
-            } else if (bracketsCount == 1) {
-                complex->simplexCount = simplexi;
-                realloc(complex->simplexes, complex->simplexCount * sizeof(Simplex));
-                break;
-            }
-            bracketsCount--;
-        }
-        
-    }
-    
-    return complex;
-}
-
-
-void swapElements(SimplexElem** find, SimplexElem** replace, int findReplaceLen, SimplexElem** array, int arrayLen)
-{
-    for (int i = 0; i < arrayLen; ++i) {
-        SimplexElem* elem = array[i];
-        for (int j = 0; j < findReplaceLen; ++j) {
-            SimplexElem* elem2 = find[j];
-            if (elem == elem2) {
-                array[i] = replace[j];
-            }
-        }
-    }
-}
-
-
-
-
-
-
-
-
-
-
 
 
 

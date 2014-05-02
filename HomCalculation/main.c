@@ -16,22 +16,21 @@ int main(int argc, const char * argv[])
 
     char* firstComplex  = (char*) malloc(MAX_STRING_LEN * sizeof(char));
     char* secondComplex = (char*) malloc(MAX_STRING_LEN * sizeof(char));
+    firstComplex = "[[1, 2, 3], [2, 4, 5], [5, 6], [4, 3], [3, 6]]";
+    secondComplex = "[[1, 2], [2, 3]]";
     
-    printf("Complex Please:\t");
+    printf("Complex Please:\t%s", firstComplex);
 //    scanf("%s", firstComplex);
-    firstComplex = "[[1, 2, 3], [2, 4, 5], [5, 6]]";
     printf("\n");
     
-    printf("Second Complex Please:\t");
+    printf("Second Complex Please:\t%s", secondComplex);
 //    scanf("%s", secondComplex);
-    secondComplex = "[[1, 2], [2, 3]]";
     printf("\n---- As We Saw it ---- \n");
     
     Complex* complex1 = literalToComplex(firstComplex);
     Complex* complex2 = literalToComplex(secondComplex);
     printf("First  Complex: %s\n", complexToLiteral(complex1, true));
     printf("Second Complex: %s\n\n", complexToLiteral(complex2, true));
-    
 
     Calculate_Hom(complex1, complex2);
     

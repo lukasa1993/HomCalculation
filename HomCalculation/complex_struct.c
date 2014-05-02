@@ -9,12 +9,13 @@
 #include "complex_struct.h"
 
 
-Simplex* Init_Simplex(int vertices)
+Simplex* Init_Simplex()
 {
-    Simplex* simplex      = (Simplex*) malloc(sizeof(Simplex));
-    simplex->el
-    simplex->elementCount = vertices;
-    simplex->elements     = malloc(vertices * sizeof(SimplexElem));
+    Simplex* simplex         = (Simplex*) malloc(sizeof(Simplex));
+    simplex->elementIndex    = -1;
+    simplex->elementCount    = 0;
+    simplex->elementCapacity = 1;
+    simplex->elements        = malloc(simplex->elementCount * sizeof(SimplexElem));
     
     return simplex;
 }
@@ -26,11 +27,13 @@ void Dest_Simplex(Simplex* simplex)
 }
 
 
-Complex* Init_Complex(int simplexCount)
+Complex* Init_Complex()
 {
-    Complex* complex       = (Complex*) malloc(sizeof(Complex));
-    complex->simplexCount  = simplexCount;
-    complex->simplexes     = malloc(simplexCount * sizeof(Simplex));
+    Complex* complex         = (Complex*) malloc(sizeof(Complex));
+    complex->simplexIndex    = -1;
+    complex->simplexCount    = 0;
+    complex->simplexCapacity = 1;
+    complex->simplexes       = malloc(complex->simplexCapacity * sizeof(Simplex));
     return complex;
 }
 
@@ -43,13 +46,52 @@ void Dest_Complex(Complex* complex)
     free(complex);
 }
 
-
-char* simplexToLiteral(Simplex* simplex) {
-    if (simplex == NULL) {
-        return "";
+void addSimplex(Complex* comp, Simplex* simp)
+{
+    if (comp->simplexCapacity <= comp->simplexIndex + 1) {
+        comp->simplexCapacity <<= 1;
+        comp->simplexes = realloc(comp->simplexes, comp->simplexCapacity * sizeof(Simplex));
     }
     
-    char* literal  = malloc(255 * sizeof(char));
+    comp->simplexCount++;
+    comp->simplexes[comp->simplexIndex + 1] = simp;
+    comp->simplexIndex = comp->simplexCount - 1;
+}
+
+void addElement(Simplex* simp, SimplexElem elem)
+{
+    if (simp->elementCapacity <= simp->elementIndex + 1) {
+        simp->elementCapacity <<= 1;
+        simp->elements = realloc(simp->elements, simp->elementCapacity * sizeof(SimplexElem));
+    }
+    
+    simp->elementCount++;
+    simp->elements[simp->elementIndex + 1] = elem;
+    simp->elementIndex = simp->elementCount - 1;
+}
+
+Simplex* getSimpexAt(Complex* comp, int index)
+{
+    if (comp->simplexIndex < index) {
+        return NULL;
+    } else {
+        return comp->simplexes[index];
+    }
+}
+
+SimplexElem getElementAt(Simplex* simp, int index)
+{
+    if (simp->elementIndex < index) {
+        return -1;
+    } else {
+        return simp->elements[index];
+    }
+}
+
+
+char* simplexToLiteral(Simplex* simplex)
+{
+    char* literal  = malloc(2048 * sizeof(char));
     int   literali = 0;
     
     literal[literali] = '[';
@@ -57,7 +99,7 @@ char* simplexToLiteral(Simplex* simplex) {
     
     for (int j = 0; j < simplex->elementCount; ++j) {
         SimplexElem elem = simplex->elements[j];
-        char str[10];
+        char str[100];
         sprintf(str, "%d", elem);
         
         for (int s = 0; s < strlen(str); ++s) {
@@ -83,22 +125,19 @@ char* simplexToLiteral(Simplex* simplex) {
 
 char* complexToLiteral(Complex* complex, bool pretty)
 {
-    if (complex == NULL) {
-        return "[[]]";
-    }
-    char* literal  = malloc(255 * sizeof(char));
+    char* literal  = malloc(2048 * sizeof(char));
     int   literali = 0;
     literal[literali] = '[';
     literali++;
     
     for (int i = 0; i < complex->simplexCount; ++i) {
-        Simplex* simplex = complex->simplexes[i];
+        Simplex* simplex = getSimpexAt(complex, i);
         literal[literali] = '[';
         literali++;
         
         for (int j = 0; j < simplex->elementCount; ++j) {
-            SimplexElem elem = simplex->elements[j];
-            char str[10];
+            SimplexElem elem = getElementAt(simplex, j);
+            char str[100];
             sprintf(str, "%d", elem);
             
             for (int s = 0; s < strlen(str); ++s) {
@@ -106,7 +145,7 @@ char* complexToLiteral(Complex* complex, bool pretty)
                 literali++;
             }
             
-            if (j != simplex->elementCount - 1) {
+            if (j != simplex->elementIndex) {
                 literal[literali] = ',';
                 literali++;
                 if (pretty) {
@@ -119,7 +158,7 @@ char* complexToLiteral(Complex* complex, bool pretty)
         literal[literali] = ']';
         literali++;
         
-        if (i != complex->simplexCount - 1) {
+        if (i != complex->simplexIndex) {
             literal[literali] = ',';
             literali++;
             if (pretty) {
@@ -132,4 +171,61 @@ char* complexToLiteral(Complex* complex, bool pretty)
     literal[literali] = ']';
     literali++;
     return literal;
+}
+
+Complex* literalToComplex(char* complexLiteral)
+{
+    Complex*  complex;
+    
+    int magicNumberInput      = 4;
+    int bracketsCount         = 0;
+    
+    char* posibleSimplexElem  = (char*) malloc(magicNumberInput * sizeof(char));
+    int   posibleSimplexElemi = 0;
+    
+    for (int i = 0; i < strlen(complexLiteral); ++i) {
+        char  aChar = complexLiteral[i];
+        
+        if (aChar == '{') {
+            aChar = '[';
+        } else if (aChar == '}') {
+            aChar = ']';
+        }
+        
+        if (aChar == '[') {
+            if (bracketsCount == 0) {
+                complex  = Init_Complex();
+            } else if (bracketsCount == 1) {
+                addSimplex(complex, Init_Simplex());
+            }
+            bracketsCount++;
+        } else if (bracketsCount == 2 && aChar != ',' && aChar != ']' && aChar != '\0' && aChar != ' ') {
+            posibleSimplexElem[posibleSimplexElemi] = aChar;
+            posibleSimplexElemi++;
+            if (posibleSimplexElemi > magicNumberInput) {
+                magicNumberInput   <<= 1;
+                posibleSimplexElem = realloc(posibleSimplexElem, magicNumberInput * sizeof(char));
+            }
+        } else if (bracketsCount == 2 && aChar == ',') {
+            
+            posibleSimplexElem = realloc(posibleSimplexElem, posibleSimplexElemi * sizeof(char));
+            addElement(getSimpexAt(complex, complex->simplexIndex), atoi(posibleSimplexElem));
+            
+            posibleSimplexElemi               = 0;
+        } else if (aChar == ']') {
+            if (bracketsCount == 2) {
+                posibleSimplexElem = realloc(posibleSimplexElem, posibleSimplexElemi * sizeof(char)); // grabing last element
+                
+                addElement(getSimpexAt(complex, complex->simplexIndex), atoi(posibleSimplexElem));
+                
+                posibleSimplexElemi = 0;
+            } else if (bracketsCount == 1) {
+                break;
+            }
+            bracketsCount--;
+        }
+        
+    }
+    
+    return complex;
 }

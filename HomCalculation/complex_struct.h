@@ -20,6 +20,7 @@ typedef int SimplexElem;
 typedef struct Simplex {
     int          elementIndex;
     int          elementCount;
+    int          elementCapacity;
     SimplexElem* elements;
     
 } Simplex;
@@ -27,17 +28,28 @@ typedef struct Simplex {
 typedef struct Complex {
     int       simplexIndex;
     int       simplexCount;
+    int       simplexCapacity;
     Simplex** simplexes;
     
 } Complex;
 
-Simplex* Init_Simplex(int vertices);
+// Simplex Manipulations
+Simplex* Init_Simplex();
 void     Dest_Simplex(Simplex* simplex);
 
+void addElement(Simplex* simp, SimplexElem elem);
+SimplexElem getElementAt(Simplex* simp, int index);
+
+char* simplexToLiteral(Simplex* simplex);
+
+// Complex Manipulations
+Complex* Init_Complex();
+void Dest_Complex(Complex* complex);
+
+void addSimplex(Complex* comp, Simplex* simp);
+Simplex* getSimpexAt(Complex* comp, int index);
 
 Complex* literalToComplex(char*    complexLiteral);
-
 char* complexToLiteral(Complex* complex, bool pretty);
-char* simplexToLiteral(Simplex* simplex);
 
 #endif
