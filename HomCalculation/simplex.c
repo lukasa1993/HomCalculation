@@ -14,15 +14,6 @@
 
 StrMap *sm;
 
-char* concat(char *s1, char *s2)
-{
-    char *result = malloc(strlen(s1) + strlen(s2) + 1);//+1 for the zero-terminator
-    //in real code you would check for errors in malloc here
-    strcpy(result, s1);
-    strcat(result, s2);
-    return result;
-}
-
 void saveComplex(Complex* comp, int k, int v) {
     char str_k[100];
     sprintf(str_k, "%d", k);
@@ -378,6 +369,8 @@ void Calculate_Hom(Complex* A, Complex* B) {
     }
     
     printf("\n\n Result \n\n");
+    LD_File* file = Init_file_util("./hom_result", "txt");
+    
     
     for (int k = 2; k <= points; ++k) {
         int V1 = 1;
@@ -385,11 +378,18 @@ void Calculate_Hom(Complex* A, Complex* B) {
         do {
             P = FSI(A, B, k, V1);
             if (P != NULL && P->simplexCount > 0) {
-                printf("\nFSI(A, B, %d, %d) = %s\n", k, V1, complexToLiteral(P, true));
+                printf("\nFSI[%d] = %s\n", V1, complexToLiteral(P, true));
+                if (k == points) {
+                    char line[1024];
+                    sprintf(line, "\nFSI[%d] = %s", V1, complexToLiteral(P, true));
+                    wrtieLine(file, line);
+                }
                 V1++;
             }
         } while (P != NULL && P->simplexCount > 0);
     }
+    
+    Destroy_file(file);
 }
 
 

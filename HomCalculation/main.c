@@ -6,9 +6,10 @@
 //  Copyright (c) 2013 Luka Dodelia. All rights reserved.
 //
 
+#include "file_util.h"
 #include "simplex.h"
 
-#define MAX_STRING_LEN 255
+#define MAX_STRING_LEN 1024
 
 
 int main(int argc, const char * argv[])
@@ -16,9 +17,9 @@ int main(int argc, const char * argv[])
 
     char* firstComplex  = (char*) malloc(MAX_STRING_LEN * sizeof(char));
     char* secondComplex = (char*) malloc(MAX_STRING_LEN * sizeof(char));
-    firstComplex  = "[[1, 2, 3], [2, 4, 5], [5, 6], [4, 3], [3, 6]]";
-    secondComplex = "[[1, 2, 3], [2, 4, 5], [5, 6], [4, 3], [3, 6]]";
-    
+    firstComplex  = "[[1, 2], [2, 3], [3, 4]]";
+    secondComplex = "[[1, 2], [2, 3], [3, 4]]";
+       
     printf("Complex Please:\t%s", firstComplex);
 //    scanf("%s", firstComplex);
     printf("\n");

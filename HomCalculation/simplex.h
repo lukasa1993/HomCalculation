@@ -11,6 +11,7 @@
 
 #include "strmap.h"
 #include "complex_struct.h"
+#include "file_util.h"
 
 
 Complex* AllSubSimplexses(Simplex* simplex);
