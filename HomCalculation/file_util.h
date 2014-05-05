@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
+#include <time.h>
 
 typedef struct LD_File {
     char* path;

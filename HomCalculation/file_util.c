@@ -19,6 +19,21 @@ char* concat(char *s1, char *s2)
     return result;
 }
 
+char* formatedTime()
+{
+    time_t timer;
+    char* buffer = malloc(25 * sizeof(char));
+    struct tm* tm_info;
+    
+    time(&timer);
+    tm_info = localtime(&timer);
+    
+    strftime(buffer, 25, "_%Y-%m-%d_%H-%M-%S", tm_info);
+    puts(buffer);
+    
+    return buffer;
+}
+
 LD_File* Init_file_util(char* path, char* ext)
 {
     LD_File* file = (LD_File*) malloc(sizeof(LD_File));
@@ -26,7 +41,7 @@ LD_File* Init_file_util(char* path, char* ext)
     file->path   = malloc( (strlen(path) + 1 + strlen(ext)) * sizeof(char));
     file->closed = true;
     
-    file->path = concat(path, ".");
+    file->path = concat(concat(path, formatedTime()), ".");
     file->path = concat(file->path, ext);
     
     fclose(fopen(file->path, "w+")); // clear file on path
