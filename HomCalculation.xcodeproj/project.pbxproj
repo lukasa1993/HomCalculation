@@ -7,7 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		801E1A0C19238F2A00007C61 /* simplex_basic.c in Sources */ = {isa = PBXBuildFile; fileRef = 801E1A0B19238F2A00007C61 /* simplex_basic.c */; };
 		808FCC10190036C900BE0536 /* strmap.c in Sources */ = {isa = PBXBuildFile; fileRef = 808FCC0E190036C900BE0536 /* strmap.c */; };
+		80A2816319238B8C00A906E9 /* generate_complex.c in Sources */ = {isa = PBXBuildFile; fileRef = 80A2816219238B8C00A906E9 /* generate_complex.c */; };
+		80A2816619238E6300A906E9 /* task_2.c in Sources */ = {isa = PBXBuildFile; fileRef = 80A2816519238E6300A906E9 /* task_2.c */; };
 		80AF0C8A1913F18B00DF62B4 /* complex_struct.c in Sources */ = {isa = PBXBuildFile; fileRef = 80AF0C891913F18B00DF62B4 /* complex_struct.c */; };
 		80C404D819178F4000ED624D /* file_util.c in Sources */ = {isa = PBXBuildFile; fileRef = 80C404D719178F4000ED624D /* file_util.c */; };
 		80DDCA34184F05B300284F59 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 80DDCA33184F05B300284F59 /* main.c */; };
@@ -27,8 +30,14 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		801E1A0B19238F2A00007C61 /* simplex_basic.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = simplex_basic.c; sourceTree = "<group>"; };
+		801E1A0D19238F3900007C61 /* simplex_basic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = simplex_basic.h; sourceTree = "<group>"; };
 		808FCC0E190036C900BE0536 /* strmap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = strmap.c; sourceTree = "<group>"; };
 		808FCC0F190036C900BE0536 /* strmap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = strmap.h; sourceTree = "<group>"; };
+		80A2816119238B8200A906E9 /* generate_complex.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = generate_complex.h; sourceTree = "<group>"; };
+		80A2816219238B8C00A906E9 /* generate_complex.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = generate_complex.c; sourceTree = "<group>"; };
+		80A2816419238E5400A906E9 /* task_2.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = task_2.h; sourceTree = "<group>"; };
+		80A2816519238E6300A906E9 /* task_2.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = task_2.c; sourceTree = "<group>"; };
 		80AF0C881913F18300DF62B4 /* complex_struct.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = complex_struct.h; sourceTree = "<group>"; };
 		80AF0C891913F18B00DF62B4 /* complex_struct.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = complex_struct.c; sourceTree = "<group>"; };
 		80C404D719178F4000ED624D /* file_util.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = file_util.c; sourceTree = "<group>"; };
@@ -76,8 +85,14 @@
 				80DDCA3C184F0D6500284F59 /* simplex.c */,
 				80AF0C881913F18300DF62B4 /* complex_struct.h */,
 				80AF0C891913F18B00DF62B4 /* complex_struct.c */,
+				801E1A0D19238F3900007C61 /* simplex_basic.h */,
+				801E1A0B19238F2A00007C61 /* simplex_basic.c */,
 				80C404D919178F4A00ED624D /* file_util.h */,
 				80C404D719178F4000ED624D /* file_util.c */,
+				80A2816119238B8200A906E9 /* generate_complex.h */,
+				80A2816219238B8C00A906E9 /* generate_complex.c */,
+				80A2816419238E5400A906E9 /* task_2.h */,
+				80A2816519238E6300A906E9 /* task_2.c */,
 			);
 			path = HomCalculation;
 			sourceTree = "<group>";
@@ -134,7 +149,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				80DDCA3D184F0D6500284F59 /* simplex.c in Sources */,
+				80A2816319238B8C00A906E9 /* generate_complex.c in Sources */,
 				80AF0C8A1913F18B00DF62B4 /* complex_struct.c in Sources */,
+				801E1A0C19238F2A00007C61 /* simplex_basic.c in Sources */,
+				80A2816619238E6300A906E9 /* task_2.c in Sources */,
 				80DDCA34184F05B300284F59 /* main.c in Sources */,
 				80C404D819178F4000ED624D /* file_util.c in Sources */,
 				808FCC10190036C900BE0536 /* strmap.c in Sources */,

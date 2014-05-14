@@ -8,13 +8,20 @@
 
 #include "file_util.h"
 #include "simplex.h"
+#include "generate_complex.h"
+#include "task_2.h"
 
 #define MAX_STRING_LEN 1024
 
 
 int main(int argc, const char * argv[])
 {
-
+    Complex* comp = generateComplex(3, 3, 5);
+    printf("GenComp: %s\n", complexToLiteral(comp, true));
+    printf("\n%s", complexPosets(comp));
+    exit(0);
+    
+    
     char* firstComplex  = (char*) malloc(MAX_STRING_LEN * sizeof(char));
     char* secondComplex = (char*) malloc(MAX_STRING_LEN * sizeof(char));
     firstComplex  = "[[1, 2], [2, 3], [3, 4]]";

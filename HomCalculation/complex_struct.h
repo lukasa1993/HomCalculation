@@ -52,4 +52,6 @@ Simplex* getSimpexAt(Complex* comp, int index);
 Complex* literalToComplex(char*    complexLiteral);
 char* complexToLiteral(Complex* complex, bool pretty);
 
+#include "simplex_basic.h"
+
 #endif
