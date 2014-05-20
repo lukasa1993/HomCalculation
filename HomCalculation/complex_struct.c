@@ -1,4 +1,4 @@
-//
+
 //  complex_struct.c
 //  HomCalculation
 //
@@ -8,8 +8,8 @@
 
 #include "complex_struct.h"
 
-#define startingChar '{'
-#define endingChar   '}'
+#define startingChar '['
+#define endingChar   ']'
 
 Simplex* Init_Simplex()
 {
@@ -90,6 +90,40 @@ SimplexElem getElementAt(Simplex* simp, int index)
     }
 }
 
+
+bool containsElement(Simplex* simp, SimplexElem elem)
+{
+    for (int i = 0; i < simp->elementCount; ++i) {
+        SimplexElem elem2 = getElementAt(simp, i);
+        if(elem == elem2) {
+            return true;
+        }
+    }
+    
+    return false;
+}
+
+
+bool containsSimplex(Complex* comp, Simplex* simp)
+{
+    for (int i = 0; i < comp->simplexCount; ++i) {
+        Simplex* simp2 = getSimpexAt(comp, i);
+        bool simplexEqual = true;
+        for (int j = 0; j < simp2->elementCount; ++j) {
+            SimplexElem elem = getElementAt(simp2, j);
+            if (!containsElement(simp, elem)) {
+                simplexEqual = false;
+                break;
+            }
+        }
+        
+        if (simplexEqual) {
+            return true;
+        }
+    }
+    
+    return false;
+}
 
 char* simplexToLiteral(Simplex* simplex)
 {

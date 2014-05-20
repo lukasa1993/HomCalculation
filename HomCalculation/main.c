@@ -9,16 +9,15 @@
 #include "file_util.h"
 #include "simplex.h"
 #include "generate_complex.h"
-#include "task_2.h"
 
 #define MAX_STRING_LEN 1024
 
 
 int main(int argc, const char * argv[])
 {
-    Complex* comp = generateComplex(3, 3, 5);
-    printf("GenComp: %s\n", complexToLiteral(comp, true));
-    printf("\n%s", complexPosets(comp));
+    Complex* comp = generateComplex(5, 3, 5);
+    
+    printf("GenComp: %s\n", complexToLiteral(comp, true));    
     exit(0);
     
     
