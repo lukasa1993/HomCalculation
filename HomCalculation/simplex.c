@@ -369,8 +369,31 @@ void Calculate_Hom(Complex* A, Complex* B) {
     }
     
     printf("\n\n Result \n\n");
-    LD_File* file = Init_file_util("./hom_result", "txt");
+    LD_File* file = Init_file_util_ext("./hom_result", "txt", false);
     
+    Complex* posetPrep = Init_Complex();
+    
+    int V1 = 1;
+    Complex* P = NULL;
+    do {
+        P = FSI(A, B, points, V1);
+        if (P != NULL && P->simplexCount > 0) {
+            printf("\n%s\n", complexToLiteral(P, true));
+                            Simplex* tmp = Init_Simplex();
+            for (int i = 0; i < P->simplexCount; ++i) {
+                Simplex* simp = getSimpexAt(P, i);
+                for (int j = 0; j < simp->elementCount; ++j) {
+                    addElement(tmp, ( (i * points) + getElementAt(simp, j)) );
+                }
+            }
+            if (!containsSimplex(posetPrep, tmp)) {
+                addSimplex(posetPrep, tmp);
+            }
+            V1++;
+        }
+    } while (P != NULL && P->simplexCount > 0);
+    printf("\n----------------\n");
+    printf("\n%s\n", complexToLiteral(posetPrep, true));
     
     for (int k = 2; k <= points; ++k) {
         int V1 = 1;

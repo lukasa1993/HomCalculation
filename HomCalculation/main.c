@@ -12,55 +12,179 @@
 
 #define MAX_STRING_LEN 1024
 
+Complex** complexes;
+int complexesCount;
+
+void input_mannual()
+{
+    printf("\nFirst Complex:");
+    char firstComplexLitteral[2048];
+    scanf("%s", firstComplexLitteral);
+    
+    printf("\nSecond Complex:");
+    char secondComplexLitteral[2048];
+    scanf("%s", secondComplexLitteral);
+    
+    complexesCount = 2;
+    complexes      = malloc(complexesCount * sizeof(Complex));
+    complexes[0]   = literalToComplex(firstComplexLitteral);
+    complexes[1]   = literalToComplex(secondComplexLitteral);
+}
+
+void input_random()
+{
+    int maxFacetCount = 0, maxDimenssion = 0, pointsCount = 0;
+    
+    printf("\nMax Facet Count:");
+    scanf("%d", &maxFacetCount);
+    
+    printf("\nMax Dimmension:");
+    scanf("%d", &maxDimenssion);
+    
+    printf("\nPoint Count:");
+    scanf("%d", &pointsCount);
+    
+    printf("\nSame Limit For Second?:");
+    char sameLimit[128];
+    scanf("%s", sameLimit);
+    
+    Complex* firstComplex;
+    Complex* secondComplex;
+    
+    if (strcmp(sameLimit, "yes") == 0 || strcmp(sameLimit, "y") == 0 || strcmp(sameLimit, "1") == 0) {
+        firstComplex  = generateComplex(maxFacetCount, maxDimenssion, pointsCount);
+        secondComplex = generateComplex(maxFacetCount, maxDimenssion, pointsCount);
+    } else {
+        int maxFacetCount1 = 0, maxDimenssion1 = 0, pointsCount1 = 0;
+        
+        printf("\nSecond Max Facet Count:");
+        scanf("%d", &maxFacetCount1);
+        
+        printf("\nnSecond Max Dimmension:");
+        scanf("%d", &maxDimenssion1);
+        
+        printf("\nnSecond Point Count:");
+        scanf("%d", &pointsCount1);
+        
+        firstComplex  = generateComplex(maxFacetCount, maxDimenssion, pointsCount);
+        secondComplex = generateComplex(maxFacetCount1, maxDimenssion1, pointsCount1);
+    }
+    
+    printf("\nComplexes:\n%s\n%s\n", complexToLiteral(firstComplex, true), complexToLiteral(secondComplex, true));
+    
+    complexesCount = 2;
+    complexes      = malloc(complexesCount * sizeof(Complex));
+    complexes[0]   = firstComplex;
+    complexes[1]   = secondComplex;
+}
+
+void input_file_random()
+{
+    LD_File* file = Init_file_util_ext("./hom_data", "comp", true);
+    
+    printf("\nMaximum Complex Count:");
+    int maxComplexCount = 0, maxFacetCount = 0, maxDimenssion = 0, pointsCount = 0;
+    scanf("%d", &maxComplexCount);
+    
+    printf("\nMax Facet Count:");
+    scanf("%d", &maxFacetCount);
+    
+    printf("\nMax Dimmension:");
+    scanf("%d", &maxDimenssion);
+    
+    printf("\nPoint Count:");
+    scanf("%d", &pointsCount);
+    
+    srand((int) time(NULL));
+    int complexCount = random_in_range(1, maxComplexCount);
+    printf("\nGenerating %d Complexes\n", complexCount);
+    fflush(stdout);
+    
+    complexesCount = complexCount;
+    complexes      = malloc(complexesCount * sizeof(Complex));
+
+
+    
+    char str[15];
+    sprintf(str, "%d", complexCount);
+    wrtieLine(file, str);
+    for (int i = 0; i < complexCount; ++i) {
+        Complex* complex     = generateComplex(maxFacetCount, maxDimenssion, pointsCount);
+        char* complexLiteral = complexToLiteral(complex, true);
+        complexes[i]         = complex;
+
+        wrtieLine(file, complexLiteral);
+        printf("%s\n", complexLiteral);
+        fflush(stdout);
+    }
+    
+    char actualPath[1024];
+    realpath(file->path, actualPath);
+    printf("\nFile Path:\n%s", actualPath);
+    fflush(stdout);
+}
+
+void input_file()
+{
+    printf("\nFiles Path:");
+    char path[1024];
+    scanf("%s", path);
+    
+    LD_File* file = Init_file_util(path, false);
+    char* file_content = readFile(file);
+    
+    int complexCount = 0, offset = 0;
+    sscanf(file_content, "%d", &complexCount);
+    
+    char str[15];
+    sprintf(str, "%d", complexCount);
+    offset = (int) strlen(str);
+    
+    complexesCount = complexCount;
+    complexes      = malloc(complexesCount * sizeof(Complex));
+    
+    for (int i = 0; i < complexCount; ++i) {
+        char* literalComplex = malloc(2048);
+        sscanf(&file_content[offset], "%s", literalComplex);
+        offset += strlen(literalComplex);
+        
+        while (file_content[offset] != '\n') {
+            offset++;
+        }
+        
+        if (strlen(literalComplex) > 4) {
+            Complex* complex = literalToComplex(literalComplex);
+            complexes[i]     = complex;
+            printf("\n%s\n", complexToLiteral(complex, true));
+        }
+    }
+}
 
 int main(int argc, const char * argv[])
 {
-    Complex* comp = generateComplex(5, 3, 5);
+    printf("Input Type(Types: file, file-random-generated, random-generated, mannual):");
+    char buffer[255];
+    scanf("%s", buffer);
     
-    printf("GenComp: %s\n", complexToLiteral(comp, true));    
-    exit(0);
+    if (strcmp(buffer, "file") == 0 || strcmp(buffer, "1") == 0) {
+        input_file();
+    } else if (strcmp(buffer, "file-random-generated") == 0  || strcmp(buffer, "2") == 0) {
+        input_file_random();
+    } else if (strcmp(buffer, "random-generated") == 0  || strcmp(buffer, "3") == 0) {
+        input_random();
+    } else {
+        input_mannual();
+    }
     
-    
-    char* firstComplex  = (char*) malloc(MAX_STRING_LEN * sizeof(char));
-    char* secondComplex = (char*) malloc(MAX_STRING_LEN * sizeof(char));
-    firstComplex  = "[[1, 2], [2, 3], [3, 4]]";
-    secondComplex = "[[1, 2], [2, 3], [3, 4]]";
-       
-    printf("Complex Please:\t%s", firstComplex);
-//    scanf("%s", firstComplex);
-    printf("\n");
-    
-    printf("Second Complex Please:\t%s", secondComplex);
-//    scanf("%s", secondComplex);
-    printf("\n---- As We Saw it ---- \n");
-    
-    Complex* complex1 = literalToComplex(firstComplex);
-    Complex* complex2 = literalToComplex(secondComplex);
-    printf("First  Complex: %s\n", complexToLiteral(complex1, true));
-    printf("Second Complex: %s\n\n", complexToLiteral(complex2, true));
-
-    Calculate_Hom(complex1, complex2);
-    
-//    int initV = 9;
-//    Complex* sim = FSI(complex1, complex2, 1, initV);
-//    printf("\n%d -> %s \n", initV, complexToLiteral(sim, true));
-    
-//    int V = 17, vertecTotal = 0, i = 0;
-//    Complex* A = complex1;
-//    
-//    for ( ; i < A->simplexCount; i++) {
-//        Simplex* sim = A->simplexes[i];
-//        int prevVertecTotal = vertecTotal;
-//        vertecTotal += sim->verticesCount;
-//        int expV = (1 << vertecTotal) - 1;
-//        if (V > prevVertecTotal && expV > V) {
-//            V = V - ((1 << prevVertecTotal) - 1);
-//            break;
-//        }
-//    }
-//    printf("%d %d\n", i, V);
-//    
-//    Calculate_Hom(complex1, complex2);
+    for (int i = 0; i < complexesCount; ++i) {
+        Complex* comp1 = complexes[i];
+        for (int j = 0; j < complexesCount; ++j) {
+            if (j != i) {
+                Complex* comp2 = complexes[j];
+                Calculate_Hom(comp1, comp2);
+            }
+        }
+    }
     
     printf("\nThe End!\n");
     return 0;

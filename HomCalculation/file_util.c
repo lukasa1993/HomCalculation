@@ -34,19 +34,27 @@ char* formatedTime()
     return buffer;
 }
 
-LD_File* Init_file_util(char* path, char* ext)
+LD_File* Init_file_util(char* path, bool clear)
 {
+    
     LD_File* file = (LD_File*) malloc(sizeof(LD_File));
     
-    file->path   = malloc( (strlen(path) + 1 + strlen(ext)) * sizeof(char));
+    file->path   = path;
     file->closed = true;
     
-    file->path = concat(concat(path, formatedTime()), ".");
-    file->path = concat(file->path, ext);
-    
-    fclose(fopen(file->path, "w+")); // clear file on path
-    
+    if(clear) {
+        fclose(fopen(file->path, "w+")); // clear file on path
+    }
     return file;
+}
+
+LD_File* Init_file_util_ext(char* path, char* ext, bool clear)
+{
+    char* file_path = malloc( (strlen(path) + 1 + strlen(ext)) * sizeof(char));
+    file_path = concat(concat(path, formatedTime()), ".");
+    file_path = concat(file_path, ext);
+    
+    return Init_file_util(file_path, clear);
 }
 
 
@@ -60,7 +68,7 @@ void wrtieLine(LD_File* file, const char* line)
 
 char* readLine(LD_File* file)
 {
-    FILE* fp = fopen(file->path, "a+");
+    FILE* fp = fopen(file->path, "r");
     
     char* line = (char*) malloc(1048 * sizeof(char));
     fscanf(fp, "%s", line);
@@ -69,6 +77,40 @@ char* readLine(LD_File* file)
     return line;
 }
 
+
+char* readFile(LD_File* file)
+{
+    char *buffer = NULL;
+    long string_size, read_size;
+    FILE *handler = fopen(file->path,"r");
+    
+    if (handler)
+    {
+        //seek the last byte of the file
+        fseek(handler,0,SEEK_END);
+        //offset from the first to the last byte, or in other words, filesize
+        string_size = ftell (handler);
+        //go back to the start of the file
+        rewind(handler);
+        
+        //allocate a string that can hold it all
+        buffer = (char*) malloc (sizeof(char) * (string_size + 1) );
+        //read it all in one operation
+        read_size = fread(buffer,sizeof(char),string_size,handler);
+        //fread doesnt set it so put a \0 in the last position
+        //and buffer is now officialy a string
+        buffer[string_size+1] = '\0';
+        
+        if (string_size != read_size) {
+            //something went wrong, throw away the memory and set
+            //the buffer to NULL
+            free(buffer);
+            buffer = NULL;
+        }
+    }
+    
+    return buffer;
+}
 
 void Destroy_file(LD_File* file)
 {
