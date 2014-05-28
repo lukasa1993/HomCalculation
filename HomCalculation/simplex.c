@@ -24,7 +24,7 @@ void saveComplex(Complex* comp, int k, int v) {
     key = concat(str_k, key);
     key = concat(key, str_V);
     
-//    printf("\n----- Saving Complex %s for %s -----\n", complexToLiteral(comp, true), key);
+    //    printf("\n----- Saving Complex %s for %s -----\n", complexToLiteral(comp, true), key);
     
     sm_put(sm, key, complexToLiteral(comp, false));
 }
@@ -42,7 +42,7 @@ Complex* getComplex(int k, int v) {
     char buf[4096];
     sm_get(sm, key, buf, sizeof(buf));
     
-//    printf("\n----- Getting Complex %s for %s -----\n", buf, key);
+    //    printf("\n----- Getting Complex %s for %s -----\n", buf, key);
     
     return literalToComplex(buf);
 }
@@ -87,7 +87,7 @@ Complex* FSI(Complex* A, Complex* B, int K, int V) {
                 break;
             }
             prevSubsCount = expV - 1;
-        }       
+        }
     } else {
         complex = getComplex(K, V);
     }
@@ -117,7 +117,7 @@ Complex* mergeComplexes(Complex* a, Complex* b, bool basic) {
     for (int i = 0; i < a->simplexCount; ++i) {
         addSimplex(merged, getSimpexAt(a, i));
     }
-
+    
     for (int i = 0; i < b->simplexCount; ++i) {
         bool unique = true;
         for (int  j = 0; j < merged->simplexCount; ++j) {
@@ -175,10 +175,10 @@ Complex* unionIntersection(Complex** posibilityList, int posibilityListLength) {
     int*     walkIndexes = malloc(posibilityListLength * sizeof(int));
     memset(walkIndexes, 0, posibilityListLength * sizeof(int));
     
-//    printf("\n-- generation start -- \n");
+    //    printf("\n-- generation start -- \n");
     
     Complex* unionIntersection      = Init_Complex();
-
+    
     bool cont = false;
     do {
         Complex* comp  = Init_Complex();
@@ -200,7 +200,7 @@ Complex* unionIntersection(Complex** posibilityList, int posibilityListLength) {
                 break;
             }
         }
-
+        
         Simplex* intersectedSimplex = buildIntersectedSimplex(comp);
         if (intersectedSimplex->elementIndex > -1) {
             addSimplex(unionIntersection, intersectedSimplex);
@@ -271,12 +271,12 @@ int CalculatePoints(Complex* comp) {
 int Hom_Match(Complex* A, Complex* B, Complex* P, int k, int V) {
     Simplex* temp   = Init_Simplex();
     addElement(temp, k);
-
+    
     Complex* ANeibr = upperSimplexContainingDot(A, temp);
     
     Complex** posibilityList       = malloc(P->simplexCount * sizeof(Complex));
     int       posibilityListLength = 0;
-
+    
     
     Complex* BNeibr = Init_Complex();
     
@@ -329,18 +329,18 @@ int Hom_Match(Complex* A, Complex* B, Complex* P, int k, int V) {
             addElement(getSimpexAt(temp, 0), getElementAt(simp, l));
             
             saveComplex(mergeComplexes(P, temp, true), k, V);
-//            Dest_Complex(temp);
+            //            Dest_Complex(temp);
             
             
             V++;
         }
-
+        
         
         
         Complex* temp = Init_Complex();
         addSimplex(temp, simp);
         saveComplex(mergeComplexes(P, temp, true), k, V);
-//        Dest_Complex(temp);
+        //        Dest_Complex(temp);
         V++;
         
     }
@@ -358,7 +358,7 @@ void Calculate_Hom(Complex* A, Complex* B) {
         do {
             P = FSI(A, B, k - 1, V1);
             if (P != NULL && P->simplexCount > 0) {
-//                printf("\nP -> %s,K = %d, V1 = %d\n", complexToLiteral(P, true), k, V1);
+                //                printf("\nP -> %s,K = %d, V1 = %d\n", complexToLiteral(P, true), k, V1);
                 V = Hom_Match(A, B, P, k, V);
                 V1++;
             } else {
@@ -366,24 +366,60 @@ void Calculate_Hom(Complex* A, Complex* B) {
             }
             lastV = V1;
         } while (P != NULL && P->simplexCount > 0);
+        printf("");
     }
     
     printf("\n\n Result \n\n");
+    fflush(stdout);
+    
+    int V1 = 1, count = 0;
+    Complex* P = NULL;
+//    int uniqueComplexesIndex  = 0;
+//    Complex** uniqueComplexes = malloc(50 * sizeof(Complex));
+//    do {
+//        P = FSI(A, B, points, V1);
+//        if (P != NULL && P->simplexCount > 0) {
+//            char* pLiteral = complexToLiteral(P, false);
+////            printf("\n%s\n", pLiteral);
+//            bool unique = true;
+//            for (int i = 0; i < uniqueComplexesIndex; ++i) {
+//                Complex* comp = uniqueComplexes[i];
+//                if (strcmp(complexToLiteral(comp, false), pLiteral) == 0) {
+//                    unique = false;
+//                    break;
+//                }
+//            }
+//            if (unique) {
+//                uniqueComplexes[uniqueComplexesIndex] = P;
+//                uniqueComplexesIndex++;
+//            }
+//            V1++;
+//        }
+//    } while (P != NULL && P->simplexCount > 0);
+//    
+//    for (int i = 0; i < uniqueComplexesIndex; ++i) {
+//        printf("\n%s\n", complexToLiteral(uniqueComplexes[i], true));
+//        fflush(stdout);
+//    }
     LD_File* file = Init_file_util_ext("./hom_result", "txt", false);
     
     Complex* posetPrep = Init_Complex();
     
-    int V1 = 1;
-    Complex* P = NULL;
+    
+    
+    int bPoints = CalculatePoints(B);
+    V1 = 1, count = 0;
+    P = NULL;
     do {
         P = FSI(A, B, points, V1);
         if (P != NULL && P->simplexCount > 0) {
-            printf("\n%s\n", complexToLiteral(P, true));
-                            Simplex* tmp = Init_Simplex();
+//            printf("\n%s\n", complexToLiteral(P, true));
+            Simplex* tmp = Init_Simplex();
+            count++;
             for (int i = 0; i < P->simplexCount; ++i) {
                 Simplex* simp = getSimpexAt(P, i);
                 for (int j = 0; j < simp->elementCount; ++j) {
-                    addElement(tmp, ( (i * points) + getElementAt(simp, j)) );
+                    addElement(tmp, ( (i * bPoints) + getElementAt(simp, j)) );
                 }
             }
             if (!containsSimplex(posetPrep, tmp)) {
@@ -391,10 +427,14 @@ void Calculate_Hom(Complex* A, Complex* B) {
             }
             V1++;
         }
+//        printf("\n%d\n", posetPrep->simplexCount);
     } while (P != NULL && P->simplexCount > 0);
-    printf("\n----------------\n");
-    printf("\n%s\n", complexToLiteral(posetPrep, true));
-    
+//    printf("\n------  %d ----------\n", uniqueComplexesIndex);
+//    printf("\n%s\n", complexToLiteral(posetPrep, true));
+    LD_File* fileRez = Init_file_util("/Users/lukasa/Desktop/homRez/result.txt", true);
+
+    wrtieLine(fileRez, complexToLiteral(posetPrep, true));
+
     for (int k = 2; k <= points; ++k) {
         int V1 = 1;
         Complex* P = NULL;
