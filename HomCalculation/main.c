@@ -6,6 +6,8 @@
 //  Copyright (c) 2013 Luka Dodelia. All rights reserved.
 //
 
+#include <unistd.h>
+
 #include "file_util.h"
 #include "simplex.h"
 #include "generate_complex.h"
@@ -107,13 +109,13 @@ void input_file_random()
     
     char str[15];
     sprintf(str, "%d", complexCount);
-    wrtieLine(file, str);
+    wrtieLine(file, str, false);
     for (int i = 0; i < complexCount; ++i) {
         Complex* complex     = generateComplex(maxFacetCount, maxDimenssion, pointsCount);
         char* complexLiteral = complexToLiteral(complex, true);
         complexes[i]         = complex;
 
-        wrtieLine(file, complexLiteral);
+        wrtieLine(file, complexLiteral, false);
         printf("%s\n", complexLiteral);
         fflush(stdout);
     }
@@ -184,6 +186,7 @@ int main(int argc, const char * argv[])
                 Calculate_Hom(comp1, comp2);
             }
         }
+        break;
     }
     
     printf("\nThe End!\n");

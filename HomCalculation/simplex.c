@@ -369,51 +369,18 @@ void Calculate_Hom(Complex* A, Complex* B) {
         printf("");
     }
     
-    printf("\n\n Result \n\n");
+    printf("\n\n Generation Result File \n\n");
     fflush(stdout);
     
-    int V1 = 1, count = 0;
-    Complex* P = NULL;
-//    int uniqueComplexesIndex  = 0;
-//    Complex** uniqueComplexes = malloc(50 * sizeof(Complex));
-//    do {
-//        P = FSI(A, B, points, V1);
-//        if (P != NULL && P->simplexCount > 0) {
-//            char* pLiteral = complexToLiteral(P, false);
-////            printf("\n%s\n", pLiteral);
-//            bool unique = true;
-//            for (int i = 0; i < uniqueComplexesIndex; ++i) {
-//                Complex* comp = uniqueComplexes[i];
-//                if (strcmp(complexToLiteral(comp, false), pLiteral) == 0) {
-//                    unique = false;
-//                    break;
-//                }
-//            }
-//            if (unique) {
-//                uniqueComplexes[uniqueComplexesIndex] = P;
-//                uniqueComplexesIndex++;
-//            }
-//            V1++;
-//        }
-//    } while (P != NULL && P->simplexCount > 0);
-//    
-//    for (int i = 0; i < uniqueComplexesIndex; ++i) {
-//        printf("\n%s\n", complexToLiteral(uniqueComplexes[i], true));
-//        fflush(stdout);
-//    }
     LD_File* file = Init_file_util_ext("./hom_result", "txt", false);
     
-    Complex* posetPrep = Init_Complex();
-    
-    
-    
     int bPoints = CalculatePoints(B);
-    V1 = 1, count = 0;
-    P = NULL;
+    int V1 = 1, count = 0;
+    Complex* P = NULL;
+    Complex* posetPrep = Init_Complex();
     do {
         P = FSI(A, B, points, V1);
         if (P != NULL && P->simplexCount > 0) {
-//            printf("\n%s\n", complexToLiteral(P, true));
             Simplex* tmp = Init_Simplex();
             count++;
             for (int i = 0; i < P->simplexCount; ++i) {
@@ -427,29 +394,36 @@ void Calculate_Hom(Complex* A, Complex* B) {
             }
             V1++;
         }
-//        printf("\n%d\n", posetPrep->simplexCount);
     } while (P != NULL && P->simplexCount > 0);
-//    printf("\n------  %d ----------\n", uniqueComplexesIndex);
-//    printf("\n%s\n", complexToLiteral(posetPrep, true));
-    LD_File* fileRez = Init_file_util("/Users/lukasa/Desktop/homRez/result.txt", true);
-
-    wrtieLine(fileRez, complexToLiteral(posetPrep, true));
-
-    for (int k = 2; k <= points; ++k) {
-        int V1 = 1;
-        Complex* P = NULL;
-        do {
-            P = FSI(A, B, k, V1);
-            if (P != NULL && P->simplexCount > 0) {
-                printf("\nFSI[%d] = %s\n", V1, complexToLiteral(P, true));
-                if (k == points) {
-                    char line[1024];
-                    sprintf(line, "\nFSI[%d] = %s", V1, complexToLiteral(P, true));
-                    wrtieLine(file, line);
+    
+    char* complexLiteral = complexToLiteral(posetPrep, true);
+    wrtieLine(file, "RequirePackage(\"homology\");", false);
+    wrtieLine(file, "SimplicialHomology(OrderComplex(OrderRelationToPoset(", true);
+    wrtieLine(file, complexLiteral, true);
+    wrtieLine(file, ",IsSubset)));", false);
+    
+    char actualPath[1024];
+    realpath(file->path, actualPath);
+    
+    printf("\nResult is in:\n %s\n", actualPath);
+    
+    if(false) {
+        for (int k = 2; k <= points; ++k) {
+            int V1 = 1;
+            Complex* P = NULL;
+            do {
+                P = FSI(A, B, k, V1);
+                if (P != NULL && P->simplexCount > 0) {
+                    printf("\nFSI[%d] = %s\n", V1, complexToLiteral(P, true));
+                    if (k == points) {
+                        char line[1024];
+                        sprintf(line, "\nFSI[%d] = %s", V1, complexToLiteral(P, true));
+                        wrtieLine(file, line, false);
+                    }
+                    V1++;
                 }
-                V1++;
-            }
-        } while (P != NULL && P->simplexCount > 0);
+            } while (P != NULL && P->simplexCount > 0);
+        }
     }
     
     Destroy_file(file);

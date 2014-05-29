@@ -57,12 +57,13 @@ LD_File* Init_file_util_ext(char* path, char* ext, bool clear)
     return Init_file_util(file_path, clear);
 }
 
-
-void wrtieLine(LD_File* file, const char* line)
+void wrtieLine(LD_File* file, const char* line, bool skipLine)
 {
     FILE* fp = fopen(file->path, "a+");
     fputs(line, fp);
-    fprintf(fp, "\n");
+    if(!skipLine) {
+        fprintf(fp, "\n");
+    }
     fclose(fp);
 }
 
