@@ -36,3 +36,7 @@ Complex* AllSubSimplexses(Simplex* simplex)
     
     return complex;
 }
+
+
+
+

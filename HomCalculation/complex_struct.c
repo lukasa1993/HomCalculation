@@ -110,13 +110,14 @@ bool containsSimplex(Complex* comp, Simplex* simp)
         Simplex* simp2 = getSimpexAt(comp, i);
         char* literal1 = simplexToLiteral(simp);
         char* literal2 = simplexToLiteral(simp2);
+
         if (strcmp(literal1, literal2) == 0) {
-            free(literal1);
-            free(literal2);
+//            free(literal1);
+//            free(literal2);
             return true;
         }
-        free(literal1);
-        free(literal2);
+//        free(literal1);
+//        free(literal2);
     }
     
     return false;

@@ -7,6 +7,7 @@
 //
 
 #include <unistd.h>
+#include <limits.h>
 
 #include "file_util.h"
 #include "simplex.h"
@@ -20,11 +21,11 @@ int complexesCount;
 void input_mannual()
 {
     printf("\nFirst Complex:");
-    char firstComplexLitteral[2048];
+    char firstComplexLitteral[8192];
     scanf("%s", firstComplexLitteral);
     
     printf("\nSecond Complex:");
-    char secondComplexLitteral[2048];
+    char secondComplexLitteral[8192];
     scanf("%s", secondComplexLitteral);
     
     complexesCount = 2;
@@ -120,7 +121,7 @@ void input_file_random()
         fflush(stdout);
     }
     
-    char actualPath[1024];
+    char actualPath[PATH_MAX + 1];
     realpath(file->path, actualPath);
     printf("\nFile Path:\n%s", actualPath);
     fflush(stdout);

@@ -6,6 +6,7 @@
 //  Copyright (c) 2013 Luka Dodelia. All rights reserved.
 //
 
+#include <limits.h>
 #include "simplex.h"
 
 #define method1    true // unionIntersection
@@ -347,8 +348,52 @@ int Hom_Match(Complex* A, Complex* B, Complex* P, int k, int V) {
     return V;
 }
 
+Simplex* fVectorFromComplex(Complex* comp)
+{
+    Complex* fComplex = Init_Complex();
+    Simplex* AfVector = Init_Simplex();
+    
+    for (int i = 0; i < comp->simplexCount; ++i) {
+        Simplex* simp     = getSimpexAt(comp, i);
+        Complex* simpSubs = AllSubSimplexses(simp);
+//        printf("\n%s\n", complexToLiteral(simpSubs, true));
+        for (int j = 0; j < simpSubs->simplexCount; ++j) {
+            Simplex* pSimp = getSimpexAt(simpSubs, j);
+//          x  printf("\n%s\n", simplexToLiteral(pSimp));
+            if (!containsSimplex(fComplex, pSimp)) {
+                addSimplex(fComplex, pSimp);
+            } else {
+//                Dest_Simplex(pSimp);
+            }
+        }
+    }
+    
+    for (int i = 0; i < fComplex->simplexCount; ++i) {
+        Simplex* simp = getSimpexAt(fComplex, i);
+        if (simp->elementCount < 1) {
+            continue;
+        }
+        while (AfVector->elementIndex < simp->elementCount - 1) {
+            addElement(AfVector, 0);
+        }
+        AfVector->elements[simp->elementCount - 1]++;
+    }
+    
+    
+//    printf("\n%s\n", complexToLiteral(fComplex, true));
+    
+    Dest_Complex(fComplex);
+    
+    return AfVector;
+}
+
 void Calculate_Hom(Complex* A, Complex* B) {
     int points = CalculatePoints(A);
+    
+    
+    printf("\n%s\n", simplexToLiteral(fVectorFromComplex(A)));
+    printf("\n%s\n", simplexToLiteral(fVectorFromComplex(B)));
+    exit(0);
     
     sm = sm_new(points);
     int lastV = 0;
@@ -376,8 +421,12 @@ void Calculate_Hom(Complex* A, Complex* B) {
     
     int bPoints = CalculatePoints(B);
     int V1 = 1, count = 0;
-    Complex* P = NULL;
+    Complex* P         = NULL;
     Complex* posetPrep = Init_Complex();
+    Simplex* fVector   = Init_Simplex();
+    for (int i = 0; i < points * 4; ++i) {
+        addElement(fVector, 0);
+    }
     do {
         P = FSI(A, B, points, V1);
         if (P != NULL && P->simplexCount > 0) {
@@ -391,10 +440,28 @@ void Calculate_Hom(Complex* A, Complex* B) {
             }
             if (!containsSimplex(posetPrep, tmp)) {
                 addSimplex(posetPrep, tmp);
+                int maxDim      = 0;
+                int maxDimCount = 0;
+                char* maxSim    = NULL;
+                for (int i = 0; i < P->simplexCount; ++i) {
+                    Simplex* simp = getSimpexAt(P, i);
+                    if (maxDim < simp->elementCount) {
+                        maxDim      = simp->elementCount;
+                        maxDimCount = 1;
+                        maxSim      = simplexToLiteral(simp);
+                    }
+                    if (maxDim == simp->elementCount && strcmp(maxSim, simplexToLiteral(simp)) != 0) {
+                        maxDimCount++;
+                    }
+                }
+//                addElement(fVector, maxDimCount);
+                fVector->elements[maxDim - 1] += maxDimCount;
             }
             V1++;
         }
     } while (P != NULL && P->simplexCount > 0);
+    
+    printf("\nFVector: %s\n", simplexToLiteral(fVector));
     
     char* complexLiteral = complexToLiteral(posetPrep, true);
     wrtieLine(file, "RequirePackage(\"homology\");", false);
@@ -402,7 +469,7 @@ void Calculate_Hom(Complex* A, Complex* B) {
     wrtieLine(file, complexLiteral, true);
     wrtieLine(file, ",IsSubset)));", false);
     
-    char actualPath[1024];
+    char actualPath[PATH_MAX + 1];
     realpath(file->path, actualPath);
     
     printf("\nResult is in:\n %s\n", actualPath);
