@@ -58,7 +58,7 @@ Complex* getComplex(int k, int v) {
         char* path    = concat("./", key);
         char* pathf   = concat(path, ".txt");
         LD_File* file = Init_file_util(pathf, false);
-        char* buf     = readLine(file);
+        char* buf     = readFile(file);
         Complex* comp = literalToComplex(buf);
         free(path);
         free(pathf);
@@ -306,7 +306,7 @@ int Hom_Match(Complex* A, Complex* B, Complex* P, int k, int V) {
     addElement(temp, k);
     
     Complex* ANeibr = upperSimplexContainingDot(A, temp);
-    Dest_Simplex(temp);
+    //Dest_Simplex(temp);
     
     Complex** posibilityList       = malloc(P->simplexCount * sizeof(Complex*));
     int       posibilityListLength = 0;
@@ -330,7 +330,7 @@ int Hom_Match(Complex* A, Complex* B, Complex* P, int k, int V) {
                 posibilityList[posibilityListLength]    = BNeibrTemp;
                 posibilityListLength++;
                 
-                free(comp);
+                //free(comp);
             }
         }
     }
@@ -352,10 +352,10 @@ int Hom_Match(Complex* A, Complex* B, Complex* P, int k, int V) {
                 printf("\nYEA\n");
             }
             
-            free(bn1Lit);
-            free(bn2Lit);
-            free(BNeibr1);
-            free(BNeibr2);
+//            free(bn1Lit);
+//            free(bn2Lit);
+//            free(BNeibr1);
+//            free(BNeibr2);
         }
     } else if (posibilityListLength > 0){
         BNeibr = posibilityList[0];
@@ -462,7 +462,8 @@ void Calculate_Hom(Complex* A, Complex* B) {
                 saveComplex(P, k, V);
             }
         } while (P != NULL && P->simplexCount > 0);
-        printf("");
+        
+        printf("\n%d -> %d\n", k , V1);
     }
     
     printf("\n\n Doing Safe House \n\n");

@@ -9,8 +9,8 @@
 #ifndef HomCalculation_simplex_h
 #define HomCalculation_simplex_h
 
-#define strcasecmp _stricmp
-#define strncasecmp _stricmp
+//#define strcasecmp _stricmp
+//#define strncasecmp _stricmp
 
 #include "strmap.h"
 #include "complex_struct.h"
