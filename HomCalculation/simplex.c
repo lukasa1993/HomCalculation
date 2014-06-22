@@ -25,10 +25,20 @@ void saveComplex(Complex* comp, int k, int v) {
     key = concat(str_k, key);
     key = concat(key, str_V);
     
-//printf("\n----- Saving Complex %s for %s -----\n", complexToLiteral(comp, true), key);
     
-    char* tmp = complexToLiteral(comp, false);
-    sm_put(sm, key, tmp);
+    //printf("\n----- Saving Complex %s for %s -----\n", complexToLiteral(comp, true), key);
+    
+    char* tmp  = complexToLiteral(comp, false);
+    
+    if(true) {
+        char* path    = concat("./", key);
+        LD_File* file = Init_file_util(path, true);
+        wrtieLine(file, tmp, false);
+        free(path);
+    } else {
+        sm_put(sm, key, tmp);
+    }
+    
     free(tmp);
     free(key);
 }
@@ -43,12 +53,24 @@ Complex* getComplex(int k, int v) {
     key = concat(str_k, key);
     key = concat(key, str_V);
     
-    char buf[4096];
-    sm_get(sm, key, buf, sizeof(buf));
-    
-    //    printf("\n----- Getting Complex %s for %s -----\n", buf, key);
-    free(key);
-    return literalToComplex(buf);
+    if (true) {
+        char* path    = concat("./", key);
+        LD_File* file = Init_file_util(path, false);
+        char* buf     = readLine(file);
+        Complex* comp = literalToComplex(buf);
+        free(path);
+        free(buf);
+        
+        return comp;
+    } else {
+        
+        char buf[4096];
+        sm_get(sm, key, buf, sizeof(buf));
+        
+        //    printf("\n----- Getting Complex %s for %s -----\n", buf, key);
+        free(key);
+        return literalToComplex(buf);
+    }
 }
 
 bool checkSimplexSubSimplex(Simplex* simplex, Simplex* subSimplex) {
@@ -281,8 +303,9 @@ int Hom_Match(Complex* A, Complex* B, Complex* P, int k, int V) {
     addElement(temp, k);
     
     Complex* ANeibr = upperSimplexContainingDot(A, temp);
+    Dest_Simplex(temp);
     
-    Complex** posibilityList       = malloc(P->simplexCount * sizeof(Complex));
+    Complex** posibilityList       = malloc(P->simplexCount * sizeof(Complex*));
     int       posibilityListLength = 0;
     
     
@@ -303,6 +326,8 @@ int Hom_Match(Complex* A, Complex* B, Complex* P, int k, int V) {
                 
                 posibilityList[posibilityListLength]    = BNeibrTemp;
                 posibilityListLength++;
+                
+                free(comp);
             }
         }
     }
@@ -316,11 +341,18 @@ int Hom_Match(Complex* A, Complex* B, Complex* P, int k, int V) {
             Complex* BNeibr1 = unionIntersection(posibilityList, posibilityListLength);
             Complex* BNeibr2 = intersectionUnionUpper(B, posibilityList, posibilityListLength);
             printf("\n %s \n %s \n", complexToLiteral(BNeibr1, true), complexToLiteral(BNeibr2, true));
-            if (strcasecmp(complexToLiteral(BNeibr1, false), complexToLiteral(BNeibr2, false)) != 0) {
+            char* bn1Lit = complexToLiteral(BNeibr1, false);
+            char* bn2Lit = complexToLiteral(BNeibr2, false);
+            if (strcasecmp(bn1Lit, bn2Lit) != 0) {
                 printf("vai");
             } else {
                 printf("\nYEA\n");
             }
+            
+            free(bn1Lit);
+            free(bn2Lit);
+            free(BNeibr1);
+            free(BNeibr2);
         }
     } else if (posibilityListLength > 0){
         BNeibr = posibilityList[0];
@@ -330,28 +362,40 @@ int Hom_Match(Complex* A, Complex* B, Complex* P, int k, int V) {
         Simplex* simp = getSimpexAt(BNeibr, j);
         
         for (int l = 0; l < simp->elementCount; ++l) {
-            Complex* temp      = Init_Complex();
+            Complex* temp1      = Init_Complex();
             
-            addSimplex(temp, Init_Simplex());
+            addSimplex(temp1, Init_Simplex());
             
-            addElement(getSimpexAt(temp, 0), getElementAt(simp, l));
+            addElement(getSimpexAt(temp1, 0), getElementAt(simp, l));
             
-            saveComplex(mergeComplexes(P, temp, true), k, V);
-            //            Dest_Complex(temp);
-            
+            Complex* M1Complex = mergeComplexes(P, temp1, true);
+            saveComplex(M1Complex, k, V);
+            free(M1Complex);
+            Dest_Complex(temp1);
             
             V++;
         }
         
         
         
-        Complex* temp = Init_Complex();
-        addSimplex(temp, simp);
-        saveComplex(mergeComplexes(P, temp, true), k, V);
-        //        Dest_Complex(temp);
+        Complex* temp2 = Init_Complex();
+        addSimplex(temp2, simp);
+        Complex* MComplex = mergeComplexes(P, temp2, true);
+        saveComplex(MComplex, k, V);
+        
         V++;
         
     }
+    if (posibilityListLength > 1) {
+        for (int i = 0; i < posibilityListLength; ++i) {
+            free(posibilityList[i]);
+        }
+    }
+    
+    free(ANeibr);
+    free(BNeibr);
+    free(posibilityList);
+    
     return V;
 }
 
@@ -363,14 +407,14 @@ Simplex* fVectorFromComplex(Complex* comp)
     for (int i = 0; i < comp->simplexCount; ++i) {
         Simplex* simp     = getSimpexAt(comp, i);
         Complex* simpSubs = AllSubSimplexses(simp);
-//        printf("\n%s\n", complexToLiteral(simpSubs, true));
+        //        printf("\n%s\n", complexToLiteral(simpSubs, true));
         for (int j = 0; j < simpSubs->simplexCount; ++j) {
             Simplex* pSimp = getSimpexAt(simpSubs, j);
-//          x  printf("\n%s\n", simplexToLiteral(pSimp));
+            //          x  printf("\n%s\n", simplexToLiteral(pSimp));
             if (!containsSimplex(fComplex, pSimp)) {
                 addSimplex(fComplex, pSimp);
             } else {
-//                Dest_Simplex(pSimp);
+                //                Dest_Simplex(pSimp);
             }
         }
     }
@@ -387,7 +431,7 @@ Simplex* fVectorFromComplex(Complex* comp)
     }
     
     
-//    printf("\n%s\n", complexToLiteral(fComplex, true));
+    //    printf("\n%s\n", complexToLiteral(fComplex, true));
     
     Dest_Complex(fComplex);
     
@@ -402,10 +446,9 @@ void Calculate_Hom(Complex* A, Complex* B) {
     printf("\nBF: %s\n", simplexToLiteral(fVectorFromComplex(B)));
     
     sm = sm_new(points);
-    int lastV = 0;
     for (int k = 2; k <= points; ++k) {
         int V1 = 1, V = 1;
-        Complex* P = Init_Complex();
+        Complex* P = NULL;
         do {
             P = FSI(A, B, k - 1, V1);
             if (P != NULL && P->simplexCount > 0) {
@@ -415,7 +458,6 @@ void Calculate_Hom(Complex* A, Complex* B) {
             } else {
                 saveComplex(P, k, V);
             }
-            lastV = V1;
         } while (P != NULL && P->simplexCount > 0);
         printf("");
     }
@@ -425,7 +467,7 @@ void Calculate_Hom(Complex* A, Complex* B) {
     
     int         V1 = 0;
     LD_File* file0 = Init_file_util_ext("./hom_safe_house", "txt", false);
-    Complex* P     = Init_Complex();
+    Complex* P     = NULL;
     do {
         P = FSI(A, B, points, V1);
         if (P != NULL && P->simplexCount > 0) {
@@ -463,7 +505,7 @@ void Calculate_Hom(Complex* A, Complex* B) {
                 addSimplex(posetPrep, tmp);
                 int maxDim      = 0;
                 int maxDimCount = 0;
-                char* maxSim    = NULL;
+                char* maxSim    = "";
                 for (int i = 0; i < P->simplexCount; ++i) {
                     Simplex* simp = getSimpexAt(P, i);
                     if (maxDim < simp->elementCount) {
@@ -471,11 +513,13 @@ void Calculate_Hom(Complex* A, Complex* B) {
                         maxDimCount = 1;
                         maxSim      = simplexToLiteral(simp);
                     }
-                    if (maxDim == simp->elementCount && strcmp(maxSim, simplexToLiteral(simp)) != 0) {
+                    char* simpLit = simplexToLiteral(simp);
+                    if (maxDim == simp->elementCount && strcmp(maxSim, simpLit) != 0) {
                         maxDimCount++;
                     }
+                    free(simpLit);
                 }
-//                addElement(fVector, maxDimCount);
+                //                addElement(fVector, maxDimCount);
                 fVector->elements[maxDim - 1] += maxDimCount;
             }
             V1++;

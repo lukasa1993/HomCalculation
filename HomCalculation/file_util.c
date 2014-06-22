@@ -50,16 +50,26 @@ LD_File* Init_file_util(char* path, bool clear)
 
 LD_File* Init_file_util_ext(char* path, char* ext, bool clear)
 {
-    char* file_path = malloc( (strlen(path) + 1 + strlen(ext)) * sizeof(char));
-    file_path = concat(concat(path, formatedTime()), ".");
-    file_path = concat(file_path, ext);
+    char* time       = formatedTime();
+    char* file_path0 = concat(path, time);
+    char* file_path1 = concat(file_path0, ".");
+    char* file_path2 = concat(file_path1, ext);
     
-    return Init_file_util(file_path, clear);
+    free(time);
+    free(file_path0);
+    free(file_path1);
+    
+    return Init_file_util(file_path2, clear);
 }
 
 void wrtieLine(LD_File* file, const char* line, bool skipLine)
 {
-    FILE* fp = fopen(file->path, "a+");
+    FILE* fp = NULL;
+    
+    while (fp == NULL) {
+        fp = fopen(file->path, "a+");
+    }
+    
     fputs(line, fp);
     if(!skipLine) {
         fprintf(fp, "\n");
@@ -69,8 +79,10 @@ void wrtieLine(LD_File* file, const char* line, bool skipLine)
 
 char* readLine(LD_File* file)
 {
-    FILE* fp = fopen(file->path, "r");
-    
+    FILE* fp = NULL;    
+    while (fp == NULL) {
+        fp = fopen(file->path, "a+");
+    }
     char* line = (char*) malloc(1048 * sizeof(char));
     fscanf(fp, "%s", line);
     fclose(fp);

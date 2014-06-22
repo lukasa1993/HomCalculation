@@ -31,7 +31,7 @@ void input_mannual()
     scanf("%s", secondComplexLitteral);
     
     complexesCount = 2;
-    complexes      = malloc(complexesCount * sizeof(Complex));
+    complexes      = malloc(complexesCount * sizeof(Complex*));
     complexes[0]   = literalToComplex(firstComplexLitteral);
     complexes[1]   = literalToComplex(secondComplexLitteral);
 }
@@ -78,7 +78,7 @@ void input_random()
     printf("\nComplexes:\n%s\n%s\n", complexToLiteral(firstComplex, true), complexToLiteral(secondComplex, true));
     
     complexesCount = 2;
-    complexes      = malloc(complexesCount * sizeof(Complex));
+    complexes      = malloc(complexesCount * sizeof(Complex*));
     complexes[0]   = firstComplex;
     complexes[1]   = secondComplex;
 }
@@ -106,7 +106,7 @@ void input_file_random()
     fflush(stdout);
     
     complexesCount = complexCount;
-    complexes      = malloc(complexesCount * sizeof(Complex));
+    complexes      = malloc(complexesCount * sizeof(Complex*));
 
 
     
@@ -146,7 +146,7 @@ void input_file()
     offset = (int) strlen(str);
     
     complexesCount = complexCount;
-    complexes      = malloc(complexesCount * sizeof(Complex));
+    complexes      = malloc(complexesCount * sizeof(Complex*));
     
     for (int i = 0; i < complexCount; ++i) {
         char* literalComplex = malloc(2048);
@@ -162,6 +162,7 @@ void input_file()
             complexes[i]     = complex;
             printf("\n%s\n", complexToLiteral(complex, true));
         }
+        free(literalComplex);
     }
 }
 
@@ -174,6 +175,7 @@ int main(int argc, const char * argv[])
     
     Calculate_Hom(literalToComplex("[[1,2,7],[2,3,7],[3,4,7],[4,5,7],[5,6,7],[6,1,7]]"), literalToComplex("[[1,2,7],[2,3,7],[3,4,7],[4,5,7],[5,6,7],[6,1,7]]"));
     
+    exit(0);
     printf("Input Type(Types: file, file-random-generated, random-generated, mannual):");
     char buffer[255];
     scanf("%s", buffer);

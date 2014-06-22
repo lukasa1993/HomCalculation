@@ -32,8 +32,8 @@
 /* Begin PBXFileReference section */
 		801E1A0B19238F2A00007C61 /* simplex_basic.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = simplex_basic.c; sourceTree = "<group>"; };
 		801E1A0D19238F3900007C61 /* simplex_basic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = simplex_basic.h; sourceTree = "<group>"; };
-		805E49FE194DCDFE008B3374 /* polytop_struct.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = polytop_struct.h; sourceTree = "<group>"; };
-		805E49FF194DCE08008B3374 /* polytop_struct.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = polytop_struct.c; sourceTree = "<group>"; };
+		805E49FE194DCDFE008B3374 /* polytop_struct.h */ = {isa = PBXFileReference; explicitFileType = text; path = polytop_struct.h; sourceTree = "<group>"; };
+		805E49FF194DCE08008B3374 /* polytop_struct.c */ = {isa = PBXFileReference; explicitFileType = text; fileEncoding = 4; path = polytop_struct.c; sourceTree = "<group>"; };
 		808FCC0E190036C900BE0536 /* strmap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = strmap.c; sourceTree = "<group>"; };
 		808FCC0F190036C900BE0536 /* strmap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = strmap.h; sourceTree = "<group>"; };
 		80A2816119238B8200A906E9 /* generate_complex.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = generate_complex.h; sourceTree = "<group>"; };
