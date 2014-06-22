@@ -161,22 +161,36 @@ char* complexToLiteral(Complex* complex, bool pretty)
     literal[literali] = startingChar;
     literali++;
     
-    for (int i = 0; i < complex->simplexCount; ++i) {
-        Simplex* simplex = getSimpexAt(complex, i);
-        literal[literali] = startingChar;
-        literali++;
-        
-        for (int j = 0; j < simplex->elementCount; ++j) {
-            SimplexElem elem = getElementAt(simplex, j);
-            char str[100];
-            sprintf(str, "%d", elem);
+    if (complex != NULL) {
+        for (int i = 0; i < complex->simplexCount; ++i) {
+            Simplex* simplex = getSimpexAt(complex, i);
+            literal[literali] = startingChar;
+            literali++;
             
-            for (int s = 0; s < strlen(str); ++s) {
-                literal[literali] = str[s];
-                literali++;
+            for (int j = 0; j < simplex->elementCount; ++j) {
+                SimplexElem elem = getElementAt(simplex, j);
+                char str[100];
+                sprintf(str, "%d", elem);
+                
+                for (int s = 0; s < strlen(str); ++s) {
+                    literal[literali] = str[s];
+                    literali++;
+                }
+                
+                if (j != simplex->elementIndex) {
+                    literal[literali] = ',';
+                    literali++;
+                    if (pretty) {
+                        literal[literali] = ' ';
+                        literali++;
+                    }
+                }
             }
             
-            if (j != simplex->elementIndex) {
+            literal[literali] = endingChar;
+            literali++;
+            
+            if (i != complex->simplexIndex) {
                 literal[literali] = ',';
                 literali++;
                 if (pretty) {
@@ -185,20 +199,7 @@ char* complexToLiteral(Complex* complex, bool pretty)
                 }
             }
         }
-        
-        literal[literali] = endingChar;
-        literali++;
-        
-        if (i != complex->simplexIndex) {
-            literal[literali] = ',';
-            literali++;
-            if (pretty) {
-                literal[literali] = ' ';
-                literali++;
-            }
-        }
     }
-    
     literal[literali] = endingChar;
     literali++;
 

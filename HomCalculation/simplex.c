@@ -31,9 +31,11 @@ void saveComplex(Complex* comp, int k, int v) {
     
     if(true) {
         char* path    = concat("./", key);
-        LD_File* file = Init_file_util(path, true);
+        char* pathf   = concat(path, ".txt");
+        LD_File* file = Init_file_util(pathf, true);
         wrtieLine(file, tmp, false);
         free(path);
+        free(pathf);
     } else {
         sm_put(sm, key, tmp);
     }
@@ -54,10 +56,12 @@ Complex* getComplex(int k, int v) {
     
     if (true) {
         char* path    = concat("./", key);
-        LD_File* file = Init_file_util(path, false);
+        char* pathf   = concat(path, ".txt");
+        LD_File* file = Init_file_util(pathf, false);
         char* buf     = readLine(file);
         Complex* comp = literalToComplex(buf);
         free(path);
+        free(pathf);
         free(buf);
         
         return comp;
