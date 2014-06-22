@@ -217,7 +217,7 @@ bool containsPolytop(PolytopComplex* polComp, Polytop* pol)
 
 Polytop* literalToPolytop(char* literal)
 {
-    Polytop* polytop;
+    Polytop* polytop = NULL;
     
     int magicNumberInput = 4;
     int sbracketsCount   = 0;

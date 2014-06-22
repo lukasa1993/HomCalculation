@@ -239,7 +239,7 @@ int                found;
 *  Traverse each adjacency list and the vertices it contains.                *
 *                                                                            *
 *****************************************************************************/
-
+temp = NULL;
 prev = NULL;
 found = 0;
 
