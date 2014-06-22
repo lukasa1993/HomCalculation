@@ -12,6 +12,8 @@
 #define method2    false  // intersectionUnionUpper
 #define methodComp false // both
 
+#define usefilesystem false
+
 StrMap *sm;
 
 void saveComplex(Complex* comp, int k, int v) {
@@ -29,7 +31,7 @@ void saveComplex(Complex* comp, int k, int v) {
     
     char* tmp  = complexToLiteral(comp, false);
     
-    if(true) {
+    if(usefilesystem) {
         char* path    = concat("./", key);
         char* pathf   = concat(path, ".txt");
         LD_File* file = Init_file_util(pathf, true);
@@ -54,7 +56,7 @@ Complex* getComplex(int k, int v) {
     key = concat(str_k, key);
     key = concat(key, str_V);
     
-    if (true) {
+    if (usefilesystem) {
         char* path    = concat("./", key);
         char* pathf   = concat(path, ".txt");
         LD_File* file = Init_file_util(pathf, false);
