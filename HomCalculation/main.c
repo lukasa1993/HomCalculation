@@ -13,6 +13,8 @@
 #include "simplex.h"
 #include "generate_complex.h"
 
+//#include "polytop_struct.h"
+
 #define MAX_STRING_LEN 1024
 
 Complex** complexes;
@@ -165,6 +167,13 @@ void input_file()
 
 int main(int argc, const char * argv[])
 {
+//    Polytop* pol = literalToPolytop("[[1,2], [2,3], [ (6.421, 4.213), (1.32131, 3.421312), (2.3412, 2.32112)]]");
+//    
+//    printf("\n%s\n", polytopToLiteral(pol));
+//    return 0;
+    
+    Calculate_Hom(literalToComplex("[[1,2,7],[2,3,7],[3,4,7],[4,5,7],[5,6,7],[6,1,7]]"), literalToComplex("[[1,2,7],[2,3,7],[3,4,7],[4,5,7],[5,6,7],[6,1,7]]"));
+    
     printf("Input Type(Types: file, file-random-generated, random-generated, mannual):");
     char buffer[255];
     scanf("%s", buffer);

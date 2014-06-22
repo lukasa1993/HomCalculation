@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		801E1A0C19238F2A00007C61 /* simplex_basic.c in Sources */ = {isa = PBXBuildFile; fileRef = 801E1A0B19238F2A00007C61 /* simplex_basic.c */; };
+		805E4A00194DCE08008B3374 /* polytop_struct.c in Sources */ = {isa = PBXBuildFile; fileRef = 805E49FF194DCE08008B3374 /* polytop_struct.c */; };
 		808FCC10190036C900BE0536 /* strmap.c in Sources */ = {isa = PBXBuildFile; fileRef = 808FCC0E190036C900BE0536 /* strmap.c */; };
 		80A2816319238B8C00A906E9 /* generate_complex.c in Sources */ = {isa = PBXBuildFile; fileRef = 80A2816219238B8C00A906E9 /* generate_complex.c */; };
 		80AF0C8A1913F18B00DF62B4 /* complex_struct.c in Sources */ = {isa = PBXBuildFile; fileRef = 80AF0C891913F18B00DF62B4 /* complex_struct.c */; };
@@ -31,6 +32,8 @@
 /* Begin PBXFileReference section */
 		801E1A0B19238F2A00007C61 /* simplex_basic.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = simplex_basic.c; sourceTree = "<group>"; };
 		801E1A0D19238F3900007C61 /* simplex_basic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = simplex_basic.h; sourceTree = "<group>"; };
+		805E49FE194DCDFE008B3374 /* polytop_struct.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = polytop_struct.h; sourceTree = "<group>"; };
+		805E49FF194DCE08008B3374 /* polytop_struct.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = polytop_struct.c; sourceTree = "<group>"; };
 		808FCC0E190036C900BE0536 /* strmap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = strmap.c; sourceTree = "<group>"; };
 		808FCC0F190036C900BE0536 /* strmap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = strmap.h; sourceTree = "<group>"; };
 		80A2816119238B8200A906E9 /* generate_complex.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = generate_complex.h; sourceTree = "<group>"; };
@@ -80,6 +83,8 @@
 				80DDCA33184F05B300284F59 /* main.c */,
 				80DDCA3E184F0D7600284F59 /* simplex.h */,
 				80DDCA3C184F0D6500284F59 /* simplex.c */,
+				805E49FE194DCDFE008B3374 /* polytop_struct.h */,
+				805E49FF194DCE08008B3374 /* polytop_struct.c */,
 				80AF0C881913F18300DF62B4 /* complex_struct.h */,
 				80AF0C891913F18B00DF62B4 /* complex_struct.c */,
 				801E1A0D19238F3900007C61 /* simplex_basic.h */,
@@ -147,6 +152,7 @@
 				80A2816319238B8C00A906E9 /* generate_complex.c in Sources */,
 				80AF0C8A1913F18B00DF62B4 /* complex_struct.c in Sources */,
 				801E1A0C19238F2A00007C61 /* simplex_basic.c in Sources */,
+				805E4A00194DCE08008B3374 /* polytop_struct.c in Sources */,
 				80DDCA34184F05B300284F59 /* main.c in Sources */,
 				80C404D819178F4000ED624D /* file_util.c in Sources */,
 				808FCC10190036C900BE0536 /* strmap.c in Sources */,
@@ -161,8 +167,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_ENABLE_OBJC_ARC = NO;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
@@ -198,8 +204,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_ENABLE_OBJC_ARC = NO;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;

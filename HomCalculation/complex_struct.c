@@ -8,9 +8,6 @@
 
 #include "complex_struct.h"
 
-#define startingChar '['
-#define endingChar   ']'
-
 Simplex* Init_Simplex()
 {
     Simplex* simplex         = (Simplex*) malloc(sizeof(Simplex));

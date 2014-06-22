@@ -15,6 +15,9 @@
 #include <stdbool.h>
 #include <string.h>
 
+#define startingChar '['
+#define endingChar   ']'
+
 typedef int SimplexElem;
 
 typedef struct Simplex {

@@ -25,9 +25,11 @@ void saveComplex(Complex* comp, int k, int v) {
     key = concat(str_k, key);
     key = concat(key, str_V);
     
-    //    printf("\n----- Saving Complex %s for %s -----\n", complexToLiteral(comp, true), key);
+//printf("\n----- Saving Complex %s for %s -----\n", complexToLiteral(comp, true), key);
     
-    sm_put(sm, key, complexToLiteral(comp, false));
+    char* tmp = complexToLiteral(comp, false);
+    sm_put(sm, key, tmp);
+    free(tmp);
 }
 
 Complex* getComplex(int k, int v) {
@@ -122,9 +124,13 @@ Complex* mergeComplexes(Complex* a, Complex* b, bool basic) {
     for (int i = 0; i < b->simplexCount; ++i) {
         bool unique = true;
         for (int  j = 0; j < merged->simplexCount; ++j) {
-            if (strcmp(simplexToLiteral(merged->simplexes[j]), simplexToLiteral(b->simplexes[i])) == 0) {
+            char* aLit = simplexToLiteral(merged->simplexes[j]);
+            char* bLit = simplexToLiteral(b->simplexes[i]);
+            if (strcmp(aLit, bLit) == 0) {
                 unique = false;
             }
+            free(aLit);
+            free(bLit);
         }
         
         if (basic || unique) {
@@ -391,9 +397,8 @@ void Calculate_Hom(Complex* A, Complex* B) {
     int points = CalculatePoints(A);
     
     
-    printf("\n%s\n", simplexToLiteral(fVectorFromComplex(A)));
-    printf("\n%s\n", simplexToLiteral(fVectorFromComplex(B)));
-    exit(0);
+    printf("\nAF: %s\n", simplexToLiteral(fVectorFromComplex(A)));
+    printf("\nBF: %s\n", simplexToLiteral(fVectorFromComplex(B)));
     
     sm = sm_new(points);
     int lastV = 0;
@@ -414,14 +419,29 @@ void Calculate_Hom(Complex* A, Complex* B) {
         printf("");
     }
     
+    printf("\n\n Doing Safe House \n\n");
+    fflush(stdout);
+    
+    int         V1 = 0;
+    LD_File* file0 = Init_file_util_ext("./hom_safe_house", "txt", false);
+    Complex* P     = Init_Complex();
+    do {
+        P = FSI(A, B, points, V1);
+        if (P != NULL && P->simplexCount > 0) {
+            wrtieLine(file0, complexToLiteral(P, true), false);
+            V1++;
+        }
+    } while (P != NULL && P->simplexCount > 0);
+    
     printf("\n\n Generation Result File \n\n");
     fflush(stdout);
     
     LD_File* file = Init_file_util_ext("./hom_result", "txt", false);
     
     int bPoints = CalculatePoints(B);
-    int V1 = 1, count = 0;
-    Complex* P         = NULL;
+    V1        = 1;
+    int count = 0;
+    P         = NULL;
     Complex* posetPrep = Init_Complex();
     Simplex* fVector   = Init_Simplex();
     for (int i = 0; i < points * 4; ++i) {
