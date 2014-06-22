@@ -201,6 +201,8 @@ char* complexToLiteral(Complex* complex, bool pretty)
     
     literal[literali] = endingChar;
     literali++;
+
+	literal = realloc(literal, literali * sizeof(char));
     return literal;
 }
 
