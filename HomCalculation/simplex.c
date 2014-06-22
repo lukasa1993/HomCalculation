@@ -6,7 +6,6 @@
 //  Copyright (c) 2013 Luka Dodelia. All rights reserved.
 //
 
-#include <limits.h>
 #include "simplex.h"
 
 #define method1    true // unionIntersection
@@ -534,10 +533,7 @@ void Calculate_Hom(Complex* A, Complex* B) {
     wrtieLine(file, complexLiteral, true);
     wrtieLine(file, ",IsSubset)));", false);
     
-    char actualPath[PATH_MAX + 1];
-    realpath(file->path, actualPath);
-    
-    printf("\nResult is in:\n %s\n", actualPath);
+    printf("\nResult is in:\n %s\n", file->path);
     
     if(false) {
         for (int k = 2; k <= points; ++k) {

@@ -69,7 +69,6 @@ Complex* generateComplex(int facetCount, int dimension, int maxPoint)
     do {
         if (tryCount > 10) {
             tryCount = 0;
-            wait(2);
             srand((int) time(NULL));
         }
         comp = _generateComplex(facetCount, dimension, maxPoint);

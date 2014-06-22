@@ -6,7 +6,6 @@
 //  Copyright (c) 2013 Luka Dodelia. All rights reserved.
 //
 
-#include <unistd.h>
 #include <limits.h>
 
 #include "file_util.h"
@@ -123,9 +122,7 @@ void input_file_random()
         fflush(stdout);
     }
     
-    char actualPath[PATH_MAX + 1];
-    realpath(file->path, actualPath);
-    printf("\nFile Path:\n%s", actualPath);
+    printf("\nFile Path:\n%s", file->path);
     fflush(stdout);
 }
 
