@@ -30,6 +30,7 @@ void saveComplex(Complex* comp, int k, int v) {
     char* tmp = complexToLiteral(comp, false);
     sm_put(sm, key, tmp);
     free(tmp);
+    free(key);
 }
 
 Complex* getComplex(int k, int v) {
@@ -46,7 +47,7 @@ Complex* getComplex(int k, int v) {
     sm_get(sm, key, buf, sizeof(buf));
     
     //    printf("\n----- Getting Complex %s for %s -----\n", buf, key);
-    
+    free(key);
     return literalToComplex(buf);
 }
 
