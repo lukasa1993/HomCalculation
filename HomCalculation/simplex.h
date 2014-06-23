@@ -9,8 +9,10 @@
 #ifndef HomCalculation_simplex_h
 #define HomCalculation_simplex_h
 
-//#define strcasecmp _stricmp
-//#define strncasecmp _stricmp
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
+#define strcasecmp _stricmp
+#define strncasecmp _stricmp
+#endif
 
 #include "strmap.h"
 #include "complex_struct.h"

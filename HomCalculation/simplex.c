@@ -446,9 +446,14 @@ Simplex* fVectorFromComplex(Complex* comp)
 void Calculate_Hom(Complex* A, Complex* B) {
     int points = CalculatePoints(A);
     
-    
-    printf("\nAF: %s\n", simplexToLiteral(fVectorFromComplex(A)));
-    printf("\nBF: %s\n", simplexToLiteral(fVectorFromComplex(B)));
+	Simplex* fVA = fVectorFromComplex(A);
+	Simplex* fVB = fVectorFromComplex(B);
+
+	char* fVALit = simplexToLiteral(fVA);
+	char* fVBLit = simplexToLiteral(fVB);
+
+    printf("\nAF: %s\n", fVALit);
+	printf("\nBF: %s\n", fVBLit);
     
     sm = sm_new(points);
     for (int k = 2; k <= points; ++k) {

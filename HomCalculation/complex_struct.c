@@ -150,7 +150,9 @@ char* simplexToLiteral(Simplex* simplex)
     
     literal[literali] = endingChar;
     literali++;
-    
+
+	literal = realloc(literal, literali * sizeof(char));
+
     return literal;
 }
 

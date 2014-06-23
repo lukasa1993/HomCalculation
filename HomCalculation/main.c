@@ -7,7 +7,9 @@
 //
 
 #include <limits.h>
-
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
+#include <C:\Program Files (x86)\Visual Leak Detector\include\vld.h>
+#endif
 #include "file_util.h"
 #include "simplex.h"
 #include "generate_complex.h"
