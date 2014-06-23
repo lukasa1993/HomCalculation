@@ -13,6 +13,7 @@
 #define methodComp false // both
 
 #define usefilesystem false
+#define useDB false
 
 StrMap *sm;
 
@@ -22,10 +23,11 @@ void saveComplex(Complex* comp, int k, int v) {
     char str_V[100];
     sprintf(str_V, "%d", v);
     
-    char *key = "_";
-    key = concat(str_k, key);
-    key = concat(key, str_V);
+    char* key0 = "_";
+    char* key1 = concat(str_k, key0);
+    char* key  = concat(key1, str_V);
     
+    free(key1);
     
     //printf("\n----- Saving Complex %s for %s -----\n", complexToLiteral(comp, true), key);
     
@@ -38,6 +40,8 @@ void saveComplex(Complex* comp, int k, int v) {
         wrtieLine(file, tmp, false);
         free(path);
         free(pathf);
+    } else if(useDB) {
+        Sqlite_Insert(k, v, tmp);
     } else {
         sm_put(sm, key, tmp);
     }
@@ -52,9 +56,11 @@ Complex* getComplex(int k, int v) {
     char str_V[100];
     sprintf(str_V, "%d", v);
     
-    char *key = "_";
-    key = concat(str_k, key);
-    key = concat(key, str_V);
+    char* key0 = "_";
+    char* key1 = concat(str_k, key0);
+    char* key  = concat(key1, str_V);
+    
+    free(key1);
     
     if (usefilesystem) {
         char* path    = concat("./", key);
@@ -67,11 +73,16 @@ Complex* getComplex(int k, int v) {
         free(buf);
         
         return comp;
+    } else if(useDB){
+        char* compLit = Sqlite_Get(k, v);
+        Complex* comp = literalToComplex(compLit);
+        free(compLit);
+        free(key);
+        return comp;
     } else {
         
         char buf[4096];
         sm_get(sm, key, buf, sizeof(buf));
-        
         //    printf("\n----- Getting Complex %s for %s -----\n", buf, key);
         free(key);
         return literalToComplex(buf);
@@ -102,7 +113,7 @@ bool checkSimplexSubSimplex(Simplex* simplex, Simplex* subSimplex) {
 }
 
 Complex* FSI(Complex* A, Complex* B, int K, int V) {
-    Complex* complex = Init_Complex();
+    Complex* complex = NULL;
     if (K == 1) {
         int prevSubsCount = 0;
         
@@ -111,7 +122,7 @@ Complex* FSI(Complex* A, Complex* B, int K, int V) {
             int expV = prevSubsCount + (1 << sim->elementCount);
             if (V > prevSubsCount && expV > V) {
                 V = V - prevSubsCount;
-                if (complex->simplexCount == 0) {
+                if (complex == NULL || complex->simplexCount == 0) {
                     complex = Init_Complex();
                 }
                 addSimplex(complex, simplexByExp(sim, V));
@@ -141,12 +152,14 @@ Complex* upperSimplexContainingDot(Complex* comp, Simplex* searchSimp) {
 }
 
 Complex* mergeComplexes(Complex* a, Complex* b, bool basic) {
-    if (a->simplexCount == 0) {
+    if (a == NULL || a->simplexCount == 0) {
         return b;
     }
     Complex* merged        = Init_Complex();
-    for (int i = 0; i < a->simplexCount; ++i) {
-        addSimplex(merged, getSimpexAt(a, i));
+    if (a != NULL) {
+        for (int i = 0; i < a->simplexCount; ++i) {
+            addSimplex(merged, getSimpexAt(a, i));
+        }
     }
     
     for (int i = 0; i < b->simplexCount; ++i) {
@@ -308,17 +321,17 @@ int Hom_Match(Complex* A, Complex* B, Complex* P, int k, int V) {
     addElement(temp, k);
     
     Complex* ANeibr = upperSimplexContainingDot(A, temp);
-    //Dest_Simplex(temp);
+    Dest_Simplex(temp);
     
     Complex** posibilityList       = malloc(P->simplexCount * sizeof(Complex*));
     int       posibilityListLength = 0;
     
     
-    Complex* BNeibr = Init_Complex();
+    Complex* BNeibr = NULL;
     
     for (int i = 0; i < ANeibr->simplexCount; ++i) {
         Simplex* aNeibrSim  = getSimpexAt(ANeibr, i);
-        Complex* BNeibrTemp = Init_Complex();
+        Complex* BNeibrTemp = NULL;
         
         for (int j = 0; j < aNeibrSim->elementCount; ++j) {
             SimplexElem elem = getElementAt(aNeibrSim, j);
@@ -354,10 +367,10 @@ int Hom_Match(Complex* A, Complex* B, Complex* P, int k, int V) {
                 printf("\nYEA\n");
             }
             
-//            free(bn1Lit);
-//            free(bn2Lit);
-//            free(BNeibr1);
-//            free(BNeibr2);
+            //            free(bn1Lit);
+            //            free(bn2Lit);
+            //            free(BNeibr1);
+            //            free(BNeibr2);
         }
     } else if (posibilityListLength > 0){
         BNeibr = posibilityList[0];
@@ -375,7 +388,8 @@ int Hom_Match(Complex* A, Complex* B, Complex* P, int k, int V) {
             
             Complex* M1Complex = mergeComplexes(P, temp1, true);
             saveComplex(M1Complex, k, V);
-            free(M1Complex);
+            
+            Light_Dest_Complex(M1Complex);
             Dest_Complex(temp1);
             
             V++;
@@ -387,18 +401,20 @@ int Hom_Match(Complex* A, Complex* B, Complex* P, int k, int V) {
         addSimplex(temp2, simp);
         Complex* MComplex = mergeComplexes(P, temp2, true);
         saveComplex(MComplex, k, V);
-        
+        Light_Dest_Complex(MComplex);
+        Light_Dest_Complex(temp2);
+
         V++;
         
     }
     if (posibilityListLength > 1) {
         for (int i = 0; i < posibilityListLength; ++i) {
-            free(posibilityList[i]);
+            Light_Dest_Complex(posibilityList[i]);
         }
     }
     
-    free(ANeibr);
-    free(BNeibr);
+    Light_Dest_Complex(ANeibr);
+    Light_Dest_Complex(BNeibr);
     free(posibilityList);
     
     return V;
@@ -448,10 +464,10 @@ void Calculate_Hom(Complex* A, Complex* B) {
     
 	Simplex* fVA = fVectorFromComplex(A);
 	Simplex* fVB = fVectorFromComplex(B);
-
+    
 	char* fVALit = simplexToLiteral(fVA);
 	char* fVBLit = simplexToLiteral(fVB);
-
+    
     printf("\nAF: %s\n", fVALit);
 	printf("\nBF: %s\n", fVBLit);
     
@@ -463,10 +479,36 @@ void Calculate_Hom(Complex* A, Complex* B) {
             P = FSI(A, B, k - 1, V1);
             if (P != NULL && P->simplexCount > 0) {
                 //                printf("\nP -> %s,K = %d, V1 = %d\n", complexToLiteral(P, true), k, V1);
-                V = Hom_Match(A, B, P, k, V);
+                
+                bool check = true;
+                char* checkStr;
+                if (useDB) {
+                    checkStr = Sqlite_Get(k, V);
+                    check    = strlen(checkStr) < 3;
+                }
+                if (check) {
+                    V = Hom_Match(A, B, P, k, V);
+                }
+                if (useDB) {
+                    free(checkStr);
+                }
+                
+                Dest_Complex(P);
                 V1++;
             } else {
-                saveComplex(P, k, V);
+                bool check = true;
+                char* checkStr;
+                if (useDB) {
+                    checkStr = Sqlite_Get(k, V);
+                    check    = strlen(checkStr) < 3;
+                }
+
+                if (check) {
+                    saveComplex(P, k, V);
+                }
+                if (useDB) {
+                    free(checkStr);
+                }
             }
         } while (P != NULL && P->simplexCount > 0);
         

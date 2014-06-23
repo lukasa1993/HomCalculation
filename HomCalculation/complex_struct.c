@@ -36,6 +36,12 @@ Complex* Init_Complex()
     return complex;
 }
 
+void Light_Dest_Complex(Complex* complex)
+{
+    free(complex->simplexes);
+    free(complex);
+}
+
 void Dest_Complex(Complex* complex)
 {
     for (int i = 0; i < complex->simplexCount; ++i) {
@@ -122,7 +128,7 @@ bool containsSimplex(Complex* comp, Simplex* simp)
 
 char* simplexToLiteral(Simplex* simplex)
 {
-    char* literal  = malloc(2048 * sizeof(char));
+    char* literal  = malloc(8192 * sizeof(char));
     int   literali = 0;
     
     literal[literali] = startingChar;
@@ -150,15 +156,17 @@ char* simplexToLiteral(Simplex* simplex)
     
     literal[literali] = endingChar;
     literali++;
-
-	literal = realloc(literal, literali * sizeof(char));
-
-    return literal;
-}
+    
+    char* final = malloc(literali + 1);
+    memcpy(final, literal, literali);
+    final[literali] = 0;
+    free(literal);
+    
+    return final;}
 
 char* complexToLiteral(Complex* complex, bool pretty)
 {
-    char* literal  = malloc(2048 * sizeof(char));
+    char* literal  = malloc(8192 * sizeof(char));
     int   literali = 0;
     literal[literali] = startingChar;
     literali++;
@@ -205,8 +213,12 @@ char* complexToLiteral(Complex* complex, bool pretty)
     literal[literali] = endingChar;
     literali++;
 
-	literal = realloc(literal, literali * sizeof(char));
-    return literal;
+    char* final = malloc(literali + 1);
+    memcpy(final, literal, literali);
+    final[literali] = 0;
+    free(literal);
+    
+    return final;
 }
 
 Complex* literalToComplex(char* complexLiteral)
@@ -216,7 +228,7 @@ Complex* literalToComplex(char* complexLiteral)
     int magicNumberInput      = 4;
     int bracketsCount         = 0;
     
-    char* posibleSimplexElem  = (char*) malloc(magicNumberInput * sizeof(char));
+    char* posibleSimplexElem  = (char*) calloc(magicNumberInput * sizeof(char), 0);
     int   posibleSimplexElemi = 0;
     
     for (int i = 0; i < strlen(complexLiteral); ++i) {

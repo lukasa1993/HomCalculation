@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		801E1A0C19238F2A00007C61 /* simplex_basic.c in Sources */ = {isa = PBXBuildFile; fileRef = 801E1A0B19238F2A00007C61 /* simplex_basic.c */; };
+		803F11BE195801BE00C10C01 /* sqlite3.c in Sources */ = {isa = PBXBuildFile; fileRef = 803F11BA195801BE00C10C01 /* sqlite3.c */; };
+		803F11C11958021B00C10C01 /* sqlite_util.c in Sources */ = {isa = PBXBuildFile; fileRef = 803F11C01958021B00C10C01 /* sqlite_util.c */; };
 		805E4A00194DCE08008B3374 /* polytop_struct.c in Sources */ = {isa = PBXBuildFile; fileRef = 805E49FF194DCE08008B3374 /* polytop_struct.c */; };
 		808FCC10190036C900BE0536 /* strmap.c in Sources */ = {isa = PBXBuildFile; fileRef = 808FCC0E190036C900BE0536 /* strmap.c */; };
 		80A2816319238B8C00A906E9 /* generate_complex.c in Sources */ = {isa = PBXBuildFile; fileRef = 80A2816219238B8C00A906E9 /* generate_complex.c */; };
@@ -32,6 +34,11 @@
 /* Begin PBXFileReference section */
 		801E1A0B19238F2A00007C61 /* simplex_basic.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = simplex_basic.c; sourceTree = "<group>"; };
 		801E1A0D19238F3900007C61 /* simplex_basic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = simplex_basic.h; sourceTree = "<group>"; };
+		803F11BA195801BE00C10C01 /* sqlite3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = sqlite3.c; path = Lib/sqlite3.c; sourceTree = "<group>"; };
+		803F11BB195801BE00C10C01 /* sqlite3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sqlite3.h; path = Lib/sqlite3.h; sourceTree = "<group>"; };
+		803F11BC195801BE00C10C01 /* sqlite3ext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sqlite3ext.h; path = Lib/sqlite3ext.h; sourceTree = "<group>"; };
+		803F11BF1958021000C10C01 /* sqlite_util.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = sqlite_util.h; sourceTree = "<group>"; };
+		803F11C01958021B00C10C01 /* sqlite_util.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sqlite_util.c; sourceTree = "<group>"; };
 		805E49FE194DCDFE008B3374 /* polytop_struct.h */ = {isa = PBXFileReference; explicitFileType = text; path = polytop_struct.h; sourceTree = "<group>"; };
 		805E49FF194DCE08008B3374 /* polytop_struct.c */ = {isa = PBXFileReference; explicitFileType = text; fileEncoding = 4; path = polytop_struct.c; sourceTree = "<group>"; };
 		808FCC0E190036C900BE0536 /* strmap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = strmap.c; sourceTree = "<group>"; };
@@ -78,6 +85,9 @@
 		80DDCA32184F05B300284F59 /* HomCalculation */ = {
 			isa = PBXGroup;
 			children = (
+				803F11BA195801BE00C10C01 /* sqlite3.c */,
+				803F11BB195801BE00C10C01 /* sqlite3.h */,
+				803F11BC195801BE00C10C01 /* sqlite3ext.h */,
 				808FCC0E190036C900BE0536 /* strmap.c */,
 				808FCC0F190036C900BE0536 /* strmap.h */,
 				80DDCA33184F05B300284F59 /* main.c */,
@@ -93,6 +103,8 @@
 				80C404D719178F4000ED624D /* file_util.c */,
 				80A2816119238B8200A906E9 /* generate_complex.h */,
 				80A2816219238B8C00A906E9 /* generate_complex.c */,
+				803F11BF1958021000C10C01 /* sqlite_util.h */,
+				803F11C01958021B00C10C01 /* sqlite_util.c */,
 			);
 			path = HomCalculation;
 			sourceTree = "<group>";
@@ -153,9 +165,11 @@
 				80AF0C8A1913F18B00DF62B4 /* complex_struct.c in Sources */,
 				801E1A0C19238F2A00007C61 /* simplex_basic.c in Sources */,
 				805E4A00194DCE08008B3374 /* polytop_struct.c in Sources */,
+				803F11C11958021B00C10C01 /* sqlite_util.c in Sources */,
 				80DDCA34184F05B300284F59 /* main.c in Sources */,
 				80C404D819178F4000ED624D /* file_util.c in Sources */,
 				808FCC10190036C900BE0536 /* strmap.c in Sources */,
+				803F11BE195801BE00C10C01 /* sqlite3.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -3,6 +3,14 @@
    version = "1.0">
    <ContextStates>
       <ContextState
+         contextName = "Sqlite_Get:sqlite_util.c">
+         <PersistentStrings>
+            <PersistentString
+               value = "tmp">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
          contextName = "upperSimplexContainingDot:simplex.c">
          <PersistentStrings>
             <PersistentString

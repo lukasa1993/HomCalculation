@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <ctype.h>
 
 #define startingChar '['
 #define endingChar   ']'
@@ -49,6 +50,7 @@ char* simplexToLiteral(Simplex* simplex);
 // Complex Manipulations
 Complex* Init_Complex();
 void Dest_Complex(Complex* complex);
+void Light_Dest_Complex(Complex* complex);
 
 void addSimplex(Complex* comp, Simplex* simp);
 Simplex* getSimpexAt(Complex* comp, int index);
