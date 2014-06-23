@@ -40,6 +40,8 @@ void Sqlite_Insert(int k, int v1, char* complex)
     CALL_SQLITE (bind_int(stmt, 2, v1));
     CALL_SQLITE (bind_text(stmt, 3, complex, (int) strlen(complex) + 1, SQLITE_STATIC));
     CALL_SQLITE_EXPECT (step (stmt), DONE);
+    
+    CALL_SQLITE(reset(stmt));
     CALL_SQLITE(finalize(stmt));
     
 }
@@ -57,14 +59,14 @@ char* Sqlite_Get(int k, int v1)
     CALL_SQLITE (bind_int(stmt, 1, k));
     CALL_SQLITE (bind_int(stmt, 2, v1));
     
-    int s = sqlite3_step (stmt);
+    int s = sqlite3_step(stmt);
     if (s == SQLITE_ROW) {
         char *  tmp  = (char*)sqlite3_column_text(stmt, 0);
         text = realloc(text, (strlen(tmp) + 1) * sizeof(char));
         strcpy(text, tmp);
     }
-    
-//    CALL_SQLITE_EXPECT (step (stmt), DONE);
+
+    CALL_SQLITE(reset(stmt));
     CALL_SQLITE(finalize(stmt));
     
     
