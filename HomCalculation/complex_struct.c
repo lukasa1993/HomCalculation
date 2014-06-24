@@ -228,7 +228,7 @@ Complex* literalToComplex(char* complexLiteral)
     int magicNumberInput      = 4;
     int bracketsCount         = 0;
     
-    char* posibleSimplexElem  = (char*) calloc(magicNumberInput * sizeof(char), 0);
+    char* posibleSimplexElem  = (char*) malloc(magicNumberInput * sizeof(char));
     int   posibleSimplexElemi = 0;
     
     for (int i = 0; i < strlen(complexLiteral); ++i) {

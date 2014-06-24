@@ -376,46 +376,48 @@ int Hom_Match(Complex* A, Complex* B, Complex* P, int k, int V) {
         BNeibr = posibilityList[0];
     }
     
-    for (int j = 0; j < BNeibr->simplexCount; ++j) {
-        Simplex* simp = getSimpexAt(BNeibr, j);
-        
-        for (int l = 0; l < simp->elementCount; ++l) {
-            Complex* temp1      = Init_Complex();
+    if (BNeibr != NULL) {
+        for (int j = 0; j < BNeibr->simplexCount; ++j) {
+            Simplex* simp = getSimpexAt(BNeibr, j);
             
-            addSimplex(temp1, Init_Simplex());
+            for (int l = 0; l < simp->elementCount; ++l) {
+                Complex* temp1      = Init_Complex();
+                
+                addSimplex(temp1, Init_Simplex());
+                
+                addElement(getSimpexAt(temp1, 0), getElementAt(simp, l));
+                
+                Complex* M1Complex = mergeComplexes(P, temp1, true);
+                saveComplex(M1Complex, k, V);
+                
+                Light_Dest_Complex(M1Complex);
+                Dest_Complex(temp1);
+                
+                V++;
+            }
             
-            addElement(getSimpexAt(temp1, 0), getElementAt(simp, l));
             
-            Complex* M1Complex = mergeComplexes(P, temp1, true);
-            saveComplex(M1Complex, k, V);
             
-            Light_Dest_Complex(M1Complex);
-            Dest_Complex(temp1);
+            Complex* temp2 = Init_Complex();
+            addSimplex(temp2, simp);
+            Complex* MComplex = mergeComplexes(P, temp2, true);
+            saveComplex(MComplex, k, V);
+            Light_Dest_Complex(MComplex);
+            Light_Dest_Complex(temp2);
             
             V++;
+            
+        }
+        if (posibilityListLength > 1) {
+            for (int i = 0; i < posibilityListLength; ++i) {
+                Light_Dest_Complex(posibilityList[i]);
+            }
         }
         
-        
-        
-        Complex* temp2 = Init_Complex();
-        addSimplex(temp2, simp);
-        Complex* MComplex = mergeComplexes(P, temp2, true);
-        saveComplex(MComplex, k, V);
-        Light_Dest_Complex(MComplex);
-        Light_Dest_Complex(temp2);
-
-        V++;
-        
+        Light_Dest_Complex(ANeibr);
+        Light_Dest_Complex(BNeibr);
+        free(posibilityList);
     }
-    if (posibilityListLength > 1) {
-        for (int i = 0; i < posibilityListLength; ++i) {
-            Light_Dest_Complex(posibilityList[i]);
-        }
-    }
-    
-    Light_Dest_Complex(ANeibr);
-    Light_Dest_Complex(BNeibr);
-    free(posibilityList);
     
     return V;
 }
@@ -502,7 +504,7 @@ void Calculate_Hom(Complex* A, Complex* B) {
                     checkStr = Sqlite_Get(k, V);
                     check    = strlen(checkStr) < 3;
                 }
-
+                
                 if (check) {
                     saveComplex(P, k, V);
                 }
