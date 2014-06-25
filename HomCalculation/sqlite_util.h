@@ -10,7 +10,7 @@
 #define HomCalculation_sqlite_util_h
 
 #include <stdio.h>
-#include <sqlite3.h>
+#include <C:\Users\MutantA\Documents\GitHub\HomCalculation\HomCalculation\Lib\sqlite3.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>

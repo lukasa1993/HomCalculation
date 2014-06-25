@@ -7,6 +7,7 @@
 //
 
 #include "complex_struct.h"
+#include <omp.h>
 
 Simplex* Init_Simplex()
 {
