@@ -481,37 +481,22 @@ void Calculate_Hom(Complex* A, Complex* B) {
 	int V1 = 1, last_V1 = k1, V = 1;
 	for (int k = 2; k <= points; ++k) {
 		for (V1 = 1; V1 <= last_V1; ++V1) {
-			//printf("\ntn:%d\n", omp_get_num_threads());
 			Complex* P = FSI(A, B, k - 1, V1);
 			if (P != NULL && P->simplexCount > 0) {
-				//                printf("\nP -> %s,K = %d, V1 = %d\n", complexToLiteral(P, true), k, V1);
-                
                 Hom_Match(A, B, P, k, &V);
                 
 				Dest_Complex(P);
-			}
-			else {
+			} else {
                 saveComplex(P, k, V);
+                break;
 			}
 		}
         
 		last_V1 = V;
-		printf("\n%d -> %d\n", k, V1 - 1);
+		printf("\n%d -> %d\n", k, V1);
+        V1 = 1;
+		V = 1;
 	}
-    
-	printf("\n\n Doing Safe House \n\n");
-	fflush(stdout);
-    
-	V1 = 0;
-	LD_File* file0 = Init_file_util_ext("./hom_safe_house", "txt", false);
-	Complex* P = NULL;
-	do {
-		P = FSI(A, B, points, V1);
-		if (P != NULL && P->simplexCount > 0) {
-			wrtieLine(file0, complexToLiteral(P, true), false);
-			V1++;
-		}
-	} while (P != NULL && P->simplexCount > 0);
     
 	printf("\n\n Generation Result File \n\n");
 	fflush(stdout);
@@ -521,7 +506,7 @@ void Calculate_Hom(Complex* A, Complex* B) {
 	int bPoints = CalculatePoints(B);
 	V1 = 1;
 	int count = 0;
-	P = NULL;
+	Complex* P = NULL;
 	Complex* posetPrep = Init_Complex();
 	Simplex* fVector = Init_Simplex();
 	for (int i = 0; i < points * 4; ++i) {
