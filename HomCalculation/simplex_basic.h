@@ -11,7 +11,7 @@
 
 #include "complex_struct.h"
 
-Simplex* simplexByExp(Simplex* simplex, int exp);
+Simplex* simplexByExp(Simplex* simplex, long long exp);
 Complex* AllSubSimplexses(Simplex* simplex);
 
 #endif

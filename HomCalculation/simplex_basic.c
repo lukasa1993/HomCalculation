@@ -9,11 +9,11 @@
 #include "simplex_basic.h"
 
 
-Simplex* simplexByExp(Simplex* simplex, int exp)
+Simplex* simplexByExp(Simplex* simplex, long long exp)
 {
-    int tmpA = exp, j = 0;
+    long long tmpA = exp;
     Simplex* simpl = Init_Simplex();
-    for (j = 0; j < (8 * sizeof(int)); ++j) {
+    for (int j = 0; j < (8 * sizeof(int)); ++j) {
         if (tmpA & 1 && j < simplex->elementCount) {
             addElement(simpl, getElementAt(simplex, j));
         }
@@ -27,7 +27,7 @@ Simplex* simplexByExp(Simplex* simplex, int exp)
 
 Complex* AllSubSimplexses(Simplex* simplex)
 {
-    int i, a = 1 << simplex->elementCount;
+    long long i, a = 1 << simplex->elementCount;
     Complex*  complex     = Init_Complex();
     for (i = 0; i < a; ++i) {
         Simplex* simpl = simplexByExp(simplex, i);

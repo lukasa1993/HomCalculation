@@ -19,11 +19,11 @@
 #include "file_util.h"
 
 Complex* AllSubSimplexses(Simplex* simplex);
-Simplex* simplexByExp(Simplex* simplex, int exp);
+Simplex* simplexByExp(Simplex* simplex, long long exp);
 
 // calculation functions
 
-Complex* FSI(Complex* A, Complex* B, int K, int V);
+Complex* FSI(Complex* A, Complex* B, int K, long long V);
 void Calculate_Hom(Complex* A, Complex* B);
 
 #endif

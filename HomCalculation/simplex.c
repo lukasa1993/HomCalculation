@@ -16,11 +16,11 @@
 
 StrMap *sm;
 
-void saveComplex(Complex* comp, int k, int v) {
+void saveComplex(Complex* comp, int k, long long v) {
 	char str_k[100];
 	sprintf(str_k, "%d", k);
 	char str_V[100];
-	sprintf(str_V, "%d", v);
+	sprintf(str_V, "%lld", v);
     
 	char* key0 = "_";
 	char* key1 = concat(str_k, key0);
@@ -47,11 +47,11 @@ void saveComplex(Complex* comp, int k, int v) {
 	free(key);
 }
 
-Complex* getComplex(int k, int v) {
+Complex* getComplex(int k, long long v) {
 	char str_k[100];
 	sprintf(str_k, "%d", k);
 	char str_V[100];
-	sprintf(str_V, "%d", v);
+	sprintf(str_V, "%lld", v);
     
 	char* key0 = "_";
 	char* key1 = concat(str_k, key0);
@@ -103,7 +103,7 @@ bool checkSimplexSubSimplex(Simplex* simplex, Simplex* subSimplex) {
 	return result;
 }
 
-Complex* FSI(Complex* A, Complex* B, int K, int V) {
+Complex* FSI(Complex* A, Complex* B, int K, long long V) {
 	Complex* complex = NULL;
 	if (K == 1) {
 		int prevSubsCount = 0;
@@ -309,7 +309,7 @@ int CalculatePoints(Complex* comp) {
 }
 
 
-void Hom_Match(Complex* A, Complex* B, Complex* P, int k, int *V) {
+void Hom_Match(Complex* A, Complex* B, Complex* P, int k, long long *V) {
 	Simplex* temp = Init_Simplex();
 	addElement(temp, k);
     
@@ -469,7 +469,7 @@ void Calculate_Hom(Complex* A, Complex* B) {
 	printf("\nAF: %s\n", fVALit);
 	printf("\nBF: %s\n", fVBLit);
     
-	int k1 = 0;
+	long long k1 = 0;
 	for (int i = 0; i < A->simplexCount; ++i) {
 		Simplex* simp = getSimpexAt(A, i);
 		Complex* simpSubs = AllSubSimplexses(simp);
@@ -478,7 +478,7 @@ void Calculate_Hom(Complex* A, Complex* B) {
 	}
     
 	sm = sm_new(points);
-	int V1 = 1, last_V1 = k1, V = 1;
+	long long V1 = 1, last_V1 = k1, V = 1;
 	for (int k = 2; k <= points; ++k) {
 		for (V1 = 1; V1 <= last_V1; ++V1) {
 			Complex* P = FSI(A, B, k - 1, V1);
@@ -493,7 +493,7 @@ void Calculate_Hom(Complex* A, Complex* B) {
 		}
         
 		last_V1 = V;
-		printf("\n%d -> %d\n", k, V1);
+		printf("\n%d -> %lld\n", k, V1);
         V1 = 1;
 		V = 1;
 	}
