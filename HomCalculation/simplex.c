@@ -399,12 +399,8 @@ void Hom_Match(Complex* A, Complex* B, Complex* P, int k, int *V) {
 				addElement(getSimpexAt(temp1, 0), getElementAt(simp, l));
 
 				Complex* M1Complex = mergeComplexes(P, temp1, true);
-#pragma omp critical (save_loc_1)
-				{
-					saveComplex(M1Complex, k, *V);
-					(*V)++;
-
-				}
+				saveComplex(M1Complex, k, *V);
+				(*V)++;
 				Light_Dest_Complex(M1Complex);
 				Dest_Complex(temp1);
 
@@ -415,11 +411,8 @@ void Hom_Match(Complex* A, Complex* B, Complex* P, int k, int *V) {
 			Complex* temp2 = Init_Complex();
 			addSimplex(temp2, simp);
 			Complex* MComplex = mergeComplexes(P, temp2, true);
-#pragma omp critical (save_loc_2)
-			{
-				saveComplex(MComplex, k, *V);
-				(*V)++;
-			}
+			saveComplex(MComplex, k, *V);
+			(*V)++;
 			Light_Dest_Complex(MComplex);
 			Light_Dest_Complex(temp2);
 
@@ -497,52 +490,46 @@ void Calculate_Hom(Complex* A, Complex* B) {
 		k1 += simpSubs->simplexCount;
 		Dest_Complex(simpSubs);
 	}
-	
+
 	sm = sm_new(points);
 	int V1 = 1, last_V1 = k1, V = 1;
 	for (int k = 2; k <= points; ++k) {
 		V1 = 1;
 		V = 1;
 		for (V1 = 1; V1 <= last_V1; ++V1) {
-#pragma omp parallel shared(A,B,k,V1,V)
-			{
-				//printf("\ntn:%d\n", omp_get_num_threads());
-				Complex* P = FSI(A, B, k - 1, V1);
-				if (P != NULL && P->simplexCount > 0) {
-					//                printf("\nP -> %s,K = %d, V1 = %d\n", complexToLiteral(P, true), k, V1);
+			//printf("\ntn:%d\n", omp_get_num_threads());
+			Complex* P = FSI(A, B, k - 1, V1);
+			if (P != NULL && P->simplexCount > 0) {
+				//                printf("\nP -> %s,K = %d, V1 = %d\n", complexToLiteral(P, true), k, V1);
 
-					bool check = true;
-					char* checkStr;
-					if (useDB) {
-						checkStr = Sqlite_Get(k, V);
-						check = strlen(checkStr) < 3;
-					}
-					if (check) {
-						Hom_Match(A, B, P, k, &V);
-					}
-					if (useDB) {
-						free(checkStr);
-					}
-
-					Dest_Complex(P);
+				bool check = true;
+				char* checkStr;
+				if (useDB) {
+					checkStr = Sqlite_Get(k, V);
+					check = strlen(checkStr) < 3;
 				}
-				else {
-					bool check = true;
-					char* checkStr;
-					if (useDB) {
-						checkStr = Sqlite_Get(k, V);
-						check = strlen(checkStr) < 3;
-					}
+				if (check) {
+					Hom_Match(A, B, P, k, &V);
+				}
+				if (useDB) {
+					free(checkStr);
+				}
 
-					if (check) {
-#pragma omp critical (save_loc_3)
-						{
-							saveComplex(P, k, V);
-						}
-					}
-					if (useDB) {
-						free(checkStr);
-					}
+				Dest_Complex(P);
+			}
+			else {
+				bool check = true;
+				char* checkStr;
+				if (useDB) {
+					checkStr = Sqlite_Get(k, V);
+					check = strlen(checkStr) < 3;
+				}
+
+				if (check) {
+					saveComplex(P, k, V);
+				}
+				if (useDB) {
+					free(checkStr);
 				}
 			}
 		}
