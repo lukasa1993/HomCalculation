@@ -7,6 +7,7 @@
 //
 
 #include "simplex.h"
+#include <omp.h>
 
 #define method1    true // unionIntersection
 #define method2    false  // intersectionUnionUpper
@@ -458,6 +459,18 @@ Simplex* fVectorFromComplex(Complex* comp)
 }
 
 void Calculate_Hom(Complex* A, Complex* B) {
+    
+    
+    
+#pragma omp parallel for
+    for(int n=0; n<10; ++n)
+    {
+        printf(" %d", n);
+    }
+    printf(".\n");
+    exit(0);
+    
+    
 	int points = CalculatePoints(A);
     
 	Simplex* fVA = fVectorFromComplex(A);
