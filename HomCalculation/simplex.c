@@ -22,17 +22,17 @@ void saveComplex(Complex* comp, int k, long long v) {
 	sprintf(str_k, "%d", k);
 	char str_V[100];
 	sprintf(str_V, "%lld", v);
-    
+
 	char* key0 = "_";
 	char* key1 = concat(str_k, key0);
 	char* key = concat(key1, str_V);
-    
+
 	free(key1);
-    
+
 	//printf("\n----- Saving Complex %s for %s -----\n", complexToLiteral(comp, true), key);
-    
+
 	char* tmp = complexToLiteral(comp, false);
-    
+
 	if (usefilesystem) {
 		char* path = concat("./", key);
 		char* pathf = concat(path, ".txt");
@@ -40,10 +40,11 @@ void saveComplex(Complex* comp, int k, long long v) {
 		wrtieLine(file, tmp, false);
 		free(path);
 		free(pathf);
-	} else {
+	}
+	else {
 		sm_put(sm, key, tmp);
 	}
-    
+
 	free(tmp);
 	free(key);
 }
@@ -53,13 +54,13 @@ Complex* getComplex(int k, long long v) {
 	sprintf(str_k, "%d", k);
 	char str_V[100];
 	sprintf(str_V, "%lld", v);
-    
+
 	char* key0 = "_";
 	char* key1 = concat(str_k, key0);
 	char* key = concat(key1, str_V);
-    
+
 	free(key1);
-    
+
 	if (usefilesystem) {
 		char* path = concat("./", key);
 		char* pathf = concat(path, ".txt");
@@ -69,10 +70,11 @@ Complex* getComplex(int k, long long v) {
 		free(path);
 		free(pathf);
 		free(buf);
-        
+
 		return comp;
-	} else {
-        
+	}
+	else {
+
 		char buf[4096];
 		sm_get(sm, key, buf, sizeof(buf));
 		//    printf("\n----- Getting Complex %s for %s -----\n", buf, key);
@@ -85,11 +87,11 @@ bool checkSimplexSubSimplex(Simplex* simplex, Simplex* subSimplex) {
 	bool result = true;
 	for (int i = 0; i < subSimplex->elementCount; ++i) {
 		SimplexElem subSimElem = getElementAt(subSimplex, i);
-        
+
 		bool elemMatch = false;
 		for (int j = 0; j < simplex->elementCount; ++j) {
 			SimplexElem simElem = getElementAt(simplex, j);
-            
+
 			if (subSimElem == simElem) {
 				elemMatch = true;
 				break;
@@ -100,7 +102,7 @@ bool checkSimplexSubSimplex(Simplex* simplex, Simplex* subSimplex) {
 			break;
 		}
 	}
-    
+
 	return result;
 }
 
@@ -108,7 +110,7 @@ Complex* FSI(Complex* A, Complex* B, int K, long long V) {
 	Complex* complex = NULL;
 	if (K == 1) {
 		int prevSubsCount = 0;
-        
+
 		for (int i = 0; i < B->simplexCount; i++) {
 			Simplex* sim = getSimpexAt(B, i);
 			int expV = prevSubsCount + (1 << sim->elementCount);
@@ -126,21 +128,21 @@ Complex* FSI(Complex* A, Complex* B, int K, long long V) {
 	else {
 		complex = getComplex(K, V);
 	}
-    
+
 	return complex;
 }
 
 Complex* upperSimplexContainingDot(Complex* comp, Simplex* searchSimp) {
 	Complex* neibr = Init_Complex();
-    
+
 	for (int i = 0; i < comp->simplexCount; ++i) {
 		Simplex* simp = comp->simplexes[i];
-        
+
 		if (checkSimplexSubSimplex(simp, searchSimp)) {
 			addSimplex(neibr, simp);
 		}
 	}
-    
+
 	return neibr;
 }
 
@@ -154,7 +156,7 @@ Complex* mergeComplexes(Complex* a, Complex* b, bool basic) {
 			addSimplex(merged, getSimpexAt(a, i));
 		}
 	}
-    
+
 	for (int i = 0; i < b->simplexCount; ++i) {
 		bool unique = true;
 		for (int j = 0; j < merged->simplexCount; ++j) {
@@ -166,23 +168,23 @@ Complex* mergeComplexes(Complex* a, Complex* b, bool basic) {
 			free(aLit);
 			free(bLit);
 		}
-        
+
 		if (basic || unique) {
 			addSimplex(merged, getSimpexAt(b, i));
 		}
 	}
-    
+
 	return merged;
 }
 
 Simplex* buildIntersectedSimplex(Complex* comp) {
 	Simplex* intersectedSimplex = Init_Simplex();
-    
+
 	for (int i = 0; i < comp->simplexCount; ++i) {
 		Simplex* simp = getSimpexAt(comp, i);
 		for (int j = 0; j < simp->elementCount; ++j) {
 			SimplexElem simpElem = getElementAt(simp, j);
-            
+
 			for (int l = 0; l < comp->simplexCount; ++l) {
 				if (l == i) {
 					continue;
@@ -198,56 +200,56 @@ Simplex* buildIntersectedSimplex(Complex* comp) {
 								unique = false;
 							}
 						}
-                        
+
 						if (unique) {
 							addElement(intersectedSimplex, simpElem);
 						}
 					}
 				}
 			}
-            
+
 		}
 	}
-    
+
 	return intersectedSimplex;
 }
 
 Complex* unionIntersection(Complex** posibilityList, int posibilityListLength) {
 	int*     walkIndexes = malloc(posibilityListLength * sizeof(int));
 	memset(walkIndexes, 0, posibilityListLength * sizeof(int));
-    
+
 	//    printf("\n-- generation start -- \n");
-    
+
 	Complex* unionIntersection = Init_Complex();
-    
+
 	bool cont = false;
 	do {
 		Complex* comp = Init_Complex();
 		for (int i = 0; i < posibilityListLength; ++i) {
 			addSimplex(comp, getSimpexAt(posibilityList[i], walkIndexes[i]));
 		}
-        
-        
+
+
 		cont = false;
 		for (int i = 0; i < posibilityListLength; ++i) {
 			if (walkIndexes[i] < posibilityList[i]->simplexIndex) {
 				cont = true;
 			}
 		}
-        
+
 		for (int i = posibilityListLength - 1; i >= 0; --i) {
 			if (walkIndexes[i] + 1 < posibilityList[i]->simplexCount) {
 				walkIndexes[i]++;
 				break;
 			}
 		}
-        
+
 		Simplex* intersectedSimplex = buildIntersectedSimplex(comp);
 		if (intersectedSimplex->elementIndex > -1) {
 			addSimplex(unionIntersection, intersectedSimplex);
 		}
 	} while (cont);
-    
+
 	return unionIntersection;
 }
 
@@ -257,7 +259,7 @@ Complex* intersectionUnionUpper(Complex* B, Complex** posibilityList, int posibi
 
 int CalculatePoints(Complex* comp) {
 	SimplexElem elem = -1;
-    
+
 	for (int i = 0; i < comp->simplexCount; ++i) {
 		Simplex* simp = getSimpexAt(comp, i);
 		for (int j = 0; j < simp->elementCount; ++j) {
@@ -268,7 +270,7 @@ int CalculatePoints(Complex* comp) {
 		}
 	}
 	return elem;
-    
+
 	int points = 0;
 	for (int i = 0; i < comp->simplexCount; ++i) {
 		Simplex* sim = comp->simplexes[i];
@@ -283,7 +285,7 @@ int CalculatePoints(Complex* comp) {
 		}
 		for (int j = 0; j < sim->elementCount; ++j) {
 			SimplexElem elem1 = sim->elements[j];
-            
+
 			int insertIndex = 0;
 			bool checkUnique = true;
 			for (int k = 0; k < tempSim->elementCount; ++k) {
@@ -303,9 +305,9 @@ int CalculatePoints(Complex* comp) {
 			}
 		}
 	}
-    
+
 	//    printf("\n%s\n", simplexToLiteral(tempSim));
-    
+
 	return points;
 }
 
@@ -313,37 +315,37 @@ int CalculatePoints(Complex* comp) {
 void Hom_Match(Complex* A, Complex* B, Complex* P, int k, long long *V) {
 	Simplex* temp = Init_Simplex();
 	addElement(temp, k);
-    
+
 	Complex* ANeibr = upperSimplexContainingDot(A, temp);
 	Dest_Simplex(temp);
-    
+
 	Complex** posibilityList = malloc(P->simplexCount * sizeof(Complex*));
 	int       posibilityListLength = 0;
-    
-    
+
+
 	Complex* BNeibr = NULL;
-    
+
 	for (int i = 0; i < ANeibr->simplexCount; ++i) {
 		Simplex* aNeibrSim = getSimpexAt(ANeibr, i);
 		Complex* BNeibrTemp = NULL;
-        
+
 		for (int j = 0; j < aNeibrSim->elementCount; ++j) {
 			SimplexElem elem = getElementAt(aNeibrSim, j);
 			int    elemIndex = elem - 1;
-            
+
 			if (elem != (SimplexElem)k && elemIndex < P->simplexCount) {
 				Simplex* tempSim = getSimpexAt(P, elemIndex);
 				Complex* comp = upperSimplexContainingDot(B, tempSim);
 				BNeibrTemp = mergeComplexes(BNeibrTemp, comp, false);
-                
+
 				posibilityList[posibilityListLength] = BNeibrTemp;
 				posibilityListLength++;
-                
+
 				//free(comp);
 			}
 		}
 	}
-    
+
 	if (posibilityListLength > 1) {
 		if (method1) {
 			BNeibr = unionIntersection(posibilityList, posibilityListLength);
@@ -363,7 +365,7 @@ void Hom_Match(Complex* A, Complex* B, Complex* P, int k, long long *V) {
 			else {
 				printf("\nYEA\n");
 			}
-            
+
 			//            free(bn1Lit);
 			//            free(bn2Lit);
 			//            free(BNeibr1);
@@ -373,62 +375,62 @@ void Hom_Match(Complex* A, Complex* B, Complex* P, int k, long long *V) {
 	else if (posibilityListLength > 0){
 		BNeibr = posibilityList[0];
 	}
-    
+
 	if (BNeibr != NULL) {
 		for (int j = 0; j < BNeibr->simplexCount; ++j) {
 			Simplex* simp = getSimpexAt(BNeibr, j);
-            
+
 			for (int l = 0; l < simp->elementCount; ++l) {
 				Complex* temp1 = Init_Complex();
-                
+
 				addSimplex(temp1, Init_Simplex());
-                
+
 				addElement(getSimpexAt(temp1, 0), getElementAt(simp, l));
-                
+
 				Complex* M1Complex = mergeComplexes(P, temp1, true);
 #pragma omp critical
-                {
-				saveComplex(M1Complex, k, *V);
-				(*V)++;
-                }
+				{
+					saveComplex(M1Complex, k, *V);
+					(*V)++;
+				}
 				Light_Dest_Complex(M1Complex);
 				Dest_Complex(temp1);
-                
+
 			}
-            
-            
-            
+
+
+
 			Complex* temp2 = Init_Complex();
 			addSimplex(temp2, simp);
 			Complex* MComplex = mergeComplexes(P, temp2, true);
 #pragma omp critical
-            {
-			saveComplex(MComplex, k, *V);
-			(*V)++;
-            }
+			{
+				saveComplex(MComplex, k, *V);
+				(*V)++;
+			}
 			Light_Dest_Complex(MComplex);
 			Light_Dest_Complex(temp2);
-            
-            
+
+
 		}
 		if (posibilityListLength > 1) {
 			for (int i = 0; i < posibilityListLength; ++i) {
 				Light_Dest_Complex(posibilityList[i]);
 			}
 		}
-        
+
 		Light_Dest_Complex(ANeibr);
 		Light_Dest_Complex(BNeibr);
 		free(posibilityList);
 	}
-    
+
 }
 
 Simplex* fVectorFromComplex(Complex* comp)
 {
 	Complex* fComplex = Init_Complex();
 	Simplex* AfVector = Init_Simplex();
-    
+
 	for (int i = 0; i < comp->simplexCount; ++i) {
 		Simplex* simp = getSimpexAt(comp, i);
 		Complex* simpSubs = AllSubSimplexses(simp);
@@ -444,7 +446,7 @@ Simplex* fVectorFromComplex(Complex* comp)
 			}
 		}
 	}
-    
+
 	for (int i = 0; i < fComplex->simplexCount; ++i) {
 		Simplex* simp = getSimpexAt(fComplex, i);
 		if (simp->elementCount < 1) {
@@ -455,27 +457,27 @@ Simplex* fVectorFromComplex(Complex* comp)
 		}
 		AfVector->elements[simp->elementCount - 1]++;
 	}
-    
-    
+
+
 	//    printf("\n%s\n", complexToLiteral(fComplex, true));
-    
+
 	Dest_Complex(fComplex);
-    
+
 	return AfVector;
 }
 
 void Calculate_Hom(Complex* A, Complex* B) {
 	int points = CalculatePoints(A);
-    
+
 	Simplex* fVA = fVectorFromComplex(A);
 	Simplex* fVB = fVectorFromComplex(B);
-    
+
 	char* fVALit = simplexToLiteral(fVA);
 	char* fVBLit = simplexToLiteral(fVB);
-    
+
 	printf("\nAF: %s\n", fVALit);
 	printf("\nBF: %s\n", fVBLit);
-    
+
 	long long k1 = 0;
 	for (int i = 0; i < A->simplexCount; ++i) {
 		Simplex* simp = getSimpexAt(A, i);
@@ -483,36 +485,40 @@ void Calculate_Hom(Complex* A, Complex* B) {
 		k1 += simpSubs->simplexCount;
 		Dest_Complex(simpSubs);
 	}
-    
+
 	sm = sm_new(points);
-	long long V1 = 1, last_V1 = k1, V = 1;
+	long long V1 = -1, last_V1 = k1, V = 1;
 	for (int k = 2; k <= points; ++k) {
-        #pragma omp parallel for shared(A,B,k,V1,V)
+#pragma omp parallel for shared(A,B,k,V1,V)
 		for (V1 = 1; V1 <= last_V1; ++V1) {
 			Complex* P = FSI(A, B, k - 1, V1);
 			if (P != NULL && P->simplexCount > 0) {
-                Hom_Match(A, B, P, k, &V);
-                
+				Hom_Match(A, B, P, k, &V);
+
 				Dest_Complex(P);
-			} else {
-#pragma omp critical
-                {
-                saveComplex(P, k, V);
-                }
 			}
+			else {
+#pragma omp critical
+				{
+					saveComplex(P, k, V);
+				}
+			}
+			
 		}
-        
+
+		
+		printf("\n%d -> %lld\n", k, last_V1);
 		last_V1 = V;
-		printf("\n%d -> %lld\n", k, V1);
-        V1 = 1;
+		V1 = 1;
 		V = 1;
+
 	}
-    
+
 	printf("\n\n Generation Result File \n\n");
 	fflush(stdout);
-    
+
 	LD_File* file = Init_file_util_ext("./hom_result", "txt", false);
-    
+
 	int bPoints = CalculatePoints(B);
 	V1 = 1;
 	int count = 0;
@@ -557,17 +563,17 @@ void Calculate_Hom(Complex* A, Complex* B) {
 			V1++;
 		}
 	} while (P != NULL && P->simplexCount > 0);
-    
+
 	printf("\nFVector: %s\n", simplexToLiteral(fVector));
-    
+
 	char* complexLiteral = complexToLiteral(posetPrep, true);
 	wrtieLine(file, "RequirePackage(\"homology\");", false);
 	wrtieLine(file, "SimplicialHomology(OrderComplex(OrderRelationToPoset(", true);
 	wrtieLine(file, complexLiteral, true);
 	wrtieLine(file, ",IsSubset)));", false);
-    
+
 	printf("\nResult is in:\n %s\n", file->path);
-    
+
 	if (false) {
 		for (int k = 2; k <= points; ++k) {
 			int V1 = 1;
@@ -586,7 +592,7 @@ void Calculate_Hom(Complex* A, Complex* B) {
 			} while (P != NULL && P->simplexCount > 0);
 		}
 	}
-    
+
 	Destroy_file(file);
 }
 
