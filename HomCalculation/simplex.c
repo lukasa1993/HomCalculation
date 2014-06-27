@@ -487,7 +487,7 @@ void Calculate_Hom(Complex* A, Complex* B) {
 	sm = sm_new(points);
 	long long V1 = 1, last_V1 = k1, V = 1;
 	for (int k = 2; k <= points; ++k) {
-        #pragma omp parallel for
+        #pragma omp parallel for shared(A,B,k,V1,V)
 		for (V1 = 1; V1 <= last_V1; ++V1) {
 			Complex* P = FSI(A, B, k - 1, V1);
 			if (P != NULL && P->simplexCount > 0) {
