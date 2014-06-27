@@ -386,8 +386,11 @@ void Hom_Match(Complex* A, Complex* B, Complex* P, int k, long long *V) {
 				addElement(getSimpexAt(temp1, 0), getElementAt(simp, l));
                 
 				Complex* M1Complex = mergeComplexes(P, temp1, true);
+#pragma omp critical
+                {
 				saveComplex(M1Complex, k, *V);
 				(*V)++;
+                }
 				Light_Dest_Complex(M1Complex);
 				Dest_Complex(temp1);
                 
@@ -398,8 +401,11 @@ void Hom_Match(Complex* A, Complex* B, Complex* P, int k, long long *V) {
 			Complex* temp2 = Init_Complex();
 			addSimplex(temp2, simp);
 			Complex* MComplex = mergeComplexes(P, temp2, true);
+#pragma omp critical
+            {
 			saveComplex(MComplex, k, *V);
 			(*V)++;
+            }
 			Light_Dest_Complex(MComplex);
 			Light_Dest_Complex(temp2);
             
@@ -459,18 +465,6 @@ Simplex* fVectorFromComplex(Complex* comp)
 }
 
 void Calculate_Hom(Complex* A, Complex* B) {
-    
-    
-    
-#pragma omp parallel for
-    for(int n=0; n<10; ++n)
-    {
-        printf(" %d", n);
-    }
-    printf(".\n");
-    exit(0);
-    
-    
 	int points = CalculatePoints(A);
     
 	Simplex* fVA = fVectorFromComplex(A);
@@ -493,6 +487,7 @@ void Calculate_Hom(Complex* A, Complex* B) {
 	sm = sm_new(points);
 	long long V1 = 1, last_V1 = k1, V = 1;
 	for (int k = 2; k <= points; ++k) {
+        #pragma omp parallel for
 		for (V1 = 1; V1 <= last_V1; ++V1) {
 			Complex* P = FSI(A, B, k - 1, V1);
 			if (P != NULL && P->simplexCount > 0) {
@@ -500,8 +495,10 @@ void Calculate_Hom(Complex* A, Complex* B) {
                 
 				Dest_Complex(P);
 			} else {
+#pragma omp critical
+                {
                 saveComplex(P, k, V);
-                break;
+                }
 			}
 		}
         
