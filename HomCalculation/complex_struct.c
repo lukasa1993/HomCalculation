@@ -157,7 +157,7 @@ char* simplexToLiteral(Simplex* simplex)
     literal[literali] = endingChar;
     literali++;
     
-    char* final = malloc(literali + 1);
+    char* final = malloc( (literali + 1) * sizeof(char));
     memcpy(final, literal, literali);
     final[literali] = 0;
     free(literal);
@@ -213,7 +213,7 @@ char* complexToLiteral(Complex* complex, bool pretty)
     literal[literali] = endingChar;
     literali++;
 
-    char* final = malloc(literali + 1);
+    char* final = malloc( (literali + 1) * sizeof(char));
     memcpy(final, literal, literali);
     final[literali] = 0;
     free(literal);

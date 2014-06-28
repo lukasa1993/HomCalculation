@@ -14,9 +14,9 @@
 #define strncasecmp _stricmp
 #endif
 
-#include "strmap.h"
 #include "complex_struct.h"
 #include "file_util.h"
+#include "complex_storage.h"
 
 Complex* AllSubSimplexses(Simplex* simplex);
 Simplex* simplexByExp(Simplex* simplex, long long exp);
