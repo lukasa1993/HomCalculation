@@ -128,8 +128,8 @@ bool containsSimplex(Complex* comp, Simplex* simp)
 
 char* simplexToLiteral(Simplex* simplex)
 {
-    char* literal  = malloc(8192 * sizeof(char));
-    int   literali = 0;
+    char literal[4096];
+    int  literali = 0;
     
     literal[literali] = startingChar;
     literali++;
@@ -160,14 +160,14 @@ char* simplexToLiteral(Simplex* simplex)
     char* final = malloc( (literali + 1) * sizeof(char));
     memcpy(final, literal, literali);
     final[literali] = 0;
-    free(literal);
     
-    return final;}
+    return final;
+}
 
 char* complexToLiteral(Complex* complex, bool pretty)
 {
-    char* literal  = malloc(8192 * sizeof(char));
-    int   literali = 0;
+    char literal[4096];
+    int  literali = 0;
     literal[literali] = startingChar;
     literali++;
     
@@ -212,11 +212,10 @@ char* complexToLiteral(Complex* complex, bool pretty)
     }
     literal[literali] = endingChar;
     literali++;
-
+    
     char* final = malloc( (literali + 1) * sizeof(char));
     memcpy(final, literal, literali);
     final[literali] = 0;
-    free(literal);
     
     return final;
 }
@@ -225,11 +224,10 @@ Complex* literalToComplex(char* complexLiteral)
 {
     Complex*  complex = NULL;
     
-    int magicNumberInput      = 4;
-    int bracketsCount         = 0;
+    char posibleSimplexElem[10];
     
-    char* posibleSimplexElem  = (char*) malloc(magicNumberInput * sizeof(char));
-    int   posibleSimplexElemi = 0;
+    int  posibleSimplexElemi = 0;
+    int  bracketsCount       = 0;
     
     for (int i = 0; i < strlen(complexLiteral); ++i) {
         char  aChar = complexLiteral[i];
@@ -247,26 +245,20 @@ Complex* literalToComplex(char* complexLiteral)
                 addSimplex(complex, Init_Simplex());
             }
             bracketsCount++;
-        } else if (bracketsCount == 2 && aChar != ',' && aChar != endingChar && aChar != '\0' && aChar != ' ') {
+        } else if (bracketsCount == 2 && isdigit(aChar)) {
+            
             posibleSimplexElem[posibleSimplexElemi] = aChar;
             posibleSimplexElemi++;
-            if (posibleSimplexElemi > magicNumberInput) {
-                magicNumberInput   <<= 1;
-                posibleSimplexElem = realloc(posibleSimplexElem, magicNumberInput * sizeof(char));
-            }
+            
         } else if (bracketsCount == 2 && aChar == ',' && posibleSimplexElemi > 0) {
             
-            posibleSimplexElem = realloc(posibleSimplexElem, posibleSimplexElemi * sizeof(char));
+            posibleSimplexElemi = 0;
             addElement(getSimpexAt(complex, complex->simplexIndex), atoi(posibleSimplexElem));
             
-            posibleSimplexElemi               = 0;
         } else if (aChar == endingChar) {
             if (bracketsCount == 2  && posibleSimplexElemi > 0) {
-                posibleSimplexElem = realloc(posibleSimplexElem, posibleSimplexElemi * sizeof(char)); // grabing last element
-                
-                addElement(getSimpexAt(complex, complex->simplexIndex), atoi(posibleSimplexElem));
-                
                 posibleSimplexElemi = 0;
+                addElement(getSimpexAt(complex, complex->simplexIndex), atoi(posibleSimplexElem));
             } else if (bracketsCount == 1) {
                 break;
             }
@@ -274,7 +266,6 @@ Complex* literalToComplex(char* complexLiteral)
         }
         
     }
-    free(posibleSimplexElem);
     
     return complex;
 }

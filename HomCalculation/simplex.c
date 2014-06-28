@@ -22,14 +22,13 @@ Complex_Storage* storage1;
 
 void saveComplex(Complex* comp, int k, long long v) {
 	char* literal = complexToLiteral(comp, true);
-//    printf("\nSaving: %lld = %s \n", v, literal);
     addLiteral(storage1, literal);
 }
 
 Complex* getComplex(int k, long long v) {
     char* literal = getLiteralAt(storage0, v);
-//    printf("\nGetting: %lld = %s \n", v, literal);
-    return literalToComplex(literal);
+    Complex* comp = literalToComplex(literal);
+    return comp;
 }
 
 bool checkSimplexSubSimplex(Simplex* simplex, Simplex* subSimplex) {
@@ -192,6 +191,7 @@ Complex* unionIntersection(Complex** posibilityList, int posibilityListLength) {
 				break;
 			}
 		}
+//        printf("\n%s\n", complexToLiteral(comp, true));
         
 		Simplex* intersectedSimplex = buildIntersectedSimplex(comp);
 		if (intersectedSimplex->elementIndex > -1) {
@@ -442,7 +442,7 @@ void Calculate_Hom(Complex* A, Complex* B) {
     long long V = 1;
     storage0->lietralCount = k1;
 	for (int k = 2; k <= points; ++k) {
-#pragma omp parallel for shared(A,B,storage0, storage1, k, V)
+#pragma omp parallel for shared(A, B, storage0, storage1, k, V)
 		for (long long V1 = 1; V1 < storage0->lietralCount; ++V1) {
 			Complex* P = FSI(A, B, k - 1, V1);
 			if (P != NULL && P->simplexCount > 0) {
