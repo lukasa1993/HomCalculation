@@ -480,23 +480,31 @@ void Calculate_Hom(Complex* A, Complex* B) {
 				addSimplex(posetPrep, tmp);
 				int maxDim = 0;
 				int maxDimCount = 0;
-				char* maxSim = "";
+				char* maxSim = NULL;
 				for (int i = 0; i < P->simplexCount; ++i) {
 					Simplex* simp = getSimpexAt(P, i);
-					if (maxDim < simp->elementCount) { 
+					if (maxDim < simp->elementCount) {
 						maxDim = simp->elementCount;
 						maxDimCount = 1;
 						maxSim = simplexToLiteral(simp);
-					}
+					} else {
+                        maxSim = malloc(sizeof(char));
+                    }
 					char* simpLit = simplexToLiteral(simp);
-					if (maxDim == simp->elementCount && strcmp(maxSim, simpLit) != 0) {
+					if (maxDim == simp->elementCount && maxSim != NULL && strcmp(maxSim, simpLit) != 0) {
 						maxDimCount++;
 					}
+                    if (maxSim != NULL) {
+                        free(maxSim);
+                    }
 					free(simpLit);
 				}
 				//                addElement(fVector, maxDimCount);
 				fVector->elements[maxDim - 1] += maxDimCount;
-			}
+			} else {
+                Dest_Simplex(tmp);
+            }
+            Dest_Complex(P);
 		}
 	}
 	printf("\nFVector: %s\n", simplexToLiteral(fVector));
