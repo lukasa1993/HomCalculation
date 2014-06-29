@@ -459,28 +459,31 @@ void Calculate_Hom(Complex* A, Complex* B) {
 	LD_File* file = Init_file_util_ext("./hom_result", "txt", false);
     
     
-	int bPoints = CalculatePoints(B);
-	Complex* P = NULL;
+	int bPoints        = CalculatePoints(B);
 	Complex* posetPrep = Init_Complex();
-	Simplex* fVector = Init_Simplex();
+	Simplex* fVector   = Init_Simplex();
+    
 	for (int i = 0; i < points * 4; ++i) {
 		addElement(fVector, 0);
 	}
+    
 	for (long long V1 = 1; V1 < storage0->lietralCount; ++V1) {
-		P = FSI(A, B, points, V1);
+		Complex* P = FSI(A, B, points, V1);
 		if (P != NULL && P->simplexCount > 0) {
 			Simplex* tmp = Init_Simplex();
-			for (int i = 0; i < P->simplexCount; ++i) {
+			
+            for (int i = 0; i < P->simplexCount; ++i) {
 				Simplex* simp = getSimpexAt(P, i);
 				for (int j = 0; j < simp->elementCount; ++j) {
 					addElement(tmp, ((i * bPoints) + getElementAt(simp, j)));
 				}
 			}
+            
 			if (!containsSimplex(posetPrep, tmp)) {
 				addSimplex(posetPrep, tmp);
 				int maxDim = 0;
 				int maxDimCount = 0;
-				char* maxSim = NULL;
+				char* maxSim;
 				for (int i = 0; i < P->simplexCount; ++i) {
 					Simplex* simp = getSimpexAt(P, i);
 					if (maxDim < simp->elementCount) {
@@ -494,16 +497,16 @@ void Calculate_Hom(Complex* A, Complex* B) {
 					if (maxDim == simp->elementCount && maxSim != NULL && strcmp(maxSim, simpLit) != 0) {
 						maxDimCount++;
 					}
-                    if (maxSim != NULL) {
-                        free(maxSim);
-                    }
+
+                    free(maxSim);
 					free(simpLit);
 				}
-				//                addElement(fVector, maxDimCount);
+
 				fVector->elements[maxDim - 1] += maxDimCount;
 			} else {
                 Dest_Simplex(tmp);
             }
+            
             Dest_Complex(P);
 		}
 	}
@@ -517,26 +520,14 @@ void Calculate_Hom(Complex* A, Complex* B) {
     
 	printf("\nResult is in:\n %s\n", file->path);
     
-	if (false) {
-		for (int k = 2; k <= points; ++k) {
-			int V1 = 1;
-			Complex* P = NULL;
-			do {
-				P = FSI(A, B, k, V1);
-				if (P != NULL && P->simplexCount > 0) {
-					printf("\nFSI[%d] = %s\n", V1, complexToLiteral(P, true));
-					if (k == points) {
-						char line[1024];
-						sprintf(line, "\nFSI[%d] = %s", V1, complexToLiteral(P, true));
-						wrtieLine(file, line, false);
-					}
-					V1++;
-				}
-			} while (P != NULL && P->simplexCount > 0);
-		}
-	}
-    
 	Destroy_file(file);
+    Destory_Storage(storage0);
+    Dest_Complex(posetPrep);
+    Dest_Simplex(fVector);
+    Dest_Simplex(fVA);
+    Dest_Simplex(fVB);
+    free(fVALit);
+    free(fVBLit);
 }
 
 
