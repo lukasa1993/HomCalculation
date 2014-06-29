@@ -33,6 +33,7 @@ Complex* Init_Complex()
     complex->simplexCount    = 0;
     complex->simplexCapacity = 1;
     complex->simplexes       = malloc(complex->simplexCapacity * sizeof(Simplex*));
+    
     return complex;
 }
 

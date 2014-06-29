@@ -163,8 +163,10 @@ Simplex* buildIntersectedSimplex(Complex* comp) {
 }
 
 Complex* unionIntersection(Complex** posibilityList, int posibilityListLength) {
-	int*     walkIndexes = malloc(posibilityListLength * sizeof(int));
-	memset(walkIndexes, 0, posibilityListLength * sizeof(int));
+    if (posibilityListLength == 1) {
+        return posibilityList[0];
+    }
+	int*     walkIndexes = calloc(posibilityListLength, sizeof(int));//malloc(posibilityListLength * sizeof(int));
     
 	//    printf("\n-- generation start -- \n");
     
@@ -191,19 +193,21 @@ Complex* unionIntersection(Complex** posibilityList, int posibilityListLength) {
 				break;
 			}
 		}
-//        printf("\n%s\n", complexToLiteral(comp, true));
+        //        printf("\n%s\n", complexToLiteral(comp, true));
         
 		Simplex* intersectedSimplex = buildIntersectedSimplex(comp);
+        
 		if (intersectedSimplex->elementIndex > -1) {
 			addSimplex(unionIntersection, intersectedSimplex);
-		}
+		} else {
+            Dest_Simplex(intersectedSimplex);
+        }
+        
+        Light_Dest_Complex(comp);
 	} while (cont);
     
+    free(walkIndexes);
 	return unionIntersection;
-}
-
-Complex* intersectionUnionUpper(Complex* B, Complex** posibilityList, int posibilityListLength) {
-	return NULL;
 }
 
 int CalculatePoints(Complex* comp) {
@@ -271,12 +275,8 @@ void Hom_Match(Complex* A, Complex* B, Complex* P, int k, long long *V) {
 	Complex** posibilityList = malloc(P->simplexCount * sizeof(Complex*));
 	int       posibilityListLength = 0;
     
-    
-	Complex* BNeibr = NULL;
-    
 	for (int i = 0; i < ANeibr->simplexCount; ++i) {
-		Simplex* aNeibrSim = getSimpexAt(ANeibr, i);
-		Complex* BNeibrTemp = NULL;
+		Simplex* aNeibrSim   = getSimpexAt(ANeibr, i);
         
 		for (int j = 0; j < aNeibrSim->elementCount; ++j) {
 			SimplexElem elem = getElementAt(aNeibrSim, j);
@@ -284,93 +284,77 @@ void Hom_Match(Complex* A, Complex* B, Complex* P, int k, long long *V) {
             
 			if (elem != (SimplexElem)k && elemIndex < P->simplexCount) {
 				Simplex* tempSim = getSimpexAt(P, elemIndex);
-				Complex* comp = upperSimplexContainingDot(B, tempSim);
-				BNeibrTemp = mergeComplexes(BNeibrTemp, comp, false);
+				Complex* comp    = upperSimplexContainingDot(B, tempSim);
                 
-				posibilityList[posibilityListLength] = BNeibrTemp;
-				posibilityListLength++;
-                
-				//free(comp);
+                if (posibilityListLength > 0) {
+                    posibilityList[posibilityListLength] = mergeComplexes(posibilityList[posibilityListLength - 1], comp, false);
+                    posibilityListLength++;
+                    Light_Dest_Complex(comp);
+                } else {
+                    posibilityList[posibilityListLength] = comp;
+                    posibilityListLength++;
+                    
+                }
 			}
 		}
 	}
     
-	if (posibilityListLength > 1) {
-		if (method1) {
-			BNeibr = unionIntersection(posibilityList, posibilityListLength);
-		}
-		else if (method2) {
-			BNeibr = intersectionUnionUpper(B, posibilityList, posibilityListLength);
-		}
-		else if (methodComp) {
-			Complex* BNeibr1 = unionIntersection(posibilityList, posibilityListLength);
-			Complex* BNeibr2 = intersectionUnionUpper(B, posibilityList, posibilityListLength);
-			printf("\n %s \n %s \n", complexToLiteral(BNeibr1, true), complexToLiteral(BNeibr2, true));
-			char* bn1Lit = complexToLiteral(BNeibr1, false);
-			char* bn2Lit = complexToLiteral(BNeibr2, false);
-			if (strcasecmp(bn1Lit, bn2Lit) != 0) {
-				printf("vai");
-			}
-			else {
-				printf("\nYEA\n");
-			}
-            
-			//            free(bn1Lit);
-			//            free(bn2Lit);
-			//            free(BNeibr1);
-			//            free(BNeibr2);
-		}
-	}
-	else if (posibilityListLength > 0){
-		BNeibr = posibilityList[0];
-	}
+    Complex* BNeibr = unionIntersection(posibilityList, posibilityListLength);
     
-	if (BNeibr != NULL) {
-		for (int j = 0; j < BNeibr->simplexCount; ++j) {
-			Simplex* simp = getSimpexAt(BNeibr, j);
-            
-			for (int l = 0; l < simp->elementCount; ++l) {
-				Complex* temp1 = Init_Complex();
-                
-				addSimplex(temp1, Init_Simplex());
-                
-				addElement(getSimpexAt(temp1, 0), getElementAt(simp, l));
-                
-				Complex* M1Complex = mergeComplexes(P, temp1, true);
-#pragma omp critical
-				{
-					saveComplex(M1Complex, k, *V);
-					(*V)++;
-				}
-				Light_Dest_Complex(M1Complex);
-				Dest_Complex(temp1);
-                
-			}
-            
-            
-            
-			Complex* temp2 = Init_Complex();
-			addSimplex(temp2, simp);
-			Complex* MComplex = mergeComplexes(P, temp2, true);
-#pragma omp critical
-			{
-				saveComplex(MComplex, k, *V);
-				(*V)++;
-			}
-			Light_Dest_Complex(MComplex);
-			Light_Dest_Complex(temp2);
-            
-            
-		}
-		if (posibilityListLength > 1) {
-			for (int i = 0; i < posibilityListLength; ++i) {
-				Light_Dest_Complex(posibilityList[i]);
-			}
-		}
+    if (BNeibr == NULL) {
+        printf("");
+    }
+    
+	
+    for (int j = 0; j < BNeibr->simplexCount; ++j) {
+        Simplex* simp = getSimpexAt(BNeibr, j);
         
-		Light_Dest_Complex(ANeibr);
-		Light_Dest_Complex(BNeibr);
-	}
+        for (int l = 0; l < simp->elementCount; ++l) {
+            Complex* temp1 = Init_Complex();
+            
+            addSimplex(temp1, Init_Simplex());
+            
+            addElement(getSimpexAt(temp1, 0), getElementAt(simp, l));
+            
+            Complex* M1Complex = mergeComplexes(P, temp1, true);
+#pragma omp critical
+            {
+                saveComplex(M1Complex, k, *V);
+                (*V)++;
+            }
+            Light_Dest_Complex(M1Complex);
+            Dest_Complex(temp1);
+            
+        }
+        
+        
+        
+        Complex* temp2 = Init_Complex();
+        addSimplex(temp2, simp);
+        Complex* MComplex = mergeComplexes(P, temp2, true);
+#pragma omp critical
+        {
+            saveComplex(MComplex, k, *V);
+            (*V)++;
+        }
+        Light_Dest_Complex(MComplex);
+        Light_Dest_Complex(temp2);
+        
+        
+    }
+    if (posibilityListLength > 1) {
+        for (int i = 0; i < posibilityListLength; ++i) {
+            Light_Dest_Complex(posibilityList[i]);
+        }
+    }
+    
+    if (posibilityListLength > 1) {
+        Dest_Complex(BNeibr);
+    } else {
+        Light_Dest_Complex(BNeibr);
+    }
+    Light_Dest_Complex(ANeibr);
+	
     
     free(posibilityList);
 }
@@ -456,13 +440,15 @@ void Calculate_Hom(Complex* A, Complex* B) {
 #pragma omp barrier
         
         printf("\n%d => %lld\n", k, storage0->lietralCount);
-        
+        fflush(stdout);
+
 		if (k == 2) {
             storage0->lietralCount = 0;
         }
         Destory_Storage(storage0);
         storage0 = storage1;
         storage1 = Init_Storage();
+        V = 1;
     }
     
 	printf("\n\n Generation Result File \n\n");
