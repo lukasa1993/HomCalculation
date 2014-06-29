@@ -20,12 +20,12 @@
 Complex_Storage* storage0;
 Complex_Storage* storage1;
 
-void saveComplex(Complex* comp, int k, long long v) {
+void saveComplex(Complex* comp) {
 	char* literal = complexToLiteral(comp, true);
     addLiteral(storage1, literal);
 }
 
-Complex* getComplex(int k, long long v) {
+Complex* getComplex(long long v) {
     char* literal = getLiteralAt(storage0, v);
     Complex* comp = literalToComplex(literal);
     return comp;
@@ -74,7 +74,7 @@ Complex* FSI(Complex* A, Complex* B, int K, long long V) {
 		}
 	}
 	else {
-		complex = getComplex(K, V);
+		complex = getComplex(V);
 	}
     
 	return complex;
@@ -265,14 +265,14 @@ int CalculatePoints(Complex* comp) {
 }
 
 
-void Hom_Match(Complex* A, Complex* B, Complex* P, int k, long long *V) {
+void Hom_Match(Complex* A, Complex* B, Complex* P, int k) {
 	Simplex* temp = Init_Simplex();
 	addElement(temp, k);
     
 	Complex* ANeibr = upperSimplexContainingDot(A, temp);
 	Dest_Simplex(temp);
     
-	Complex** posibilityList = malloc(P->simplexCount * sizeof(Complex*));
+	Complex** posibilityList       = calloc(A->simplexCount + B->simplexCount + P->simplexCount, sizeof(Complex*));
 	int       posibilityListLength = 0;
     
 	for (int i = 0; i < ANeibr->simplexCount; ++i) {
@@ -319,8 +319,7 @@ void Hom_Match(Complex* A, Complex* B, Complex* P, int k, long long *V) {
             Complex* M1Complex = mergeComplexes(P, temp1, true);
 #pragma omp critical
             {
-                saveComplex(M1Complex, k, *V);
-                (*V)++;
+                saveComplex(M1Complex);
             }
             Light_Dest_Complex(M1Complex);
             Dest_Complex(temp1);
@@ -334,8 +333,7 @@ void Hom_Match(Complex* A, Complex* B, Complex* P, int k, long long *V) {
         Complex* MComplex = mergeComplexes(P, temp2, true);
 #pragma omp critical
         {
-            saveComplex(MComplex, k, *V);
-            (*V)++;
+            saveComplex(MComplex);
         }
         Light_Dest_Complex(MComplex);
         Light_Dest_Complex(temp2);
@@ -423,14 +421,18 @@ void Calculate_Hom(Complex* A, Complex* B) {
         
 		Dest_Complex(simpSubs);
 	}
-    long long V = 1;
+    
     storage0->lietralCount = k1;
 	for (int k = 2; k <= points; ++k) {
-#pragma omp parallel for shared(A, B, storage0, storage1, k, V)
+#pragma omp parallel for shared(A, B, storage0, storage1, k)
 		for (long long V1 = 1; V1 < storage0->lietralCount; ++V1) {
-			Complex* P = FSI(A, B, k - 1, V1);
+            Complex* P = NULL;
+#pragma omp critical
+            {
+                P = FSI(A, B, k - 1, V1);
+            }
 			if (P != NULL && P->simplexCount > 0) {
-				Hom_Match(A, B, P, k, &V);
+				Hom_Match(A, B, P, k);
                 
 				Dest_Complex(P);
 			}
@@ -441,14 +443,13 @@ void Calculate_Hom(Complex* A, Complex* B) {
         
         printf("\n%d => %lld\n", k, storage0->lietralCount);
         fflush(stdout);
-
+        
 		if (k == 2) {
             storage0->lietralCount = 0;
         }
         Destory_Storage(storage0);
         storage0 = storage1;
         storage1 = Init_Storage();
-        V = 1;
     }
     
 	printf("\n\n Generation Result File \n\n");
