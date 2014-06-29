@@ -172,9 +172,9 @@ int main(int argc, const char * argv[])
 //    printf("\n%s\n", polytopToLiteral(pol));
 //    return 0;
    
-	Calculate_Hom(literalToComplex("[[1,2,3]]"), literalToComplex("[[1,2,3]]"));
+//	Calculate_Hom(literalToComplex("[[1,2,3]]"), literalToComplex("[[1,2,3]]"));
 
-//    Calculate_Hom(literalToComplex("[[1,2,7],[2,3,7],[3,4,7],[4,5,7],[5,6,7],[6,1,7]]"), literalToComplex("[[1,2,7],[2,3,7],[3,4,7],[4,5,7],[5,6,7],[6,1,7]]"));
+    Calculate_Hom(literalToComplex("[[1,2,7],[2,3,7],[3,4,7],[4,5,7],[5,6,7],[6,1,7]]"), literalToComplex("[[1,2,7],[2,3,7],[3,4,7],[4,5,7],[5,6,7],[6,1,7]]"));
     
     exit(0);
     printf("Input Type(Types: file, file-random-generated, random-generated, mannual):");
