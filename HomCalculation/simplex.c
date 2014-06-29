@@ -451,6 +451,7 @@ void Calculate_Hom(Complex* A, Complex* B) {
         storage0 = storage1;
         storage1 = Init_Storage();
     }
+    Destory_Storage(storage1);
     
 	printf("\n\n Generation Result File \n\n");
 	fflush(stdout);
@@ -459,19 +460,16 @@ void Calculate_Hom(Complex* A, Complex* B) {
     
     
 	int bPoints = CalculatePoints(B);
-	int V1 = 1;
-	int count = 0;
 	Complex* P = NULL;
 	Complex* posetPrep = Init_Complex();
 	Simplex* fVector = Init_Simplex();
 	for (int i = 0; i < points * 4; ++i) {
 		addElement(fVector, 0);
 	}
-	do {
+	for (long long V1 = 1; V1 < storage0->lietralCount; ++V1) {
 		P = FSI(A, B, points, V1);
 		if (P != NULL && P->simplexCount > 0) {
 			Simplex* tmp = Init_Simplex();
-			count++;
 			for (int i = 0; i < P->simplexCount; ++i) {
 				Simplex* simp = getSimpexAt(P, i);
 				for (int j = 0; j < simp->elementCount; ++j) {
@@ -501,8 +499,7 @@ void Calculate_Hom(Complex* A, Complex* B) {
 			}
 			V1++;
 		}
-	} while (P != NULL && P->simplexCount > 0);
-    
+	}
 	printf("\nFVector: %s\n", simplexToLiteral(fVector));
     
 	char* complexLiteral = complexToLiteral(posetPrep, true);
