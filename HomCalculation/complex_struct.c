@@ -115,7 +115,7 @@ bool containsSimplex(Complex* comp, Simplex* simp)
         bool containsSimplex = true;
         
         for (int s1 = 0; s1 < simp->elementCount; ++s1) {
-            SimplexElem elem1    = getElementAt(simp, s1);
+            SimplexElem elem1 = getElementAt(simp, s1);
             bool containsElem = containsElement(simp2, elem1);
             
             if (containsElem == false) {
