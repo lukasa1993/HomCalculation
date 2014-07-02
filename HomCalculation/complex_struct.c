@@ -111,17 +111,29 @@ bool containsElement(Simplex* simp, SimplexElem elem)
 bool containsSimplex(Complex* comp, Simplex* simp)
 {
     for (int i = 0; i < comp->simplexCount; ++i) {
-        Simplex* simp2 = getSimpexAt(comp, i);
-        char* literal1 = simplexToLiteral(simp);
-        char* literal2 = simplexToLiteral(simp2);
+        Simplex* simp2       = getSimpexAt(comp, i);
+        bool containsSimplex = true;
         
-        if (strcmp(literal1, literal2) == 0) {
-            free(literal1);
-            free(literal2);
+        for (int s1 = 0; s1 < simp->elementCount; ++s1) {
+            SimplexElem elem1    = getElementAt(simp, s1);
+            bool containsElement = false;
+            for (int s2 = 0; s2 < simp2->elementCount; ++s2) {
+                SimplexElem elem2    = getElementAt(simp2, s2);
+                if (elem1 == elem2) {
+                    containsElement = true;
+                    break;
+                }
+            }
+            
+            if (containsElement == false) {
+                containsSimplex = false;
+                break;
+            }
+        }
+        
+        if (containsSimplex == true) {
             return true;
         }
-        free(literal1);
-        free(literal2);
     }
     
     return false;
