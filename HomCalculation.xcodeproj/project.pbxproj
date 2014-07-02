@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		801E1A0C19238F2A00007C61 /* simplex_basic.c in Sources */ = {isa = PBXBuildFile; fileRef = 801E1A0B19238F2A00007C61 /* simplex_basic.c */; };
+		80308ED0196432F5000296DB /* sds.c in Sources */ = {isa = PBXBuildFile; fileRef = 80308ECE196432F5000296DB /* sds.c */; };
 		803994CF195EB49C00D0B4B7 /* complex_storage.c in Sources */ = {isa = PBXBuildFile; fileRef = 803994CE195EB49C00D0B4B7 /* complex_storage.c */; };
 		805E4A00194DCE08008B3374 /* polytop_struct.c in Sources */ = {isa = PBXBuildFile; fileRef = 805E49FF194DCE08008B3374 /* polytop_struct.c */; };
 		8060D063195EB801007B0235 /* file_util.c in Sources */ = {isa = PBXBuildFile; fileRef = 8060D061195EB801007B0235 /* file_util.c */; };
@@ -32,6 +33,8 @@
 /* Begin PBXFileReference section */
 		801E1A0B19238F2A00007C61 /* simplex_basic.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = simplex_basic.c; sourceTree = "<group>"; };
 		801E1A0D19238F3900007C61 /* simplex_basic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = simplex_basic.h; sourceTree = "<group>"; };
+		80308ECE196432F5000296DB /* sds.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sds.c; sourceTree = "<group>"; };
+		80308ECF196432F5000296DB /* sds.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sds.h; sourceTree = "<group>"; };
 		803994CD195EB49200D0B4B7 /* complex_storage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = complex_storage.h; sourceTree = "<group>"; };
 		803994CE195EB49C00D0B4B7 /* complex_storage.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = complex_storage.c; sourceTree = "<group>"; };
 		805E49FE194DCDFE008B3374 /* polytop_struct.h */ = {isa = PBXFileReference; explicitFileType = text; path = polytop_struct.h; sourceTree = "<group>"; };
@@ -93,6 +96,8 @@
 				803994CE195EB49C00D0B4B7 /* complex_storage.c */,
 				8060D061195EB801007B0235 /* file_util.c */,
 				8060D062195EB801007B0235 /* file_util.h */,
+				80308ECE196432F5000296DB /* sds.c */,
+				80308ECF196432F5000296DB /* sds.h */,
 			);
 			path = HomCalculation;
 			sourceTree = "<group>";
@@ -148,6 +153,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				80308ED0196432F5000296DB /* sds.c in Sources */,
 				80DDCA3D184F0D6500284F59 /* simplex.c in Sources */,
 				8060D063195EB801007B0235 /* file_util.c in Sources */,
 				80A2816319238B8C00A906E9 /* generate_complex.c in Sources */,

@@ -108,13 +108,13 @@ Complex* mergeComplexes(Complex* a, Complex* b, bool basic) {
 	for (int i = 0; i < b->simplexCount; ++i) {
 		bool unique = true;
 		for (int j = 0; j < merged->simplexCount; ++j) {
-			char* aLit = simplexToLiteral(merged->simplexes[j]);
-			char* bLit = simplexToLiteral(b->simplexes[i]);
+			sds aLit = simplexToLiteral(merged->simplexes[j]);
+			sds bLit = simplexToLiteral(b->simplexes[i]);
 			if (strcmp(aLit, bLit) == 0) {
 				unique = false;
 			}
-			free(aLit);
-			free(bLit);
+			sdsfree(aLit);
+            sdsfree(bLit);
 		}
         
 		if (basic || unique) {
@@ -483,7 +483,7 @@ void Calculate_Hom(Complex* A, Complex* B) {
 				addSimplex(posetPrep, tmp);
 				int maxDim = 0;
 				int maxDimCount = 0;
-				char* maxSim;
+				sds maxSim;
 				for (int i = 0; i < P->simplexCount; ++i) {
 					Simplex* simp = getSimpexAt(P, i);
 					if (maxDim < simp->elementCount) {
@@ -491,15 +491,15 @@ void Calculate_Hom(Complex* A, Complex* B) {
 						maxDimCount = 1;
 						maxSim = simplexToLiteral(simp);
 					} else {
-                        maxSim = malloc(sizeof(char));
+                        maxSim = sdsempty();
                     }
-					char* simpLit = simplexToLiteral(simp);
+					sds simpLit = simplexToLiteral(simp);
 					if (maxDim == simp->elementCount && maxSim != NULL && strcmp(maxSim, simpLit) != 0) {
 						maxDimCount++;
 					}
 
-                    free(maxSim);
-					free(simpLit);
+                    sdsfree(maxSim);
+					sdsfree(simpLit);
 				}
 
 				fVector->elements[maxDim - 1] += maxDimCount;
@@ -512,7 +512,7 @@ void Calculate_Hom(Complex* A, Complex* B) {
 	}
 	printf("\nFVector: %s\n", simplexToLiteral(fVector));
     
-	char* complexLiteral = complexToLiteral(posetPrep, true);
+	sds complexLiteral = complexToLiteral(posetPrep, true);
 	wrtieLine(file, "RequirePackage(\"homology\");", false);
 	wrtieLine(file, "SimplicialHomology(OrderComplex(OrderRelationToPoset(", true);
 	wrtieLine(file, complexLiteral, true);
@@ -520,14 +520,15 @@ void Calculate_Hom(Complex* A, Complex* B) {
     
 	printf("\nResult is in:\n %s\n", file->path);
     
+    sdsfree(complexLiteral);
 	Destroy_file(file);
     Destory_Storage(storage0);
     Dest_Complex(posetPrep);
     Dest_Simplex(fVector);
     Dest_Simplex(fVA);
     Dest_Simplex(fVB);
-    free(fVALit);
-    free(fVBLit);
+    sdsfree(fVALit);
+    sdsfree(fVBLit);
 }
 
 

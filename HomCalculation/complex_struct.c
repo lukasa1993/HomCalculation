@@ -132,60 +132,58 @@ bool containsSimplex(Complex* comp, Simplex* simp)
     return false;
 }
 
-char* simplexToLiteral(Simplex* simplex)
+sds simplexToLiteral(Simplex* simplex)
 {
-    char* literal  = malloc(simplex->elementCount * 2 * sizeof(char));
-    
-    strcpy(literal, "[");
+    sds s = sdsempty();
+    s = sdscat(s, "[");
+
     
     for (int j = 0; j < simplex->elementCount; ++j) {
         SimplexElem elem = simplex->elements[j];
-        char str[100];
-        sprintf(str, "%d", elem);
         
-        strcat(literal, str);
+        s = sdscat(s, sdsfromlonglong((int) elem));
         
         if (j != simplex->elementCount - 1) {
-            strcat(literal, ",");
+            s = sdscat(s, ",");
             
             if (true) {
-                strcat(literal, " ");
+                s = sdscat(s, " ");
             }
         }
     }
     
-    strcat(literal, "]");
-    
-    
-    return literal;
+    s = sdscat(s, "]");
+
+    return s;
 }
 
-char* complexToLiteral(Complex* complex, bool pretty)
+sds complexToLiteral(Complex* complex, bool pretty)
 {
-    char* literal  = malloc(complex->simplexCount * 2 * 10 * sizeof(char));
+    sds s = sdsempty();
     
-    strcpy(literal, "[");
+    s = sdscat(s, "[");
     
     if (complex != NULL) {
         for (int i = 0; i < complex->simplexCount; ++i) {
             Simplex* simplex = getSimpexAt(complex, i);
-            char* simpLit    = simplexToLiteral(simplex);
+            sds simpLit    = simplexToLiteral(simplex);
             
-            strcat(literal, simpLit);
-            free(simpLit);
+            s = sdscat(s, simpLit);
+            sdsfree(simpLit);
             
             if (i != complex->simplexIndex) {
-                strcat(literal, ",");
+                s = sdscat(s, ",");
                 if (pretty) {
-                    strcat(literal, " ");
+                    s = sdscat(s, " ");
                 }
             }
         }
     }
     
-    strcat(literal, "]");
+    s = sdscat(s, "]");
+ 
     
-    return literal;
+    return s;
 }
 
 Complex* literalToComplex(char* complexLiteral)

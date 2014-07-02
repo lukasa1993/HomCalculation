@@ -16,6 +16,8 @@
 #include <string.h>
 #include <ctype.h>
 
+#include "sds.h"
+
 #define startingChar '['
 #define endingChar   ']'
 
