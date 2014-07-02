@@ -132,58 +132,101 @@ bool containsSimplex(Complex* comp, Simplex* simp)
     return false;
 }
 
-sds simplexToLiteral(Simplex* simplex)
+char* simplexToLiteral(Simplex* simplex)
 {
-    sds s = sdsempty();
-    s = sdscat(s, "[");
-
+    char literal[4096];
+    int  literali = 0;
+    
+    literal[literali] = startingChar;
+    literali++;
     
     for (int j = 0; j < simplex->elementCount; ++j) {
         SimplexElem elem = simplex->elements[j];
+        char str[100];
+        sprintf(str, "%d", elem);
         
-        s = sdscat(s, sdsfromlonglong((int) elem));
+        for (int s = 0; s < strlen(str); ++s) {
+            literal[literali] = str[s];
+            literali++;
+        }
         
         if (j != simplex->elementCount - 1) {
-            s = sdscat(s, ",");
-            
+            literal[literali] = ',';
+            literali++;
             if (true) {
-                s = sdscat(s, " ");
+                literal[literali] = ' ';
+                literali++;
             }
         }
     }
     
-    s = sdscat(s, "]");
-
-    return s;
+    literal[literali] = endingChar;
+    literali++;
+    
+    char* final = malloc( (literali + 1) * sizeof(char));
+    memcpy(final, literal, literali);
+    final[literali] = 0;
+    
+    return final;
 }
 
-sds complexToLiteral(Complex* complex, bool pretty)
+char* complexToLiteral(Complex* complex, bool pretty)
 {
-    sds s = sdsempty();
+    char* literal  =  calloc(complex->simplexCount * 10 * 3, sizeof(char));
+    int   literali = 0;
     
-    s = sdscat(s, "[");
+    literal[literali] = startingChar;
+    literali++;
     
     if (complex != NULL) {
         for (int i = 0; i < complex->simplexCount; ++i) {
             Simplex* simplex = getSimpexAt(complex, i);
-            sds simpLit    = simplexToLiteral(simplex);
+            literal[literali] = startingChar;
+            literali++;
             
-            s = sdscat(s, simpLit);
-            sdsfree(simpLit);
+            for (int j = 0; j < simplex->elementCount; ++j) {
+                SimplexElem elem = getElementAt(simplex, j);
+                char str[100];
+                sprintf(str, "%d", elem);
+                
+                for (int s = 0; s < strlen(str); ++s) {
+                    literal[literali] = str[s];
+                    literali++;
+                }
+                
+                if (j != simplex->elementIndex) {
+                    literal[literali] = ',';
+                    literali++;
+                    if (pretty) {
+                        literal[literali] = ' ';
+                        literali++;
+                    }
+                }
+            }
+            
+            literal[literali] = endingChar;
+            literali++;
             
             if (i != complex->simplexIndex) {
-                s = sdscat(s, ",");
+                literal[literali] = ',';
+                literali++;
                 if (pretty) {
-                    s = sdscat(s, " ");
+                    literal[literali] = ' ';
+                    literali++;
                 }
             }
         }
     }
+    literal[literali] = endingChar;
+    literali++;
     
-    s = sdscat(s, "]");
- 
+    free(literal);
     
-    return s;
+    char* final = malloc( (literali + 1) * sizeof(char));
+    memcpy(final, literal, literali);
+    final[literali] = 0;
+    
+    return final;
 }
 
 Complex* literalToComplex(char* complexLiteral)

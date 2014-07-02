@@ -16,7 +16,7 @@ Complex_Storage* Init_Storage()
     storage->literalIndex    = -1;
     storage->lietralCount    = 0;
     storage->literalCapacity = 1;
-    storage->complexLiterals = malloc(storage->literalCapacity * sizeof(sds));
+    storage->complexLiterals = malloc(storage->literalCapacity * sizeof(char*));
     
     return storage;
 }
@@ -24,17 +24,17 @@ Complex_Storage* Init_Storage()
 void Destory_Storage(Complex_Storage* storage)
 {
     for (int i = 0; i < storage->lietralCount; ++i) {
-        sdsfree(storage->complexLiterals[i]);
+        free(storage->complexLiterals[i]);
     }
     free(storage->complexLiterals);
     free(storage);
 }
 
-void addLiteral(Complex_Storage* storage, sds literal)
+void addLiteral(Complex_Storage* storage, char* literal)
 {
     if (storage->literalCapacity <= storage->literalIndex + 1) {
         storage->literalCapacity <<= 1;
-        storage->complexLiterals = realloc(storage->complexLiterals, storage->literalCapacity * sizeof(sds));
+        storage->complexLiterals = realloc(storage->complexLiterals, storage->literalCapacity * sizeof(char*));
     }
     
     storage->lietralCount++;
@@ -42,7 +42,7 @@ void addLiteral(Complex_Storage* storage, sds literal)
     storage->literalIndex = storage->lietralCount - 1;
 }
 
-sds getLiteralAt(Complex_Storage* storage, long long index)
+char* getLiteralAt(Complex_Storage* storage, long long index)
 {
     if (storage->literalIndex < index) {
         return NULL;

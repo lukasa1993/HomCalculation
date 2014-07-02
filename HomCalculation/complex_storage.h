@@ -14,13 +14,11 @@
 #include <stdbool.h>
 #include <string.h>
 
-#include "sds.h"
-
 typedef struct Complex_Storage {
     long long    literalIndex;
     long long    lietralCount;
     long long    literalCapacity;
-    sds*       complexLiterals;
+    char**       complexLiterals;
 } Complex_Storage;
 
 Complex_Storage* Init_Storage();
