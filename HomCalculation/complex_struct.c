@@ -134,7 +134,7 @@ bool containsSimplex(Complex* comp, Simplex* simp)
 
 char* simplexToLiteral(Simplex* simplex)
 {
-    char literal[4096];
+    char literal[simplex->elementCount * 5];
     int  literali = 0;
     
     literal[literali] = startingChar;
@@ -172,7 +172,14 @@ char* simplexToLiteral(Simplex* simplex)
 
 char* complexToLiteral(Complex* complex, bool pretty)
 {
-    char* literal  =  calloc(complex->simplexCount * 10 * 3, sizeof(char));
+    int charCount = 2;
+    if (complex != NULL) {
+        for (int i = 0; i < complex->simplexCount; ++i) {
+            charCount += getSimpexAt(complex, i)->elementCount + 1;
+        }
+        charCount *= 5;
+    }
+    char  literal[charCount];
     int   literali = 0;
     
     literal[literali] = startingChar;
@@ -219,8 +226,6 @@ char* complexToLiteral(Complex* complex, bool pretty)
     }
     literal[literali] = endingChar;
     literali++;
-    
-    free(literal);
     
     char* final = malloc( (literali + 1) * sizeof(char));
     memcpy(final, literal, literali);
