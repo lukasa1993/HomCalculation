@@ -29,24 +29,20 @@ long long fVectorDim(Complex* comp);
 void saveComplex(Complex* comp) {
     bool  save    = true;
 	char* literal = complexToLiteral(comp, true);
-    for (long long i = 0; i < storage1->lietralCount; ++i) {
+    /*for (long long i = 0; i < storage1->lietralCount; ++i) {
         char* lit = getLiteralAt(storage1, i);
         if (strcmp(literal, lit) == 0) {
             save = false;
             break;
         }
-    }
+    }*/
     
-    if (true || save) {
+    if (save) {
 #pragma omp critical
         {
             if (comp->simplexCount == maxK) {
                 long long dim = fVectorDim(comp);
                 homFVector[dim]++;
-                if (dim == 14) {
-                    printf("\n%s\n", literal);
-                }
-
             }
             addLiteral(storage1, literal);
         }
