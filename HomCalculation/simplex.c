@@ -17,18 +17,55 @@
 
 #define usefilesystem false
 
+#define HOMFVECTORSIZE 40
+
 Complex_Storage* storage0;
 Complex_Storage* storage1;
 
+int maxK;
+long long homFVector[HOMFVECTORSIZE]; // assuming that maximum dimmension would be 20
+long long fVectorDim(Complex* comp);
+
 void saveComplex(Complex* comp) {
+    bool  save    = true;
 	char* literal = complexToLiteral(comp, true);
-    addLiteral(storage1, literal);
+    for (long long i = 0; i < storage1->lietralCount; ++i) {
+        char* lit = getLiteralAt(storage1, i);
+        if (strcmp(literal, lit) == 0) {
+            save = false;
+            break;
+        }
+    }
+    
+    if (true || save) {
+#pragma omp critical
+        {
+            if (comp->simplexCount == maxK) {
+                long long dim = fVectorDim(comp);
+                homFVector[dim]++;
+                if (dim == 14) {
+                    printf("\n%s\n", literal);
+                }
+
+            }
+            addLiteral(storage1, literal);
+        }
+    }
 }
 
 Complex* getComplex(long long v) {
     char* literal = getLiteralAt(storage0, v);
     Complex* comp = literalToComplex(literal);
     return comp;
+}
+
+long long fVectorDim(Complex* comp) {
+    long long dim = 0;
+    for (int i = 0; i < comp->simplexCount; ++i) {
+        Simplex* simp = getSimpexAt(comp, i);
+        dim += (simp->elementCount - 1);
+    }
+    return dim;
 }
 
 bool checkSimplexSubSimplex(Simplex* simplex, Simplex* subSimplex) {
@@ -300,13 +337,27 @@ void Hom_Match(Complex* A, Complex* B, Complex* P, int k) {
 	}
     
     Complex* BNeibr = unionIntersection(posibilityList, posibilityListLength);
-    
-    if (BNeibr == NULL) {
-        printf("");
+        
+    for (int i = 0; i < BNeibr->simplexCount; ++i) {
+        Simplex* simp     = getSimpexAt(BNeibr, i);
+        Complex* simpSubs = AllSubSimplexses(simp);
+//        printf("\n%s\n", complexToLiteral(simpSubs, true));
+        for (int j = 0; j < simpSubs->simplexCount; ++j) {
+            Simplex* subSimp = getSimpexAt(simpSubs, j);
+            if (subSimp->elementCount > 0) {
+                Complex* temp1 = Init_Complex();
+                
+                addSimplex(temp1, subSimp);
+                
+                Complex* M1Complex = mergeComplexes(P, temp1, true);
+                saveComplex(M1Complex);
+                Light_Dest_Complex(M1Complex);
+                Dest_Complex(temp1);
+            }
+        }
     }
     
-	
-    for (int j = 0; j < BNeibr->simplexCount; ++j) {
+    /*for (int j = 0; j < BNeibr->simplexCount; ++j) {
         Simplex* simp = getSimpexAt(BNeibr, j);
         
         for (int l = 0; l < simp->elementCount; ++l) {
@@ -317,10 +368,7 @@ void Hom_Match(Complex* A, Complex* B, Complex* P, int k) {
             addElement(getSimpexAt(temp1, 0), getElementAt(simp, l));
             
             Complex* M1Complex = mergeComplexes(P, temp1, true);
-#pragma omp critical
-            {
-                saveComplex(M1Complex);
-            }
+            saveComplex(M1Complex);
             Light_Dest_Complex(M1Complex);
             Dest_Complex(temp1);
             
@@ -331,15 +379,12 @@ void Hom_Match(Complex* A, Complex* B, Complex* P, int k) {
         Complex* temp2 = Init_Complex();
         addSimplex(temp2, simp);
         Complex* MComplex = mergeComplexes(P, temp2, true);
-#pragma omp critical
-        {
-            saveComplex(MComplex);
-        }
+        saveComplex(MComplex);
         Light_Dest_Complex(MComplex);
         Light_Dest_Complex(temp2);
-        
-        
-    }
+    } */
+    
+    
     if (posibilityListLength > 1) {
         for (int i = 0; i < posibilityListLength; ++i) {
             Light_Dest_Complex(posibilityList[i]);
@@ -359,7 +404,6 @@ void Hom_Match(Complex* A, Complex* B, Complex* P, int k) {
 
 Simplex* fVectorFromComplex(Complex* comp)
 {
-    
 	Complex* fComplex = Init_Complex();
 	Simplex* AfVector = Init_Simplex();
     
@@ -399,10 +443,16 @@ Simplex* fVectorFromComplex(Complex* comp)
 }
 
 void Calculate_Hom(Complex* A, Complex* B) {
+    for (int i = 0; i < HOMFVECTORSIZE; ++i) {
+        homFVector[i] = 0;
+    }
+    
     storage0 = Init_Storage();
     storage1 = Init_Storage();
     
 	int points = CalculatePoints(A);
+    
+    maxK = points;
     
 	Simplex* fVA = fVectorFromComplex(A);
 	Simplex* fVB = fVectorFromComplex(B);
@@ -425,7 +475,7 @@ void Calculate_Hom(Complex* A, Complex* B) {
     storage0->lietralCount = k1;
 	for (int k = 2; k <= points; ++k) {
 #pragma omp parallel for shared(A, B, storage0, storage1, k)
-		for (long long V1 = 1; V1 < storage0->lietralCount; ++V1) {
+		for (long long V1 = 0; V1 < storage0->lietralCount; ++V1) {
             Complex* P = NULL;
 #pragma omp critical
             {
@@ -433,7 +483,7 @@ void Calculate_Hom(Complex* A, Complex* B) {
             }
 			if (P != NULL && P->simplexCount > 0) {
 				Hom_Match(A, B, P, k);
-                
+
 				Dest_Complex(P);
 			}
 			
@@ -441,7 +491,7 @@ void Calculate_Hom(Complex* A, Complex* B) {
         
 #pragma omp barrier
         
-        printf("\n%d => %lld\n", k, storage0->lietralCount);
+        printf("\n%d => %lld\n", k, storage1->lietralCount);
         fflush(stdout);
         
 		if (k == 2) {
@@ -453,7 +503,25 @@ void Calculate_Hom(Complex* A, Complex* B) {
     }
     Destory_Storage(storage1);
     
-	printf("\n\n Generation Result File \n\n");
+    printf("\n\n F-Vector: [");
+    for (int i = 0; i < HOMFVECTORSIZE; ++i) {
+        if(homFVector[i] == 0) continue;
+        printf("%lld", homFVector[i]);
+        if (i + 1 != HOMFVECTORSIZE && homFVector[i + 1] != 0) {
+            printf(", ");
+        }
+    }
+    printf("]\n\n");
+
+    printf("\n\n Safe House \n\n");
+	fflush(stdout);
+    
+    LD_File* file1 = Init_file_util_ext("./hom_safe", "txt", false);
+	for (long long V1 = 0; V1 < storage0->lietralCount; ++V1) {
+        wrtieLine(file1, getLiteralAt(storage0, V1), false);
+    }
+    
+    printf("\n\n Generation Result File \n\n");
 	fflush(stdout);
     
 	LD_File* file = Init_file_util_ext("./hom_result", "txt", false);
@@ -461,13 +529,8 @@ void Calculate_Hom(Complex* A, Complex* B) {
     
 	int bPoints        = CalculatePoints(B);
 	Complex* posetPrep = Init_Complex();
-	Simplex* fVector   = Init_Simplex();
     
-	for (int i = 0; i < points * 4; ++i) {
-		addElement(fVector, 0);
-	}
-    
-	for (long long V1 = 1; V1 < storage0->lietralCount; ++V1) {
+	for (long long V1 = 0; V1 < storage0->lietralCount; ++V1) {
 		Complex* P = FSI(A, B, points, V1);
 		if (P != NULL && P->simplexCount > 0) {
 			Simplex* tmp = Init_Simplex();
@@ -497,12 +560,11 @@ void Calculate_Hom(Complex* A, Complex* B) {
 					if (maxDim == simp->elementCount && maxSim != NULL && strcmp(maxSim, simpLit) != 0) {
 						maxDimCount++;
 					}
-
+                    
                     free(maxSim);
 					free(simpLit);
 				}
-
-				fVector->elements[maxDim - 1] += maxDimCount;
+                
 			} else {
                 Dest_Simplex(tmp);
             }
@@ -510,7 +572,6 @@ void Calculate_Hom(Complex* A, Complex* B) {
             Dest_Complex(P);
 		}
 	}
-	printf("\nFVector: %s\n", simplexToLiteral(fVector));
     
 	char* complexLiteral = complexToLiteral(posetPrep, true);
 	wrtieLine(file, "RequirePackage(\"homology\");", false);
@@ -523,7 +584,6 @@ void Calculate_Hom(Complex* A, Complex* B) {
 	Destroy_file(file);
     Destory_Storage(storage0);
     Dest_Complex(posetPrep);
-    Dest_Simplex(fVector);
     Dest_Simplex(fVA);
     Dest_Simplex(fVB);
     free(fVALit);
