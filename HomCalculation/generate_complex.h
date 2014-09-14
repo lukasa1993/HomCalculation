@@ -11,7 +11,8 @@
 
 #include "complex_struct.h"
 
-Complex* generateComplex(int facetCount, int dimension, int maxPoint);
-int random_in_range (unsigned int min, unsigned int max);
+Complex *generateComplex(int facetCount, int dimension, int maxPoint);
+
+int random_in_range(unsigned int min, unsigned int max);
 
 #endif

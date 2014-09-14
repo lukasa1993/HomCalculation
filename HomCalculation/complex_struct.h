@@ -22,42 +22,50 @@
 typedef int SimplexElem;
 
 typedef struct Simplex {
-    int          elementIndex;
-    int          elementCount;
-    int          elementCapacity;
-    SimplexElem* elements;
-    
+    int elementIndex;
+    int elementCount;
+    int elementCapacity;
+    SimplexElem *elements;
+
 } Simplex;
 
 typedef struct Complex {
-    int       simplexIndex;
-    int       simplexCount;
-    int       simplexCapacity;
-    Simplex** simplexes;
-    
+    int simplexIndex;
+    int simplexCount;
+    int simplexCapacity;
+    Simplex **simplexes;
+
 } Complex;
 
 // Simplex Manipulations
-Simplex* Init_Simplex();
-void     Dest_Simplex(Simplex* simplex);
+Simplex *Init_Simplex();
 
-void addElement(Simplex* simp, SimplexElem elem);
-SimplexElem getElementAt(Simplex* simp, int index);
-bool containsElement(Simplex* simp, SimplexElem elem);
+void Dest_Simplex(Simplex *simplex);
 
-char* simplexToLiteral(Simplex* simplex);
+void addElement(Simplex *simp, SimplexElem elem);
+
+SimplexElem getElementAt(Simplex *simp, int index);
+
+bool containsElement(Simplex *simp, SimplexElem elem);
+
+char *simplexToLiteral(Simplex *simplex);
 
 // Complex Manipulations
-Complex* Init_Complex();
-void Dest_Complex(Complex* complex);
-void Light_Dest_Complex(Complex* complex);
+Complex *Init_Complex();
 
-void addSimplex(Complex* comp, Simplex* simp);
-Simplex* getSimpexAt(Complex* comp, int index);
-bool containsSimplex(Complex* comp, Simplex* simp);
+void Dest_Complex(Complex *complex);
 
-Complex* literalToComplex(char*    complexLiteral);
-char* complexToLiteral(Complex* complex, bool pretty);
+void Light_Dest_Complex(Complex *complex);
+
+void addSimplex(Complex *comp, Simplex *simp);
+
+Simplex *getSimpexAt(Complex *comp, int index);
+
+bool containsSimplex(Complex *comp, Simplex *simp);
+
+Complex *literalToComplex(char *complexLiteral);
+
+char *complexToLiteral(Complex *complex, bool pretty);
 
 #include "simplex_basic.h"
 

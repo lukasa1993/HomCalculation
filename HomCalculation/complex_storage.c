@@ -9,20 +9,18 @@
 #include "complex_storage.h"
 
 
-Complex_Storage* Init_Storage()
-{
-    Complex_Storage* storage = malloc(sizeof(Complex_Storage));
-    
-    storage->literalIndex    = -1;
-    storage->lietralCount    = 0;
+Complex_Storage *Init_Storage() {
+    Complex_Storage *storage = malloc(sizeof(Complex_Storage));
+
+    storage->literalIndex = -1;
+    storage->lietralCount = 0;
     storage->literalCapacity = 1;
-    storage->complexLiterals = malloc(storage->literalCapacity * sizeof(char*));
-    
+    storage->complexLiterals = malloc(storage->literalCapacity * sizeof(char *));
+
     return storage;
 }
 
-void Destory_Storage(Complex_Storage* storage)
-{
+void Destory_Storage(Complex_Storage *storage) {
     for (int i = 0; i < storage->lietralCount; ++i) {
         free(storage->complexLiterals[i]);
     }
@@ -30,20 +28,18 @@ void Destory_Storage(Complex_Storage* storage)
     free(storage);
 }
 
-void addLiteral(Complex_Storage* storage, char* literal)
-{
+void addLiteral(Complex_Storage *storage, char *literal) {
     if (storage->literalCapacity <= storage->literalIndex + 1) {
         storage->literalCapacity <<= 1;
-        storage->complexLiterals = realloc(storage->complexLiterals, storage->literalCapacity * sizeof(char*));
+        storage->complexLiterals = realloc(storage->complexLiterals, storage->literalCapacity * sizeof(char *));
     }
-    
+
     storage->lietralCount++;
     storage->complexLiterals[storage->literalIndex + 1] = literal;
     storage->literalIndex = storage->lietralCount - 1;
 }
 
-char* getLiteralAt(Complex_Storage* storage, long long index)
-{
+char *getLiteralAt(Complex_Storage *storage, long long index) {
     if (storage->literalIndex < index) {
         return NULL;
     } else {

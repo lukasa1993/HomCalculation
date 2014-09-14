@@ -18,12 +18,14 @@
 #include "file_util.h"
 #include "complex_storage.h"
 
-Complex* AllSubSimplexses(Simplex* simplex);
-Simplex* simplexByExp(Simplex* simplex, long long exp);
+Complex *AllSubSimplexses(Simplex *simplex);
+
+Simplex *simplexByExp(Simplex *simplex, long long exp);
 
 // calculation functions
 
-Complex* FSI(Complex* A, Complex* B, int K, long long V);
-void Calculate_Hom(Complex* A, Complex* B);
+Complex *FSI(Complex *A, Complex *B, int K, long long V);
+
+void Calculate_Hom(Complex *A, Complex *B);
 
 #endif

@@ -29,11 +29,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="main.c" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/main.c">
+      <file leaf-file-name="simplex.c" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/simplex.c">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.20238096" vertical-offset="0" max-vertical-offset="3723">
-              <caret line="10" column="20" selection-start-line="10" selection-start-column="20" selection-end-line="10" selection-end-column="20" />
+            <state vertical-scroll-proportion="0.4940476" vertical-offset="6453" max-vertical-offset="9673">
+              <caret line="404" column="27" selection-start-line="404" selection-start-column="27" selection-end-line="404" selection-end-column="27" />
               <folding />
             </state>
           </provider>
@@ -50,6 +50,7 @@
     <option name="changedFiles">
       <list>
         <option value="$PROJECT_DIR$/main.c" />
+        <option value="$PROJECT_DIR$/simplex.c" />
       </list>
     </option>
   </component>
@@ -109,6 +110,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="recentsLimit" value="5" />
+    <property name="LayoutCode.rearrangeEntriesC/C++" value="true" />
   </component>
   <component name="RunManager" selected="Application.LD_SCIENCE">
     <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS="FALSE" PROJECT_NAME="LD_SCIENCE" TARGET_NAME="LD_SCIENCE" CONFIG_NAME="Debug">
@@ -183,8 +185,24 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/main.c">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.20238096" vertical-offset="0" max-vertical-offset="3723">
-          <caret line="10" column="20" selection-start-line="10" selection-start-column="20" selection-end-line="10" selection-end-column="20" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="2652" max-vertical-offset="3723">
+          <caret line="30" column="23" selection-start-line="30" selection-start-column="23" selection-end-line="30" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/generate_complex.c">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1819">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/simplex.c">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.4940476" vertical-offset="6453" max-vertical-offset="9673">
+          <caret line="404" column="27" selection-start-line="404" selection-start-column="27" selection-end-line="404" selection-end-column="27" />
           <folding />
         </state>
       </provider>

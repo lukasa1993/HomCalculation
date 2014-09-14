@@ -15,15 +15,18 @@
 #include <string.h>
 
 typedef struct Complex_Storage {
-    long long    literalIndex;
-    long long    lietralCount;
-    long long    literalCapacity;
-    char**       complexLiterals;
+    long long literalIndex;
+    long long lietralCount;
+    long long literalCapacity;
+    char **complexLiterals;
 } Complex_Storage;
 
-Complex_Storage* Init_Storage();
-void Destory_Storage(Complex_Storage* storage);
-void addLiteral(Complex_Storage* storage, char* literal);
-char* getLiteralAt(Complex_Storage* storage, long long index);
+Complex_Storage *Init_Storage();
+
+void Destory_Storage(Complex_Storage *storage);
+
+void addLiteral(Complex_Storage *storage, char *literal);
+
+char *getLiteralAt(Complex_Storage *storage, long long index);
 
 #endif

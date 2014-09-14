@@ -10,34 +10,32 @@
 #include <time.h>
 
 /* Would like a semi-open interval [min, max) */
-int random_in_range (unsigned int min, unsigned int max)
-{
+int random_in_range(unsigned int min, unsigned int max) {
     int base_random = rand(); /* in [0, RAND_MAX] */
     if (RAND_MAX == base_random) return random_in_range(min, max);
     /* now guaranteed to be in [0, RAND_MAX) */
-    int range       = max - min,
-    remainder   = RAND_MAX % range,
-    bucket      = RAND_MAX / range;
+    int range = max - min,
+            remainder = RAND_MAX % range,
+            bucket = RAND_MAX / range;
     /* There are range buckets, plus one smaller interval
      within remainder of RAND_MAX */
     if (base_random < RAND_MAX - remainder) {
         return min + base_random / bucket;
     } else {
-        return random_in_range (min, max);
+        return random_in_range(min, max);
     }
 }
 
-Complex* _generateComplex(int facetCount, int dimension, int maxPoint)
-{
-    Complex* comp = Init_Complex();
+Complex *_generateComplex(int facetCount, int dimension, int maxPoint) {
+    Complex *comp = Init_Complex();
     facetCount = random_in_range(1, facetCount);
     for (int i = 0; i < facetCount; ++i) {
-        Simplex* simp = Init_Simplex();
-        
+        Simplex *simp = Init_Simplex();
+
         int facetDim = random_in_range(2, dimension + 1);
         while (simp->elementCount < facetDim) {
             SimplexElem elem = random_in_range(1, maxPoint + 1);
-            
+
             bool unique = true;
             for (int l = 0; l < simp->elementCount; ++l) {
                 SimplexElem elem2 = getElementAt(simp, l);
@@ -46,24 +44,23 @@ Complex* _generateComplex(int facetCount, int dimension, int maxPoint)
                     break;
                 }
             }
-            
+
             if (unique) {
                 addElement(simp, elem);
             }
         }
-        
+
         addSimplex(comp, simp);
     }
-    
-    
+
+
     return comp;
 }
 
 
-Complex* generateComplex(int facetCount, int dimension, int maxPoint)
-{
+Complex *generateComplex(int facetCount, int dimension, int maxPoint) {
     bool allPoints = true;
-    Complex* comp  = NULL;
+    Complex *comp = NULL;
     srand((int) time(NULL));
     int tryCount = 0;
     do {
@@ -74,11 +71,11 @@ Complex* generateComplex(int facetCount, int dimension, int maxPoint)
         comp = _generateComplex(facetCount, dimension, maxPoint);
         for (int i = 1; i <= maxPoint; i++) {
             SimplexElem elem = i;
-            
+
             bool simplexContains = false;
             for (int j = 0; j < comp->simplexCount; ++j) {
-                Simplex* simp = getSimpexAt(comp, j);
-                
+                Simplex *simp = getSimpexAt(comp, j);
+
                 if (containsElement(simp, elem)) {
                     simplexContains = true;
                     break;
@@ -89,14 +86,14 @@ Complex* generateComplex(int facetCount, int dimension, int maxPoint)
                 break;
             }
         }
-        
+
         if (!allPoints) {
             Dest_Complex(comp);
         }
-        
+
         tryCount++;
     } while (!allPoints);
-    
+
     return comp;
 }
 
