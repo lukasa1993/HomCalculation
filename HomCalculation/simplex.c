@@ -118,8 +118,11 @@ Complex *FSI(Complex *A, Complex *B, int K, long long V) {
 Complex *upperSimplexContainingDot(Complex *comp, Simplex *searchSimp) {
     Complex *neibr = Init_Complex();
 
+    char* a = complexToLiteral(comp, true);
+    char* b = simplexToLiteral(searchSimp);
+
     for (int i = 0; i < comp->simplexCount; ++i) {
-        Simplex *simp = comp->simplexes[i];
+        Simplex *simp = getSimpexAt(comp, i);
 
         if (checkSimplexSubSimplex(simp, searchSimp)) {
             addSimplex(neibr, simp);
@@ -305,32 +308,48 @@ void Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
     addElement(temp, k);
 
     // dots in aneibr must be less then k
-    Complex *ANeibr = upperSimplexContainingDot(A, temp);
+    Complex *ANeibrTemp = upperSimplexContainingDot(A, temp);
     Dest_Simplex(temp);
+
+    Complex *ANeibr = Init_Complex();
+    for (int i = 0; i < ANeibrTemp->simplexCount; ++i) {
+        Simplex *aNeibrSim = getSimpexAt(ANeibrTemp, i);
+
+        Simplex *aNebrSimplex = Init_Simplex();
+
+        for (int j = 0; j < aNeibrSim->elementCount; ++j) {
+            SimplexElem elem = getElementAt(aNeibrSim, j);
+            if (elem < k) {
+                addElement(aNebrSimplex, elem);
+            }
+        }
+
+        if(aNebrSimplex->elementCount > 0) {
+            addSimplex(ANeibr, aNebrSimplex);
+        } else {
+            Dest_Simplex(aNebrSimplex);
+        }
+    }
+    Light_Dest_Complex(ANeibrTemp);
 
     Complex **posibilityList = calloc(A->simplexCount + B->simplexCount + P->simplexCount, sizeof(Complex *));
     int posibilityListLength = 0;
 
     for (int i = 0; i < ANeibr->simplexCount; ++i) {
         Simplex *aNeibrSim = getSimpexAt(ANeibr, i);
-
-        for (int j = 0; j < aNeibrSim->elementCount; ++j) {
-            SimplexElem elem = getElementAt(aNeibrSim, j);
-            int elemIndex = elem - 1;
-
-            if (elem != (SimplexElem) k && elemIndex < P->simplexCount) {
-                Simplex *tempSim = getSimpexAt(P, elemIndex);
-                Complex *comp = upperSimplexContainingDot(B, tempSim);
-
-                posibilityList[posibilityListLength] = comp;
-                posibilityListLength++;
-            }
-        }
+        Complex *comp = upperSimplexContainingDot(B, aNeibrSim);
+        printf("\n%s\n", complexToLiteral(comp, true));
+        posibilityList[posibilityListLength] = comp;
+        posibilityListLength++;
     }
 
     Complex *BNeibr = unionIntersection(posibilityList, posibilityListLength);
 
-    printf("\n%s <> %s\n", complexToLiteral(P, true), complexToLiteral(BNeibr, true));
+    char* ANebrStr = complexToLiteral(ANeibr, true);
+    char* BNeibrStr = complexToLiteral(BNeibr, true);
+    char* PStr = complexToLiteral(P, true);
+
+    printf("\n%s <|> %s\n", complexToLiteral(P, true), complexToLiteral(BNeibr, true));
 
     for (int i = 0; i < BNeibr->simplexCount; ++i) {
         Simplex *simp = getSimpexAt(BNeibr, i);
@@ -484,7 +503,10 @@ void Calculate_Hom(Complex *A, Complex *B) {
     printf("\n\n Safe House \n\n");
     fflush(stdout);
 
-    LD_File *file1 = Init_file_util_ext("./hom_safe", "txt", false);
+    char* a = malloc(1024);
+    sprintf(a, "./hom_safe( %s - %s) ", complexToLiteral(A, true), complexToLiteral(B, true));
+
+    LD_File *file1 = Init_file_util_ext(a, "txt", false);
     for (long long V1 = 0; V1 < storage0->lietralCount; ++V1) {
         wrtieLine(file1, getLiteralAt(storage0, V1), false);
     }
