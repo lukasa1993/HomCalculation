@@ -34,7 +34,7 @@ void saveComplex(Complex *comp) {
         }
     }
 
-    if (strstr(literal, "[[2], [4], [3]") != NULL) {
+    if (strstr(literal, "[[1], [1], [1], [1]]") != NULL) {
         printf("\n%s\n", literal);
     }
 
@@ -118,8 +118,8 @@ Complex *FSI(Complex *A, Complex *B, int K, long long V) {
 Complex *upperSimplexContainingDot(Complex *comp, Simplex *searchSimp) {
     Complex *neibr = Init_Complex();
 
-    char* a = complexToLiteral(comp, true);
-    char* b = simplexToLiteral(searchSimp);
+    char *a = complexToLiteral(comp, true);
+    char *b = simplexToLiteral(searchSimp);
 
     for (int i = 0; i < comp->simplexCount; ++i) {
         Simplex *simp = getSimpexAt(comp, i);
@@ -324,7 +324,7 @@ void Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
             }
         }
 
-        if(aNebrSimplex->elementCount > 0) {
+        if (aNebrSimplex->elementCount > 0) {
             addSimplex(ANeibr, aNebrSimplex);
         } else {
             Dest_Simplex(aNebrSimplex);
@@ -337,6 +337,7 @@ void Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
 
     for (int i = 0; i < ANeibr->simplexCount; ++i) {
         Simplex *aNeibrSim = getSimpexAt(ANeibr, i);
+
         Complex *comp = upperSimplexContainingDot(B, aNeibrSim);
         printf("\n%s\n", complexToLiteral(comp, true));
         posibilityList[posibilityListLength] = comp;
@@ -345,9 +346,13 @@ void Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
 
     Complex *BNeibr = unionIntersection(posibilityList, posibilityListLength);
 
-    char* ANebrStr = complexToLiteral(ANeibr, true);
-    char* BNeibrStr = complexToLiteral(BNeibr, true);
-    char* PStr = complexToLiteral(P, true);
+    char *ANebrStr = complexToLiteral(ANeibr, true);
+    char *BNeibrStr = complexToLiteral(BNeibr, true);
+    char *PStr = complexToLiteral(P, true);
+
+    if (P->simplexCount == 4) {
+        printf("");
+    }
 
     printf("\n%s <|> %s\n", complexToLiteral(P, true), complexToLiteral(BNeibr, true));
 
@@ -503,7 +508,7 @@ void Calculate_Hom(Complex *A, Complex *B) {
     printf("\n\n Safe House \n\n");
     fflush(stdout);
 
-    char* a = malloc(1024);
+    char *a = malloc(1024);
     sprintf(a, "./hom_safe( %s - %s) ", complexToLiteral(A, true), complexToLiteral(B, true));
 
     LD_File *file1 = Init_file_util_ext(a, "txt", false);
