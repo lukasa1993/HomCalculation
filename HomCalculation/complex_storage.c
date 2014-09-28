@@ -15,7 +15,7 @@ Complex_Storage *Init_Storage() {
     storage->literalIndex = -1;
     storage->lietralCount = 0;
     storage->literalCapacity = 1;
-    storage->complexLiterals = malloc(storage->literalCapacity * sizeof(char *));
+    storage->complexLiterals = malloc((size_t) (storage->literalCapacity * sizeof(char *)));
 
     return storage;
 }
@@ -31,7 +31,7 @@ void Destory_Storage(Complex_Storage *storage) {
 void addLiteral(Complex_Storage *storage, char *literal) {
     if (storage->literalCapacity <= storage->literalIndex + 1) {
         storage->literalCapacity <<= 1;
-        storage->complexLiterals = realloc(storage->complexLiterals, storage->literalCapacity * sizeof(char *));
+        storage->complexLiterals = realloc(storage->complexLiterals, (size_t) (storage->literalCapacity * sizeof(char *)));
     }
 
     storage->lietralCount++;
@@ -41,6 +41,7 @@ void addLiteral(Complex_Storage *storage, char *literal) {
 
 char *getLiteralAt(Complex_Storage *storage, long long index) {
     if (storage->literalIndex < index) {
+        printf("\n WRONG: %qi|%qi  %qi -- %d\n", storage->lietralCount, storage->literalIndex, index, storage->literalIndex < index);
         return NULL;
     } else {
         return storage->complexLiterals[index];

@@ -177,6 +177,7 @@ int main(int argc, const char *argv[]) {
 
 //    Calculate_Hom(literalToComplex("[[1,2,7],[2,3,7],[3,4,7],[4,5,7],[5,6,7],[6,1,7]]"), literalToComplex("[[1,2,7],[2,3,7],[3,4,7],[4,5,7],[5,6,7],[6,1,7]]"));
 
+    printf("\nThe End...\n");
     exit(0);
     printf("Input Type(Types: file, file-random-generated, random-generated, mannual):");
     char buffer[255];

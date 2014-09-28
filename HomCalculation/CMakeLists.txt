@@ -3,6 +3,7 @@ project(LD_SCIENCE)
 
 set(CMAKE_C_FLAGS "-std=c99")
 
+IF(false)
 message(STATUS "Checking OpenMP")
 find_package(OpenMP)
 IF(OPENMP_FOUND)
@@ -14,6 +15,7 @@ IF(OPENMP_FOUND)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
 ELSE()
     message("Missed OpenMP! x_x")
+ENDIF()
 ENDIF()
 
 set(SOURCE_FILES

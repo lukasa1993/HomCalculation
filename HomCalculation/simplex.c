@@ -28,16 +28,11 @@ void saveComplex(Complex *comp) {
     char *literal = complexToLiteral(comp, true);
     for (long long i = 0; i < storage1->lietralCount; ++i) {
         char *lit = getLiteralAt(storage1, i);
-        if (strcmp(literal, lit) == 0) {
+        if (lit != NULL && strcmp(literal, lit) == 0) {
             save = false;
             break;
         }
     }
-
-    if (strstr(literal, "[[1], [1], [1], [1]]") != NULL) {
-        printf("\n%s\n", literal);
-    }
-
 
     if (save) {
 #pragma omp critical
@@ -332,27 +327,26 @@ void Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
     }
     Light_Dest_Complex(ANeibrTemp);
 
-    Complex **posibilityList = calloc(A->simplexCount + B->simplexCount + P->simplexCount, sizeof(Complex *));
+    size_t posibleSize       = (size_t) (A->simplexCount + B->simplexCount + P->simplexCount);
+    Complex **posibilityList = calloc(posibleSize, sizeof(Complex *));
     int posibilityListLength = 0;
 
     for (int i = 0; i < ANeibr->simplexCount; ++i) {
         Simplex *aNeibrSim = getSimpexAt(ANeibr, i);
 
-        Complex *comp = upperSimplexContainingDot(B, aNeibrSim);
-        printf("\n%s\n", complexToLiteral(comp, true));
-        posibilityList[posibilityListLength] = comp;
-        posibilityListLength++;
+        for (int j = 0; j < aNeibrSim->elementCount; ++j) {
+            SimplexElem  elem = getElementAt(aNeibrSim, j);
+
+            Simplex *pSimp = getSimpexAt(P, elem - 1);
+
+            Complex *comp = upperSimplexContainingDot(B, pSimp);
+            printf("\n%s\n", complexToLiteral(comp, true));
+            posibilityList[posibilityListLength] = comp;
+            posibilityListLength++;
+        }
     }
 
     Complex *BNeibr = unionIntersection(posibilityList, posibilityListLength);
-
-    char *ANebrStr = complexToLiteral(ANeibr, true);
-    char *BNeibrStr = complexToLiteral(BNeibr, true);
-    char *PStr = complexToLiteral(P, true);
-
-    if (P->simplexCount == 4) {
-        printf("");
-    }
 
     printf("\n%s <|> %s\n", complexToLiteral(P, true), complexToLiteral(BNeibr, true));
 
