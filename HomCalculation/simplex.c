@@ -327,27 +327,30 @@ void Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
     }
     Light_Dest_Complex(ANeibrTemp);
 
-    size_t posibleSize       = (size_t) (A->simplexCount + B->simplexCount + P->simplexCount);
+    size_t posibleSize = (size_t) (A->simplexCount + B->simplexCount + P->simplexCount);
     Complex **posibilityList = calloc(posibleSize, sizeof(Complex *));
     int posibilityListLength = 0;
 
     for (int i = 0; i < ANeibr->simplexCount; ++i) {
         Simplex *aNeibrSim = getSimpexAt(ANeibr, i);
-Simplex* dsa = Int_simlpex();
+        Simplex *fsiAT = Init_Simplex();
+
         for (int j = 0; j < aNeibrSim->elementCount; ++j) {
-            SimplexElem  elem = getElementAt(aNeibrSim, j);
+            SimplexElem elem = getElementAt(aNeibrSim, j);
 
             Simplex *pSimp = getSimpexAt(P, elem - 1);
-    for(in psimp) {
-    dsa->add(psimp elem);
-        
-    }
-    }
+            for (int l = 0; l < pSimp->elementCount; ++l) {
+                SimplexElem pElem = getElementAt(pSimp, l);
+                if (!containsElement(fsiAT, pElem)) {
+                    addElement(fsiAT, pElem);
+                }
+            }
         }
-        Complex *comp = upperSimplexContainingDot(B, pSimp);
-            printf("\n%s\n", complexToLiteral(comp, true));
-            posibilityList[posibilityListLength] = comp;
-            posibilityListLength++;
+
+        Complex *comp = upperSimplexContainingDot(B, fsiAT);
+        printf("\n%s\n", complexToLiteral(comp, true));
+        posibilityList[posibilityListLength] = comp;
+        posibilityListLength++;
     }
 
     Complex *BNeibr = unionIntersection(posibilityList, posibilityListLength);
