@@ -348,14 +348,14 @@ void Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
         }
 
         Complex *comp = upperSimplexContainingDot(B, fsiAT);
-        printf("\n%s\n", complexToLiteral(comp, true));
+//        printf("\n%s\n", complexToLiteral(comp, true));
         posibilityList[posibilityListLength] = comp;
         posibilityListLength++;
     }
 
     Complex *BNeibr = unionIntersection(posibilityList, posibilityListLength);
 
-    printf("\n%s <|> %s\n", complexToLiteral(P, true), complexToLiteral(BNeibr, true));
+//    printf("\n%s <|> %s\n", complexToLiteral(P, true), complexToLiteral(BNeibr, true));
 
     for (int i = 0; i < BNeibr->simplexCount; ++i) {
         Simplex *simp = getSimpexAt(BNeibr, i);

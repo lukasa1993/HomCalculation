@@ -41,7 +41,6 @@ void addLiteral(Complex_Storage *storage, char *literal) {
 
 char *getLiteralAt(Complex_Storage *storage, long long index) {
     if (storage->literalIndex < index) {
-        printf("\n WRONG: %qi|%qi  %qi -- %d\n", storage->lietralCount, storage->literalIndex, index, storage->literalIndex < index);
         return NULL;
     } else {
         return storage->complexLiterals[index];
