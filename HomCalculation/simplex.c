@@ -112,10 +112,6 @@ Complex *FSI(Complex *A, Complex *B, int K, long long V) {
 
 Complex *upperSimplexContainingDot(Complex *comp, Simplex *searchSimp) {
     Complex *neibr = Init_Complex();
-
-    char *a = complexToLiteral(comp, true);
-    char *b = simplexToLiteral(searchSimp);
-
     for (int i = 0; i < comp->simplexCount; ++i) {
         Simplex *simp = getSimpexAt(comp, i);
 
