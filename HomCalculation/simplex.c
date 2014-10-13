@@ -348,7 +348,6 @@ void Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
         if(fsiAT->elementCount > 0) {
             Complex *comp = upperSimplexContainingDot(B, fsiAT);
 
-            
             posibilityList[posibilityListLength] = comp;
             posibilityListLength++;
         }
@@ -476,6 +475,9 @@ void Calculate_Hom(Complex *A, Complex *B) {
                 if (strcmp(complexToLiteral(P, true), "[[2], [4]]") == 0) {
                     printf("");
                 }
+
+                printf("\n{%d %d}\n", k, V1);
+
                 Hom_Match(A, B, P, k);
 
                 Dest_Complex(P);
