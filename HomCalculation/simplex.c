@@ -482,14 +482,6 @@ void Calculate_Hom(Complex *A, Complex *B) {
                     printf("");
                 }
 
-                if (k == 3 && V1 == 35) {
-
-                    printf(" %s  ", complexToLiteral(P, true));
-
-                }
-
-                printf("\n{%d %d}\n", k, V1);
-
                 Hom_Match(A, B, P, k);
 
                 Dest_Complex(P);
