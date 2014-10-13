@@ -345,10 +345,13 @@ void Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
             }
         }
 
-        Complex *comp = upperSimplexContainingDot(B, fsiAT);
-//        printf("\n%s\n", complexToLiteral(comp, true));
-        posibilityList[posibilityListLength] = comp;
-        posibilityListLength++;
+        if(fsiAT->elementCount > 0) {
+            Complex *comp = upperSimplexContainingDot(B, fsiAT);
+
+            
+            posibilityList[posibilityListLength] = comp;
+            posibilityListLength++;
+        }
     }
 
     Complex *BNeibr = unionIntersection(posibilityList, posibilityListLength);
