@@ -511,6 +511,8 @@ void Calculate_Hom(Complex *A, Complex *B) {
     }
     printf("]\n\n");
 
+    // hdd-return
+
     printf("\n\n Safe House \n\n");
     fflush(stdout);
 
