@@ -440,7 +440,7 @@ Simplex *fVectorFromComplex(Complex *comp) {
 }
 
 void Calculate_Hom(Complex *A, Complex *B) {
-    printf("\n ------- Calculation ------- ");
+    printf("\n ------- Calculation ------- \n");
     printf(" %s -> %s \n", complexToLiteral(A, true), complexToLiteral(B, true));
 
 
