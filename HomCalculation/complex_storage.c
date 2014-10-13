@@ -36,7 +36,6 @@ void addLiteral(Complex_Storage *storage, char *literal) {
 
     char* lit = malloc(strlen(literal) * sizeof(char));
     strcpy(lit, literal);
-    free(literal);
 
     storage->lietralCount++;
     storage->complexLiterals[storage->literalIndex + 1] = lit;
