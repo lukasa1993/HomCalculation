@@ -159,6 +159,7 @@ Simplex *buildIntersectedSimplex(Complex *comp) {
 
     for (int i = 0; i < comp->simplexCount; ++i) {
         Simplex *simp = getSimpexAt(comp, i);
+
         for (int j = 0; j < simp->elementCount; ++j) {
             SimplexElem simpElem = getElementAt(simp, j);
 
@@ -166,9 +167,10 @@ Simplex *buildIntersectedSimplex(Complex *comp) {
                 if (l == i) {
                     continue;
                 }
-                Simplex *simp2 = comp->simplexes[l];
+                Simplex *simp2 = getSimpexAt(comp, l);
                 for (int m = 0; m < simp2->elementCount; ++m) {
-                    SimplexElem simpElem2 = simp2->elements[m];
+
+                    SimplexElem simpElem2 = getElementAt(simp2, m);
                     if (simpElem == simpElem2) {
                         bool unique = true;
                         for (int checkIndex = 0; checkIndex < intersectedSimplex->elementCount; ++checkIndex) {
