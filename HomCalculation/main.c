@@ -161,7 +161,7 @@ int main(int argc, const char *argv[]) {
 //    printf("\n%s\n", polytopToLiteral(pol));
 //    return 0;
 
-//	Calculate_Hom(literalToComplex("[[1,2,3],[2,3,4]]"), literalToComplex("[[1,2,3],[2,3,4]]"));
+	Calculate_Hom(literalToComplex("[[1,2,3],[2,3,4]]"), literalToComplex("[[1,2,3],[2,3,4]]"));
 
 //    Calculate_Hom(literalToComplex("[[1,2],[2,3],[3,4]]"), literalToComplex("[[1,2],[2,3],[3,4]]"));
 
@@ -180,7 +180,8 @@ int main(int argc, const char *argv[]) {
 
 //    Calculate_Hom(literalToComplex("[[1,2,6],[2,3,6],[3,4,6],[4,5,6],[5,1,6]]"), literalToComplex("[[1,5,4],[5,2,6],[4,6,3],[4,5,6]]"));
 //    Calculate_Hom(literalToComplex("[[1,2,6],[2,3,4],[6,4,5],[6,2,4]]"),literalToComplex("[[1,2,6],[2,3,4],[6,4,5],[6,2,4]]"));
-    Calculate_Hom(literalToComplex("[[1,2,6],[2,3,4],[6,4,5],[6,2,4]]"),literalToComplex("[[1,2,6],[2,3,6],[3,4,6],[4,5,6],[5,1,6]]"));
+//    Calculate_Hom(literalToComplex("[[1,2,6],[2,3,4],[6,4,5],[6,2,4]]"),literalToComplex("[[1,2,6],[2,3,6],[3,4,6],[4,5,6],[5,1,6]]"));
+//    Calculate_Hom(literalToComplex("[[1,2,6],[2,3,6],[3,4,6],[4,5,6],[5,1,6]]"), literalToComplex("[[1,5,4],[5,2,6],[4,6,3],[4,5,6]]"));
 
     printf("\nThe End...\n");
     exit(0);
