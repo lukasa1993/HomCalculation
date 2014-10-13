@@ -512,7 +512,7 @@ void Calculate_Hom(Complex *A, Complex *B) {
     for (long long V1 = 0; V1 < storage0->lietralCount; ++V1) {
         wrtieLine(file1, getLiteralAt(storage0, V1), false);
     }
-
+    return; // temporarry
     printf("\n\n Generation Result File \n\n");
     fflush(stdout);
 

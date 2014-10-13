@@ -59,21 +59,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="simplex.c" pinned="false" current-in-tab="true">
+      <file leaf-file-name="simplex.c" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/simplex.c">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="1.7086331" vertical-offset="5017" max-vertical-offset="10081">
-              <caret line="351" column="32" selection-start-line="351" selection-start-column="32" selection-end-line="351" selection-end-column="32" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="8484" max-vertical-offset="10081">
+              <caret line="514" column="25" selection-start-line="514" selection-start-column="25" selection-end-line="514" selection-end-column="25" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="main.c" pinned="false" current-in-tab="false">
+      <file leaf-file-name="main.c" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.c">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="2826" max-vertical-offset="3689">
-              <caret line="179" column="131" selection-start-line="179" selection-start-column="131" selection-end-line="179" selection-end-column="131" />
+            <state vertical-scroll-proportion="0.53571427" vertical-offset="2610" max-vertical-offset="3740">
+              <caret line="180" column="0" selection-start-line="180" selection-start-column="0" selection-end-line="180" selection-end-column="0" />
               <folding>
                 <element signature="e#138#158#0" expanded="true" />
               </folding>
@@ -219,10 +219,10 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-4" y="-4" width="1688" height="1018" extended-state="7" />
-    <editor active="true" />
+    <frame x="-4" y="-4" width="1688" height="1018" extended-state="6" />
+    <editor active="false" />
     <layout>
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3202765" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31797236" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32949308" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32949308" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -230,7 +230,7 @@
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.328341" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.18214716" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3986175" sideWeight="0.4997367" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32718894" sideWeight="0.49939686" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32603687" sideWeight="0.49939686" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32718894" sideWeight="0.50060314" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -264,7 +264,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/main.c</url>
-          <line>184</line>
+          <line>187</line>
           <option name="timeStamp" value="3" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
@@ -700,21 +700,21 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main.c">
+    <entry file="file://$PROJECT_DIR$/simplex.c">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="2826" max-vertical-offset="3689">
-          <caret line="179" column="131" selection-start-line="179" selection-start-column="131" selection-end-line="179" selection-end-column="131" />
-          <folding>
-            <element signature="e#138#158#0" expanded="true" />
-          </folding>
+        <state vertical-scroll-proportion="0.0" vertical-offset="8484" max-vertical-offset="10081">
+          <caret line="514" column="25" selection-start-line="514" selection-start-column="25" selection-end-line="514" selection-end-column="25" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/simplex.c">
+    <entry file="file://$PROJECT_DIR$/main.c">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.7086331" vertical-offset="5017" max-vertical-offset="10081">
-          <caret line="351" column="32" selection-start-line="351" selection-start-column="32" selection-end-line="351" selection-end-column="32" />
-          <folding />
+        <state vertical-scroll-proportion="0.53571427" vertical-offset="2610" max-vertical-offset="3740">
+          <caret line="180" column="0" selection-start-line="180" selection-start-column="0" selection-end-line="180" selection-end-column="0" />
+          <folding>
+            <element signature="e#138#158#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

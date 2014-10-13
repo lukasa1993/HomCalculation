@@ -177,7 +177,10 @@ int main(int argc, const char *argv[]) {
 //    Calculate_Hom(literalToComplex("[[1,2,3]]"), literalToComplex("[[1,2,3]]"));
 
 //    Calculate_Hom(literalToComplex("[[1,2,7],[2,3,7],[3,4,7],[4,5,7],[5,6,7],[6,1,7]]"), literalToComplex("[[1,2,7],[2,3,7],[3,4,7],[4,5,7],[5,6,7],[6,1,7]]"));
-    Calculate_Hom(literalToComplex("[[1,2,6],[2,3,6],[3,4,6],[4,5,6],[5,1,6]]"), literalToComplex("[[1,5,4],[5,2,6],[4,6,3],[4,5,6]]"));
+
+//    Calculate_Hom(literalToComplex("[[1,2,6],[2,3,6],[3,4,6],[4,5,6],[5,1,6]]"), literalToComplex("[[1,5,4],[5,2,6],[4,6,3],[4,5,6]]"));
+//    Calculate_Hom(literalToComplex("[[1,2,6],[2,3,4],[6,4,5],[6,2,4]]"),literalToComplex("[[1,2,6],[2,3,4],[6,4,5],[6,2,4]]"));
+    Calculate_Hom(literalToComplex("[[1,2,6],[2,3,4],[6,4,5],[6,2,4]]"),literalToComplex("[[1,2,6],[2,3,6],[3,4,6],[4,5,6],[5,1,6]]"));
 
     printf("\nThe End...\n");
     exit(0);
