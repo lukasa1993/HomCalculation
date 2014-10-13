@@ -478,9 +478,6 @@ void Calculate_Hom(Complex *A, Complex *B) {
                 P = FSI(A, B, k - 1, V1);
             }
             if (P != NULL && P->simplexCount > 0) {
-                if (strcmp(complexToLiteral(P, true), "[[2], [4]]") == 0) {
-                    printf("");
-                }
 
                 Hom_Match(A, B, P, k);
 
