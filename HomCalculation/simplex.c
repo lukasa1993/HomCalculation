@@ -297,12 +297,18 @@ int CalculatePoints(Complex *comp) {
 
 
 void Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
+    char* charA = complexToLiteral(A, true);
+    char* charB = complexToLiteral(B, true);
+    char* charP = complexToLiteral(P, true);
+
     Simplex *temp = Init_Simplex();
     addElement(temp, k);
 
     // dots in aneibr must be less then k
     Complex *ANeibrTemp = upperSimplexContainingDot(A, temp);
     Dest_Simplex(temp);
+
+    char* charANeibrTemp = complexToLiteral(ANeibrTemp, true);
 
     Complex *ANeibr = Init_Complex();
     for (int i = 0; i < ANeibrTemp->simplexCount; ++i) {
@@ -345,7 +351,7 @@ void Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
             }
         }
 
-        if(fsiAT->elementCount > 0) {
+        if (fsiAT->elementCount > 0) {
             Complex *comp = upperSimplexContainingDot(B, fsiAT);
 
             posibilityList[posibilityListLength] = comp;
@@ -474,6 +480,12 @@ void Calculate_Hom(Complex *A, Complex *B) {
             if (P != NULL && P->simplexCount > 0) {
                 if (strcmp(complexToLiteral(P, true), "[[2], [4]]") == 0) {
                     printf("");
+                }
+
+                if (k == 3 && V1 == 35) {
+
+                    printf(" %s  ", complexToLiteral(P, true));
+
                 }
 
                 printf("\n{%d %d}\n", k, V1);
