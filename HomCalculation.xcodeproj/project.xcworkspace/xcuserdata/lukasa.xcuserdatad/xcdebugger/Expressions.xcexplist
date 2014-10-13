@@ -11,6 +11,14 @@
          </PersistentStrings>
       </ContextState>
       <ContextState
+         contextName = "addLiteral:complex_storage.c">
+         <PersistentStrings>
+            <PersistentString
+               value = "strlen(lietral)">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
          contextName = "upperSimplexContainingDot:simplex.c">
          <PersistentStrings>
             <PersistentString

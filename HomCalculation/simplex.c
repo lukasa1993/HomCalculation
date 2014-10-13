@@ -375,9 +375,10 @@ void Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
                 addSimplex(temp1, subSimp);
 
                 Complex *M1Complex = mergeComplexes(P, temp1, true);
+
                 saveComplex(M1Complex);
                 Light_Dest_Complex(M1Complex);
-//                Dest_Complex(temp1);
+                Dest_Complex(temp1);
             }
         }
     }
