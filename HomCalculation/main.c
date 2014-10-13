@@ -191,7 +191,7 @@ int main(int argc, const char *argv[]) {
     end = clock();
     time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
 
-    printf("\n %f The End..n", time_spent);
+    printf("\n %f The End.. \n", time_spent);
     exit(0);
     printf("Input Type(Types: file, file-random-generated, random-generated, mannual):");
     char buffer[255];
