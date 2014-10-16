@@ -505,15 +505,24 @@ void Calculate_Hom(Complex *A, Complex *B) {
     }
     Destory_Storage(storage1);
 
+    char* fvectorstr = "";
+
+    fvectorstr  = concat(fvectorstr, "\n\n F-Vector: [");
     printf("\n\n F-Vector: [");
     for (int i = 0; i < HOMFVECTORSIZE; ++i) {
         if (homFVector[i] == 0) continue;
+
+        char tmp[10];
+        sprintf(tmp, "%lld", homFVector[i]);
+        fvectorstr  = concat(fvectorstr, tmp);
         printf("%lld", homFVector[i]);
         if (i + 1 != HOMFVECTORSIZE && homFVector[i + 1] != 0) {
+            fvectorstr  = concat(fvectorstr, ", ");
             printf(", ");
         }
     }
     printf("]\n\n");
+    fvectorstr  = concat(fvectorstr, "]\n\n");
 
     // hdd-return
 
@@ -524,6 +533,7 @@ void Calculate_Hom(Complex *A, Complex *B) {
     sprintf(a, "./hom_safe( %s - %s) ", complexToLiteral(A, true), complexToLiteral(B, true));
 
     LD_File *file1 = Init_file_util_ext(a, "txt", false);
+    wrtieLine(file1, fvectorstr, false);
     for (long long V1 = 0; V1 < storage0->lietralCount; ++V1) {
         wrtieLine(file1, getLiteralAt(storage0, V1), false);
     }
