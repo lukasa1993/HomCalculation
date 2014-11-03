@@ -24,19 +24,19 @@ long long homFVector[HOMFVECTORSIZE]; // assuming that maximum dimmension would 
 long long fVectorDim(Complex *comp);
 
 void saveComplex(Complex *comp) {
-    bool save = true;
-    char *literal = complexToLiteral(comp, true);
-    for (long long i = 0; i < storage1->lietralCount; ++i) {
-        char *lit = getLiteralAt(storage1, i);
-        if (lit != NULL && strcmp(literal, lit) == 0) {
-            save = false;
-            break;
-        }
-    }
-
-    if (save) {
 #pragma omp critical
-        {
+    {
+        bool save = true;
+        char *literal = complexToLiteral(comp, true);
+        for (long long i = 0; i < storage1->lietralCount; ++i) {
+            char *lit = getLiteralAt(storage1, i);
+            if (lit != NULL && strcmp(literal, lit) == 0) {
+                save = false;
+                break;
+            }
+        }
+
+        if (save) {
             if (comp->simplexCount == maxK) {
                 long long dim = fVectorDim(comp);
                 homFVector[dim]++;
@@ -297,9 +297,9 @@ int CalculatePoints(Complex *comp) {
 
 
 void Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
-    char* charA = complexToLiteral(A, true);
-    char* charB = complexToLiteral(B, true);
-    char* charP = complexToLiteral(P, true);
+    char *charA = complexToLiteral(A, true);
+    char *charB = complexToLiteral(B, true);
+    char *charP = complexToLiteral(P, true);
 
     Simplex *temp = Init_Simplex();
     addElement(temp, k);
@@ -308,7 +308,7 @@ void Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
     Complex *ANeibrTemp = upperSimplexContainingDot(A, temp);
     Dest_Simplex(temp);
 
-    char* charANeibrTemp = complexToLiteral(ANeibrTemp, true);
+    char *charANeibrTemp = complexToLiteral(ANeibrTemp, true);
 
     Complex *ANeibr = Init_Complex();
     for (int i = 0; i < ANeibrTemp->simplexCount; ++i) {
@@ -505,24 +505,24 @@ void Calculate_Hom(Complex *A, Complex *B) {
     }
     Destory_Storage(storage1);
 
-    char* fvectorstr = "";
+    char *fvectorstr = "";
 
-    fvectorstr  = concat(fvectorstr, "\n\n F-Vector: [");
+    fvectorstr = concat(fvectorstr, "\n\n F-Vector: [");
     printf("\n\n F-Vector: [");
     for (int i = 0; i < HOMFVECTORSIZE; ++i) {
         if (homFVector[i] == 0) continue;
 
         char tmp[10];
         sprintf(tmp, "%lld", homFVector[i]);
-        fvectorstr  = concat(fvectorstr, tmp);
+        fvectorstr = concat(fvectorstr, tmp);
         printf("%lld", homFVector[i]);
         if (i + 1 != HOMFVECTORSIZE && homFVector[i + 1] != 0) {
-            fvectorstr  = concat(fvectorstr, ", ");
+            fvectorstr = concat(fvectorstr, ", ");
             printf(", ");
         }
     }
     printf("]\n\n");
-    fvectorstr  = concat(fvectorstr, "]\n\n");
+    fvectorstr = concat(fvectorstr, "]\n\n");
 
     // hdd-return
 

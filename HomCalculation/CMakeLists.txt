@@ -3,7 +3,7 @@ project(LD_SCIENCE)
 
 set(CMAKE_C_FLAGS "-std=c99")
 
-IF(false)
+IF(true)
 message(STATUS "Checking OpenMP")
 find_package(OpenMP)
 IF(OPENMP_FOUND)
