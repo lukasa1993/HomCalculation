@@ -189,26 +189,26 @@ int main(int argc, const char *argv[]) {
 //    Calculate_Hom(literalToComplex("[[1,2,6],[2,3,6],[3,4,6],[4,5,6],[5,1,6]]"), literalToComplex("[[1,5,4],[5,2,6],[4,6,3],[4,5,6]]"));
 
     // -------------------------------------
-    char* A = "[[1,2,6],[2,3,6],[3,4,6],[4,5,6],[5,1,6]]";
-    char* B = "[[1,2,6],[2,3,4],[4,5,6],[2,4,6]]";
+    char* A = "[[1,2,6],[2,3,6],[3,4,6],[4,5,6],[1,5,6]]";
+    char* B = "[[1,2,6],[2,3,4],[2,4,6],[4,5,6]]";
+
+    Calculate_Hom(literalToComplex(A), literalToComplex(A));
+    Calculate_Hom(literalToComplex(A), literalToComplex(B));
+
+    Calculate_Hom(literalToComplex(B), literalToComplex(A));
+    Calculate_Hom(literalToComplex(B), literalToComplex(B));
+
     char* C = "[[1,2,4],[2,3,5],[3,1,6],[1,4,6],[4,2,5],[4,5,6],[3,6,5]]";
-
-//    Calculate_Hom(literalToComplex(A), literalToComplex(A));
-//    Calculate_Hom(literalToComplex(A), literalToComplex(B));
-//
-//    Calculate_Hom(literalToComplex(B), literalToComplex(A));
-//    Calculate_Hom(literalToComplex(B), literalToComplex(B));
-
 
     // ------ can't calcualate? --------------
 
-    Calculate_Hom(literalToComplex(A), literalToComplex(C));
-
-    Calculate_Hom(literalToComplex(B), literalToComplex(C));
-
-    Calculate_Hom(literalToComplex(C), literalToComplex(A));
-    Calculate_Hom(literalToComplex(C), literalToComplex(B));
-    Calculate_Hom(literalToComplex(C), literalToComplex(C));
+//    Calculate_Hom(literalToComplex(A), literalToComplex(C));
+//
+//    Calculate_Hom(literalToComplex(B), literalToComplex(C));
+//
+//    Calculate_Hom(literalToComplex(C), literalToComplex(A));
+//    Calculate_Hom(literalToComplex(C), literalToComplex(B));
+//    Calculate_Hom(literalToComplex(C), literalToComplex(C));
 
     end = clock();
     time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
