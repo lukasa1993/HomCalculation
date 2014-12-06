@@ -465,8 +465,8 @@ void Calculate_Hom(Complex *A, Complex *B) {
     printf("\nBF: %s\n", fVBLit);
 
     long long k1 = 0;
-    for (int i = 0; i < A->simplexCount; ++i) {
-        Simplex *simp = getSimpexAt(A, i);
+    for (int i = 0; i < B->simplexCount; ++i) {
+        Simplex *simp = getSimpexAt(B, i);
         Complex *simpSubs = AllSubSimplexses(simp);
         k1 += simpSubs->simplexCount;
 
