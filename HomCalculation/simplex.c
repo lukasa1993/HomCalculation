@@ -7,14 +7,8 @@
 //
 
 #include "simplex.h"
-
-#define method1    true // unionIntersection
-#define method2    false  // intersectionUnionUpper
-#define methodComp false // both
-
-#define usefilesystem false
-
 #define HOMFVECTORSIZE 40
+#define QUICKRETURN  1
 
 Complex_Storage *storage0;
 Complex_Storage *storage1;
@@ -86,7 +80,7 @@ bool checkSimplexSubSimplex(Simplex *simplex, Simplex *subSimplex) {
 
 Complex *FSI(Complex *A, Complex *B, int K, long long V) {
     Complex *complex = NULL;
-    if (K == 1) {
+    if (A->simplexCount > 0 && K == 1) {
         int prevSubsCount = 0;
 
         for (int i = 0; i < B->simplexCount; i++) {
@@ -197,13 +191,13 @@ Complex *unionIntersection(Complex **posibilityList, int posibilityListLength) {
     if (posibilityListLength == 1) {
         return posibilityList[0];
     }
-    int *walkIndexes = calloc(posibilityListLength, sizeof(int));//malloc(posibilityListLength * sizeof(int));
+    int *walkIndexes = calloc((size_t) posibilityListLength, sizeof(int));//malloc(posibilityListLength * sizeof(int));
 
     //    printf("\n-- generation start -- \n");
 
     Complex *unionIntersection = Init_Complex();
 
-    bool cont = false;
+    bool cont;
     do {
         Complex *comp = Init_Complex();
         for (int i = 0; i < posibilityListLength; ++i) {
@@ -297,18 +291,12 @@ int CalculatePoints(Complex *comp) {
 
 
 void Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
-    char *charA = complexToLiteral(A, true);
-    char *charB = complexToLiteral(B, true);
-    char *charP = complexToLiteral(P, true);
-
     Simplex *temp = Init_Simplex();
     addElement(temp, k);
 
     // dots in aneibr must be less then k
     Complex *ANeibrTemp = upperSimplexContainingDot(A, temp);
     Dest_Simplex(temp);
-
-    char *charANeibrTemp = complexToLiteral(ANeibrTemp, true);
 
     Complex *ANeibr = Init_Complex();
     for (int i = 0; i < ANeibrTemp->simplexCount; ++i) {
@@ -537,7 +525,11 @@ void Calculate_Hom(Complex *A, Complex *B) {
     for (long long V1 = 0; V1 < storage0->lietralCount; ++V1) {
         wrtieLine(file1, getLiteralAt(storage0, V1), false);
     }
-    return; // temporarry
+
+    if(QUICKRETURN) {
+        return; // temporarry
+    }
+
     printf("\n\n Generation Result File \n\n");
     fflush(stdout);
 
