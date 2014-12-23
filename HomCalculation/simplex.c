@@ -6,7 +6,6 @@
 //  Copyright (c) 2013 Luka Dodelia. All rights reserved.
 //
 
-#include <tk.h>
 #include "simplex.h"
 
 #define HOMFVECTORSIZE 40
