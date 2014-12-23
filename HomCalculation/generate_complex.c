@@ -28,13 +28,13 @@ int random_in_range(unsigned int min, unsigned int max) {
 
 Complex *_generateComplex(int facetCount, int dimension, int maxPoint) {
     Complex *comp = Init_Complex();
-    facetCount = random_in_range(1, facetCount);
+    facetCount = random_in_range(1, (unsigned int) facetCount);
     for (int i = 0; i < facetCount; ++i) {
         Simplex *simp = Init_Simplex();
 
-        int facetDim = random_in_range(2, dimension + 1);
+        int facetDim = random_in_range(2, (unsigned int) (dimension + 1));
         while (simp->elementCount < facetDim) {
-            SimplexElem elem = random_in_range(1, maxPoint + 1);
+            SimplexElem elem = random_in_range(1, (unsigned int) (maxPoint + 1));
 
             bool unique = true;
             for (int l = 0; l < simp->elementCount; ++l) {
@@ -61,12 +61,12 @@ Complex *_generateComplex(int facetCount, int dimension, int maxPoint) {
 Complex *generateComplex(int facetCount, int dimension, int maxPoint) {
     bool allPoints = true;
     Complex *comp = NULL;
-    srand((int) time(NULL));
+    srand((unsigned int) time(NULL));
     int tryCount = 0;
     do {
         if (tryCount > 10) {
             tryCount = 0;
-            srand((int) time(NULL));
+            srand((unsigned int) time(NULL));
         }
         comp = _generateComplex(facetCount, dimension, maxPoint);
         for (int i = 1; i <= maxPoint; i++) {

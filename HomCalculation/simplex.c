@@ -6,9 +6,10 @@
 //  Copyright (c) 2013 Luka Dodelia. All rights reserved.
 //
 
+#include <tk.h>
 #include "simplex.h"
+
 #define HOMFVECTORSIZE 40
-#define QUICKRETURN  1
 
 Complex_Storage *storage0;
 Complex_Storage *storage1;
@@ -79,7 +80,7 @@ bool checkSimplexSubSimplex(Simplex *simplex, Simplex *subSimplex) {
 }
 
 Complex *FSI(Complex *A, Complex *B, int K, long long V) {
-    Complex *complex = NULL;
+    Complex *complex = Init_Complex();
     if (A->simplexCount > 0 && K == 1) {
         int prevSubsCount = 0;
 
@@ -88,9 +89,6 @@ Complex *FSI(Complex *A, Complex *B, int K, long long V) {
             int expV = prevSubsCount + (1 << sim->elementCount);
             if (V > prevSubsCount && expV > V) {
                 V = V - prevSubsCount;
-                if (complex == NULL || complex->simplexCount == 0) {
-                    complex = Init_Complex();
-                }
                 addSimplex(complex, simplexByExp(sim, V));
                 break;
             }
@@ -98,6 +96,7 @@ Complex *FSI(Complex *A, Complex *B, int K, long long V) {
         }
     }
     else {
+        Dest_Complex(complex);
         complex = getComplex(V);
     }
 
@@ -122,10 +121,8 @@ Complex *mergeComplexes(Complex *a, Complex *b, bool basic) {
         return b;
     }
     Complex *merged = Init_Complex();
-    if (a != NULL) {
-        for (int i = 0; i < a->simplexCount; ++i) {
-            addSimplex(merged, getSimpexAt(a, i));
-        }
+    for (int i = 0; i < a->simplexCount; ++i) {
+        addSimplex(merged, getSimpexAt(a, i));
     }
 
     for (int i = 0; i < b->simplexCount; ++i) {
@@ -248,45 +245,6 @@ int CalculatePoints(Complex *comp) {
         }
     }
     return elem;
-
-    int points = 0;
-    for (int i = 0; i < comp->simplexCount; ++i) {
-        Simplex *sim = comp->simplexes[i];
-        points += sim->elementCount;
-    }
-    Simplex *tempSim = Init_Simplex();
-    points = 0;
-    for (int i = 0; i < comp->simplexCount; ++i) {
-        Simplex *sim = comp->simplexes[i];
-        if (sim == NULL) {
-            continue;
-        }
-        for (int j = 0; j < sim->elementCount; ++j) {
-            SimplexElem elem1 = sim->elements[j];
-
-            int insertIndex = 0;
-            bool checkUnique = true;
-            for (int k = 0; k < tempSim->elementCount; ++k) {
-                SimplexElem elem2 = tempSim->elements[k];
-                if (elem2 == 0) {
-                    insertIndex = k;
-                    break;
-                }
-                else if (elem2 == elem1) {
-                    checkUnique = false;
-                    break;
-                }
-            }
-            if (checkUnique) {
-                tempSim->elements[insertIndex] = elem1;
-                points++;
-            }
-        }
-    }
-
-    //    printf("\n%s\n", simplexToLiteral(tempSim));
-
-    return points;
 }
 
 
@@ -340,10 +298,15 @@ void Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
         }
 
         if (fsiAT->elementCount > 0) {
-            Complex *comp = upperSimplexContainingDot(B, fsiAT);
+            Complex *comp  = upperSimplexContainingDot(B, fsiAT);
+            if(comp->simplexCount > 0) {
+                Simplex *first = getSimpexAt(comp, 0);
 
-            posibilityList[posibilityListLength] = comp;
-            posibilityListLength++;
+                if (first->elementCount > 0) {
+                    posibilityList[posibilityListLength] = comp;
+                    posibilityListLength++;
+                }
+            }
         }
     }
 
@@ -526,9 +489,15 @@ void Calculate_Hom(Complex *A, Complex *B) {
         wrtieLine(file1, getLiteralAt(storage0, V1), false);
     }
 
-    if(QUICKRETURN) {
-        return; // temporarry
-    }
+//    Destroy_file(file);
+//    Dest_Complex(posetPrep);
+    Destory_Storage(storage0);
+    Dest_Simplex(fVA);
+    Dest_Simplex(fVB);
+    free(fVALit);
+    free(fVBLit);
+
+    /*
 
     printf("\n\n Generation Result File \n\n");
     fflush(stdout);
@@ -597,6 +566,8 @@ void Calculate_Hom(Complex *A, Complex *B) {
     Dest_Simplex(fVB);
     free(fVALit);
     free(fVBLit);
+
+    */
 }
 
 
