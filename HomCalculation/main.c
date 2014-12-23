@@ -192,13 +192,19 @@ int main(int argc, const char *argv[]) {
     char* A = "[[1,2,6],[2,3,6],[3,4,6],[4,5,6],[1,5,6]]";
     char* B = "[[1,2,6],[2,3,4],[2,4,6],[4,5,6]]";
 
-    Calculate_Hom(literalToComplex(A), literalToComplex(A));
-    Calculate_Hom(literalToComplex(A), literalToComplex(B));
+    char* k = "[[1,2],[2,3],[3,4],[4,5],[1,5]]";
+    char* l = "[[1,2,5],[2,3,5],[3,4,5],[1,4,5]]";
 
-    Calculate_Hom(literalToComplex(B), literalToComplex(A));
-    Calculate_Hom(literalToComplex(B), literalToComplex(B));
+    Calculate_Hom(literalToComplex(k), literalToComplex(l));
 
-    char* C = "[[1,2,4],[2,3,5],[3,1,6],[1,4,6],[4,2,5],[4,5,6],[3,6,5]]";
+
+//    Calculate_Hom(literalToComplex(A), literalToComplex(A));
+//    Calculate_Hom(literalToComplex(A), literalToComplex(B));
+//
+//    Calculate_Hom(literalToComplex(B), literalToComplex(A));
+//    Calculate_Hom(literalToComplex(B), literalToComplex(B));
+//
+//    char* C = "[[1,2,4],[2,3,5],[3,1,6],[1,4,6],[4,2,5],[4,5,6],[3,6,5]]";
 
     // ------ can't calcualate? --------------
 
