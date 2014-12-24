@@ -149,35 +149,25 @@ Simplex *buildIntersectedSimplex(Complex *comp) {
 
     for (int i = 0; i < comp->simplexCount; ++i) {
         Simplex *simp = getSimpexAt(comp, i);
-
         for (int j = 0; j < simp->elementCount; ++j) {
             SimplexElem simpElem = getElementAt(simp, j);
-
+            bool isInAll         = true;
             for (int l = 0; l < comp->simplexCount; ++l) {
                 if (l == i) {
                     continue;
                 }
                 Simplex *simp2 = getSimpexAt(comp, l);
-                for (int m = 0; m < simp2->elementCount; ++m) {
 
-                    SimplexElem simpElem2 = getElementAt(simp2, m);
-                    if (simpElem == simpElem2) {
-                        bool unique = true;
-                        for (int checkIndex = 0; checkIndex < intersectedSimplex->elementCount; ++checkIndex) {
-                            SimplexElem checkElem = getElementAt(intersectedSimplex, checkIndex);
-                            if (checkElem == simpElem) {
-                                unique = false;
-                            }
-                        }
-
-                        if (unique) {
-                            addElement(intersectedSimplex, simpElem);
-                        }
-                    }
+                if(!containsElement(simp2, simpElem)) {
+                    isInAll = false;
                 }
             }
 
+            if (isInAll) {
+                addElement(intersectedSimplex, simpElem);
+            }
         }
+
     }
 
     return intersectedSimplex;
@@ -433,7 +423,7 @@ void Calculate_Hom(Complex *A, Complex *B) {
                 P = FSI(A, B, k - 1, V1);
             }
             if (P != NULL && P->simplexCount > 0) {
-
+                
                 Hom_Match(A, B, P, k);
 
                 Dest_Complex(P);
