@@ -147,15 +147,12 @@ Complex *mergeComplexes(Complex *a, Complex *b, bool basic) {
 Simplex *buildIntersectedSimplex(Complex *comp) {
     Simplex *intersectedSimplex = Init_Simplex();
 
-    for (int i = 0; i < comp->simplexCount; ++i) {
-        Simplex *simp = getSimpexAt(comp, i);
+//    for (int i = 0; i < comp->simplexCount; ++i) {
+        Simplex *simp = getSimpexAt(comp, 0);
         for (int j = 0; j < simp->elementCount; ++j) {
             SimplexElem simpElem = getElementAt(simp, j);
             bool isInAll         = true;
-            for (int l = 0; l < comp->simplexCount; ++l) {
-                if (l == i) {
-                    continue;
-                }
+            for (int l = 1; l < comp->simplexCount; ++l) {
                 Simplex *simp2 = getSimpexAt(comp, l);
 
                 if(!containsElement(simp2, simpElem)) {
@@ -168,7 +165,7 @@ Simplex *buildIntersectedSimplex(Complex *comp) {
             }
         }
 
-    }
+//    }
 
     return intersectedSimplex;
 }
@@ -299,9 +296,14 @@ void Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
         }
     }
 
-    Complex *BNeibr = unionIntersection(posibilityList, posibilityListLength);
+    if(k == 5) {
+        printf("\n-  FSI: %s\n", complexToLiteral(P, true));
+        for (int i = 0; i < posibilityListLength; ++i) {
+            printf("\n-- BT%d %s \n", i, complexToLiteral(posibilityList[i], true));
+        }
+    }
 
-//    printf("\n%s <|> %s\n", complexToLiteral(P, true), complexToLiteral(BNeibr, true));
+    Complex *BNeibr = unionIntersection(posibilityList, posibilityListLength);
 
     for (int i = 0; i < BNeibr->simplexCount; ++i) {
         Simplex *simp = getSimpexAt(BNeibr, i);
