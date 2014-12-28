@@ -296,14 +296,26 @@ void Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
         }
     }
 
+    LD_File *second_log = Init_file_util("./log2.txt", false);
+    char *a = malloc(1024);
+
     if(k == 5) {
-        printf("\n-  FSI: %s\n", complexToLiteral(P, true));
+        sprintf(a, "\n-  FSI: %s\n", complexToLiteral(P, true));
+        wrtieLine(second_log, a, false);
         for (int i = 0; i < posibilityListLength; ++i) {
-            printf("\n-- BT%d %s \n", i, complexToLiteral(posibilityList[i], true));
+            sprintf(a, "\n-- BT%d %s \n", i, complexToLiteral(posibilityList[i], true));
+            wrtieLine(second_log, a, false);
         }
     }
 
     Complex *BNeibr = unionIntersection(posibilityList, posibilityListLength);
+    if(k == 5) {
+        sprintf(a, "\n---  IBT: %s\n", complexToLiteral(BNeibr, true));
+        wrtieLine(second_log, a, false);
+    }
+
+    Destroy_file(second_log);
+    free(a);
 
     for (int i = 0; i < BNeibr->simplexCount; ++i) {
         Simplex *simp = getSimpexAt(BNeibr, i);
