@@ -28,4 +28,6 @@ Complex *FSI(Complex *A, Complex *B, int K, long long V);
 
 void Calculate_Hom(Complex *A, Complex *B);
 
+Complex *unionIntersection(Complex **posibilityList, int posibilityListLength);
+
 #endif

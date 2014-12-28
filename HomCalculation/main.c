@@ -189,14 +189,25 @@ int main(int argc, const char *argv[]) {
 //    Calculate_Hom(literalToComplex("[[1,2,6],[2,3,6],[3,4,6],[4,5,6],[5,1,6]]"), literalToComplex("[[1,5,4],[5,2,6],[4,6,3],[4,5,6]]"));
 
     // -------------------------------------
-    char* A = "[[1,2,6],[2,3,6],[3,4,6],[4,5,6],[1,5,6]]";
+    char* A = "[[1,2,6],[2,3,6],[3,4,6],[4,5,6]";
     char* B = "[[1,2,6],[2,3,4],[2,4,6],[4,5,6]]";
 
 //    char* k = "[[1,2],[2,3],[3,4],[4,5],[1,5]]";
 //    char* l = "[[1,2,5],[2,3,5],[3,4,5],[1,4,5]]";
 
-    char* k = "[[1,2],[2,3],[3,4],[4,5],[1,5]]";
-    char* l = "[[1,2,6],[2,3,6],[3,4,6],[4,5,6],[1,5,6]]";
+    char* k = "[[1,2],[2,3],[3,4],[4,5]";
+    char* l = "[[1,2,6],[2,3,6],[3,4,6],[4,5,6]";
+
+//    Complex **posibilityList = calloc(4, sizeof(Complex *));
+//    posibilityList[0] = literalToComplex(A);
+//    posibilityList[1] = literalToComplex(B);
+//    posibilityList[2] = literalToComplex(k);
+//    posibilityList[3] = literalToComplex(l);
+//    int posibilityListLength = 4;
+//
+//    Complex* comp = unionIntersection(posibilityList, posibilityListLength);
+//
+//    printf("\n%s\n", complexToLiteral(comp, true));
 
     Calculate_Hom(literalToComplex(k), literalToComplex(l));
 

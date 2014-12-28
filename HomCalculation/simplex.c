@@ -176,6 +176,7 @@ Complex *unionIntersection(Complex **posibilityList, int posibilityListLength) {
     }
     int *walkIndexes = calloc((size_t) posibilityListLength, sizeof(int));//malloc(posibilityListLength * sizeof(int));
 
+    int incremental = posibilityListLength - 1;
     //    printf("\n-- generation start -- \n");
 
     Complex *unionIntersection = Init_Complex();
@@ -190,7 +191,7 @@ Complex *unionIntersection(Complex **posibilityList, int posibilityListLength) {
 
         cont = false;
         for (int i = 0; i < posibilityListLength; ++i) {
-            if (walkIndexes[i] < posibilityList[i]->simplexIndex) {
+            if (walkIndexes[i] < posibilityList[i]->simplexCount - 1) {
                 cont = true;
             }
         }
@@ -199,9 +200,14 @@ Complex *unionIntersection(Complex **posibilityList, int posibilityListLength) {
             if (walkIndexes[i] + 1 < posibilityList[i]->simplexCount) {
                 walkIndexes[i]++;
                 break;
+            } else if(incremental > 0) {
+                walkIndexes[incremental] = 0;
+                walkIndexes[incremental - 1]++;
+                incremental--;
+                break;
             }
         }
-        //        printf("\n%s\n", complexToLiteral(comp, true));
+//                printf("\n%s\n", complexToLiteral(comp, true));
 
         Simplex *intersectedSimplex = buildIntersectedSimplex(comp);
 
