@@ -189,13 +189,13 @@ int main(int argc, const char *argv[]) {
 //    Calculate_Hom(literalToComplex("[[1,2,6],[2,3,6],[3,4,6],[4,5,6],[5,1,6]]"), literalToComplex("[[1,5,4],[5,2,6],[4,6,3],[4,5,6]]"));
 
     // -------------------------------------
-    char* A = "[[1,2,6],[2,3,6],[3,4,6],[4,5,6]";
+    char* A = "[[1,2,6],[2,3,6],[3,4,6],[4,5,6],[1,5,6]]";
     char* B = "[[1,2,6],[2,3,4],[2,4,6],[4,5,6]]";
 
-    char* k = "[[1,2],[2,3],[3,4],[4,5],[1,5]]";
-    char* l = "[[1,2,6],[2,3,6],[3,4,6],[4,5,6],[1,5,6]]";
+//    char* k = "[[1,2],[2,3],[3,4],[4,5],[1,5]]";
+//    char* l = "[[1,2,6],[2,3,6],[3,4,6],[4,5,6],[1,5,6]]";
 
-    Calculate_Hom(literalToComplex(k), literalToComplex(l));
+    Calculate_Hom(literalToComplex(A), literalToComplex(B));
 
 
 //    Calculate_Hom(literalToComplex(A), literalToComplex(A));
