@@ -303,7 +303,7 @@ void Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
     }
 
     LD_File *second_log = Init_file_util("./log2.txt", false);
-    char *a = malloc(1024);
+    char *a = malloc(1024 * 10);
 
     if(k == 6) {
         sprintf(a, "\n-  FSI: %s\n", complexToLiteral(P, true));
