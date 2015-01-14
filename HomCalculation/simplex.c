@@ -17,6 +17,8 @@ int maxK;
 long long homFVector[HOMFVECTORSIZE]; // assuming that maximum dimmension would be 20
 long long fVectorDim(Complex *comp);
 
+static inline void DoProgress( char label[], int step, int total );
+
 void saveComplex(Complex *comp) {
 #pragma omp critical
     {
@@ -437,15 +439,15 @@ void Calculate_Hom(Complex *A, Complex *B) {
     for (int k = 2; k <= points; ++k) {
 #pragma omp parallel for shared(A, B, storage0, storage1, k)
         for (long long V1 = 0; V1 < storage0->lietralCount; ++V1) {
+            DoProgress("", (int) V1, (int) storage0->lietralCount);
             Complex *P = NULL;
 #pragma omp critical
             {
                 P = FSI(A, B, k - 1, V1);
             }
             if (P != NULL && P->simplexCount > 0) {
-                
-                Hom_Match(A, B, P, k);
 
+                Hom_Match(A, B, P, k);
                 Dest_Complex(P);
             }
 
@@ -579,6 +581,53 @@ void Calculate_Hom(Complex *A, Complex *B) {
     */
 }
 
+// Process has done i out of n rounds,
+// and we want a bar of width w and resolution r.
+static inline void loadBar(int x, int n, int r, int w)
+{
+    // Only update r times.
+    if ( x % (n/r +1) != 0 ) return;
 
+    // Calculuate the ratio of complete-to-incomplete.
+    float ratio = x / (float)n;
+    int   c     = ratio * w;
+
+    // Show the percentage complete.
+    printf("%3d%% [", (int)(ratio*100) );
+
+    // Show the load bar.
+    for (int x=0; x<c; x++)
+        printf("=");
+
+    for (int x=c; x<w; x++)
+        printf(" ");
+
+    // ANSI Control codes to go back to the
+    // previous line and clear it.
+    printf("]\n\033[F\033[J");
+}
+
+static inline void DoProgress( char label[], int step, int total )
+{
+    //progress width
+    const int pwidth = 72;
+
+    //minus label len
+    int width = pwidth - strlen( label );
+    int pos = ( step * width ) / total ;
+
+
+    int percent = ( step * 100 ) / total;
+
+    printf( "%s[", label );
+
+    //fill progress bar with =
+    for ( int i = 0; i < pos; i++ )  printf( "%c", '=' );
+
+    //fill progress bar with spaces
+    printf( "% *c", width - pos + 1, ']' );
+    printf( " %3d%%\r", percent );
+    fflush(stdout);
+}
 
 
