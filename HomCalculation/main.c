@@ -193,38 +193,15 @@ int main(int argc, const char *argv[]) {
     char* B = "[[1,2,6],[2,3,4],[2,4,6],[4,5,6]]";
 
 
-    char* n1 = "[[1,2,3],[2,3,4],[3,4,5],[4,5,6],[1,5,6],[2,4,6]]";
+    char* n1 = "[[1,2,3],[2,3,4],[3,4,5],[4,5,6],[1,5,6],[2,4,6],[1,2,6]]";
     char* n2 = "[[1,2,6],[2,3,6],[3,4,6],[4,5,6],[1,5,6]]";
-
-    char* n3 = "[[1,2,3],[2,3,4],[3,4,5],[4,5,6],[1,5,6],[2,4,6]]";
-    char* n4 = "[[1,2,6],[2,3,4],[2,4,6],[4,5,6]]";
-
-    char* n5 = n3;
-    char* n6 = n3;
-
-    char* n7 = n4;
-    char* n8 = n3;
-
-    char* n9  = n2;
-    char* n10 = n3;
-
-//    char* k = "[[1,2],[2,3],[3,4],[4,5],[1,5]]";
-//    char* l = "[[1,2,6],[2,3,6],[3,4,6],[4,5,6],[1,5,6]]";
-
-//    Calculate_Hom(literalToComplex(A), literalToComplex(B));
-
-
-//    Calculate_Hom(literalToComplex(A), literalToComplex(A));
-//    Calculate_Hom(literalToComplex(A), literalToComplex(B));
-//
-//    Calculate_Hom(literalToComplex(B), literalToComplex(A));
-//    Calculate_Hom(literalToComplex(B), literalToComplex(B));
+    char* n3 = "[[1,2,6],[2,3,4],[4,5,6],[2,4,6]]";
 
 //    Calculate_Hom(literalToComplex(n1), literalToComplex(n2));
-//    Calculate_Hom(literalToComplex(n3), literalToComplex(n4));
-//    Calculate_Hom(literalToComplex(n5), literalToComplex(n6));
-//    Calculate_Hom(literalToComplex(n7), literalToComplex(n8));
-    Calculate_Hom(literalToComplex(n9), literalToComplex(n10));
+//    Calculate_Hom(literalToComplex(n2), literalToComplex(n1));
+//    Calculate_Hom(literalToComplex(n1), literalToComplex(n3));
+//    Calculate_Hom(literalToComplex(n3), literalToComplex(n1));
+    Calculate_Hom(literalToComplex(n1), literalToComplex(n1));
 //
 //    char* C = "[[1,2,4],[2,3,5],[3,1,6],[1,4,6],[4,2,5],[4,5,6],[3,6,5]]";
 

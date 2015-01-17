@@ -439,7 +439,7 @@ void Calculate_Hom(Complex *A, Complex *B) {
     for (int k = 2; k <= points; ++k) {
 #pragma omp parallel for shared(A, B, storage0, storage1, k)
         for (long long V1 = 0; V1 < storage0->lietralCount; ++V1) {
-            DoProgress("", (int) V1, (int) storage0->lietralCount);
+            DoProgress("", (int) V1, (int) storage0->lietralCount - 1);
             Complex *P = NULL;
 #pragma omp critical
             {
@@ -491,7 +491,7 @@ void Calculate_Hom(Complex *A, Complex *B) {
     printf("\n\n Safe House \n\n");
     fflush(stdout);
 
-    char *a = malloc(1024);
+    char *a = malloc(1024 * 10);
     sprintf(a, "./hom_safe( %s - %s) ", complexToLiteral(A, true), complexToLiteral(B, true));
 
     LD_File *file1 = Init_file_util_ext(a, "txt", false);
