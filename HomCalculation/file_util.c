@@ -47,6 +47,7 @@ LD_File *Init_file_util(char *path, bool clear) {
 
 LD_File *Init_file_util_ext(char *path, char *ext, bool clear) {
     char *time = formatedTime();
+    printf("\n%d\n", strlen(path));
     char *file_path0 = concat(path, time);
     char *file_path1 = concat(file_path0, ".");
     char *file_path2 = concat(file_path1, ext);

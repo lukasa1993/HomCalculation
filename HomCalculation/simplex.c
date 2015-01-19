@@ -492,7 +492,7 @@ void Calculate_Hom(Complex *A, Complex *B) {
     fflush(stdout);
 
     char *a = malloc(1024 * 10);
-    sprintf(a, "./hom_safe( %s - %s) ", complexToLiteral(A, true), complexToLiteral(B, true));
+    sprintf(a, "./hom_safe( %s ) ", complexToLiteral(A, true));
 
     LD_File *file1 = Init_file_util_ext(a, "txt", false);
     wrtieLine(file1, fvectorstr, false);
