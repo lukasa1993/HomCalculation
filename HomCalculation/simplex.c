@@ -307,7 +307,7 @@ void Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
     LD_File *second_log = Init_file_util_ext("./log2", "txt", false);
     char *a = malloc(1024 * 10);
 
-    if(k == 6) {
+    if(k == CalculatePoints(A)) {
         sprintf(a, "\n-  FSI: %s\n", complexToLiteral(P, true));
         wrtieLine(second_log, a, false);
         for (int i = 0; i < posibilityListLength; ++i) {
@@ -317,7 +317,7 @@ void Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
     }
 
     Complex *BNeibr = unionIntersection(posibilityList, posibilityListLength);
-    if(k == 6) {
+    if(k == CalculatePoints(A)) {
         sprintf(a, "\n---  IBT: %s\n", complexToLiteral(BNeibr, true));
         wrtieLine(second_log, a, false);
     }
@@ -327,13 +327,22 @@ void Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
 
     for (int i = 0; i < BNeibr->simplexCount; ++i) {
         Simplex *simp = getSimpexAt(BNeibr, i);
-//        Complex *simpSubs = AllSubSimplexses(simp);
-        Complex *simpSubs = literalToComplex(simp->allowedSubSimplexes);
+        Complex *simpSubs = AllSubSimplexses(simp);
 
         for (int j = 0; j < simpSubs->simplexCount; ++j) {
             Simplex *subSimp = getSimpexAt(simpSubs, j);
 
-            if (subSimp->elementCount > 0) {
+//            bool allowed = true;
+            bool allowed = false;
+            for(int bi = 0; bi < B->simplexCount; ++bi) {
+                Simplex* BSimp = getSimpexAt(B, bi);
+                if(containsSimplex(literalToComplex(BSimp->allowedSubSimplexes), subSimp)) {
+                    allowed = true;
+                    break;
+                }
+            }
+
+            if (subSimp->elementCount > 0 && allowed) {
                 Complex *temp1 = Init_Complex();
 
                 addSimplex(temp1, subSimp);

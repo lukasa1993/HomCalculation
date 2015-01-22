@@ -26,8 +26,7 @@ char *formatedTime() {
     time(&timer);
     tm_info = localtime(&timer);
 
-    strftime(buffer, 25, "_%Y-%m-%d_%H-%M-%S", tm_info);
-    puts(buffer);
+    strftime(buffer, 25, "_%Y-%m-%d_%H", tm_info);
 
     return buffer;
 }
@@ -47,7 +46,7 @@ LD_File *Init_file_util(char *path, bool clear) {
 
 LD_File *Init_file_util_ext(char *path, char *ext, bool clear) {
     char *time = formatedTime();
-    printf("\n%d\n", strlen(path));
+
     char *file_path0 = concat(path, time);
     char *file_path1 = concat(file_path0, ".");
     char *file_path2 = concat(file_path1, ext);

@@ -185,6 +185,11 @@ int main(int argc, const char *argv[]) {
         simp->allowedSubSimplexes = complexToLiteral(AllSubSimplexses(simp), true);
     }
 
+   for (int i = 0; i < B->simplexCount; ++i) {
+        Simplex *simp = getSimpexAt(B, i);
+        simp->allowedSubSimplexes = complexToLiteral(AllSubSimplexses(simp), true);
+    }
+
 
     Calculate_Hom(A, B);
 //
