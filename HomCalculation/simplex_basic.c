@@ -35,5 +35,3 @@ Complex *AllSubSimplexses(Simplex *simplex) {
 }
 
 
-
-

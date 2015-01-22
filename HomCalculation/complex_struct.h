@@ -27,6 +27,8 @@ typedef struct Simplex {
     int elementCapacity;
     SimplexElem *elements;
 
+    char* allowedSubSimplexes;
+
 } Simplex;
 
 typedef struct Complex {

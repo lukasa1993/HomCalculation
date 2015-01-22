@@ -156,52 +156,37 @@ void input_file() {
 }
 
 int main(int argc, const char *argv[]) {
-//    Polytop* pol = literalToPolytop("[[1,2], [2,3], [ (6.421, 4.213), (1.32131, 3.421312), (2.3412, 2.32112)]]");
-//    
-//    printf("\n%s\n", polytopToLiteral(pol));
-//    return 0;
     clock_t begin, end;
     double time_spent;
 
     begin = clock();
 
-// --------- OLD -----------
-//	Calculate_Hom(literalToComplex("[[1,2,3],[2,3,4]]"), literalToComplex("[[1,2,3],[2,3,4]]"));
-
-//    Calculate_Hom(literalToComplex("[[1,2],[2,3],[3,4]]"), literalToComplex("[[1,2],[2,3],[3,4]]"));
-
-//    Calculate_Hom(literalToComplex("[[1,2,3]]"), literalToComplex("[[1,2],[2,3],[1,3]]"));
-//    Calculate_Hom(literalToComplex("[[1,2,3],[2,3,4]]"), literalToComplex("[[1,2,3],[2,3,4]]"));
-//    Calculate_Hom(literalToComplex("[[1,2,3],[2,4,5]]"), literalToComplex("[[1,2,3],[2,4,5]]"));
-
-//    Calculate_Hom(literalToComplex("[[1,2],[2,3],[3,4],[2,4]]"), literalToComplex("[[1,2],[2,3]]"));
-
-//    Calculate_Hom(literalToComplex("[[1,2,3],[2,4,5]]"), literalToComplex("[[1,2,3],[2,4,5]]"));
-//    Calculate_Hom(literalToComplex("[[1,2,3,4,5]]"), literalToComplex("[[1,2,3,4]]"));
-//    Calculate_Hom(literalToComplex("[[1,2,3,4]]"), literalToComplex("[[1,2,3,4,5]]"));
-//    Calculate_Hom(literalToComplex("[[1,2,3]]"), literalToComplex("[[1,2,3]]"));
-
-//    Calculate_Hom(literalToComplex("[[1,2,7],[2,3,7],[3,4,7],[4,5,7],[5,6,7],[6,1,7]]"), literalToComplex("[[1,2,7],[2,3,7],[3,4,7],[4,5,7],[5,6,7],[6,1,7]]"));
-
-//    Calculate_Hom(literalToComplex("[[1,2,6],[2,3,6],[3,4,6],[4,5,6],[5,1,6]]"), literalToComplex("[[1,5,4],[5,2,6],[4,6,3],[4,5,6]]"));
-//    Calculate_Hom(literalToComplex("[[1,2,6],[2,3,4],[6,4,5],[6,2,4]]"),literalToComplex("[[1,2,6],[2,3,4],[6,4,5],[6,2,4]]"));
-//    Calculate_Hom(literalToComplex("[[1,2,6],[2,3,4],[6,4,5],[6,2,4]]"),literalToComplex("[[1,2,6],[2,3,6],[3,4,6],[4,5,6],[5,1,6]]"));
-//    Calculate_Hom(literalToComplex("[[1,2,6],[2,3,6],[3,4,6],[4,5,6],[5,1,6]]"), literalToComplex("[[1,5,4],[5,2,6],[4,6,3],[4,5,6]]"));
-
-    // -------------------------------------
-    char* A = "[[1,2,6],[2,3,6],[3,4,6],[4,5,6],[1,5,6]]";
-    char* B = "[[1,2,6],[2,3,4],[2,4,6],[4,5,6]]";
+//    char* A = "[[1,2,6],[2,3,6],[3,4,6],[4,5,6],[1,5,6]]";
+//    char* B = "[[1,2,6],[2,3,4],[2,4,6],[4,5,6]]";
 
 
-    char* n1 = "[[1,2,3],[2,3,4],[3,4,5],[4,5,6],[1,5,6],[2,4,6],[1,2,6]]";
-    char* n2 = "[[1,2,6],[2,3,6],[3,4,6],[4,5,6],[1,5,6]]";
-    char* n3 = "[[1,2,6],[2,3,4],[4,5,6],[2,4,6]]";
+    char *n1 = "[[1,2,3],[2,3,4],[3,4,5],[4,5,6],[1,5,6],[2,4,6],[1,2,6]]";
+    char *n2 = "[[1,2,6],[2,3,6],[3,4,6],[4,5,6],[1,5,6]]";
+    char *n3 = "[[1,2,6],[2,3,4],[4,5,6],[2,4,6]]";
 
 //    Calculate_Hom(literalToComplex(n1), literalToComplex(n2));
 //    Calculate_Hom(literalToComplex(n2), literalToComplex(n1));
 //    Calculate_Hom(literalToComplex(n1), literalToComplex(n3));
 //    Calculate_Hom(literalToComplex(n3), literalToComplex(n1));
-    Calculate_Hom(literalToComplex(n1), literalToComplex(n1));
+
+    char *l1 = "[[1,2],[2,3],[3,4],[1,4]]";
+    char *l2 = "[[1,2,3],[2,4,5]]";
+
+    Complex *A = literalToComplex(l1);
+    Complex *B = literalToComplex(l2);
+
+    for (int i = 0; i < A->simplexCount; ++i) {
+        Simplex *simp = getSimpexAt(A, i);
+        simp->allowedSubSimplexes = complexToLiteral(AllSubSimplexses(simp), true);
+    }
+
+
+    Calculate_Hom(A, B);
 //
 //    char* C = "[[1,2,4],[2,3,5],[3,1,6],[1,4,6],[4,2,5],[4,5,6],[3,6,5]]";
 
@@ -216,35 +201,7 @@ int main(int argc, const char *argv[]) {
 //    Calculate_Hom(literalToComplex(C), literalToComplex(C));
 
     end = clock();
-    time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+    time_spent = (double) (end - begin) / CLOCKS_PER_SEC;
 
     printf("\n %f The End.. \n", time_spent);
-    exit(0);
-    printf("Input Type(Types: file, file-random-generated, random-generated, mannual):");
-    char buffer[255];
-    scanf("%s", buffer);
-
-    if (strcmp(buffer, "file") == 0 || strcmp(buffer, "1") == 0) {
-        input_file();
-    } else if (strcmp(buffer, "file-random-generated") == 0 || strcmp(buffer, "2") == 0) {
-        input_file_random();
-    } else if (strcmp(buffer, "random-generated") == 0 || strcmp(buffer, "3") == 0) {
-        input_random();
-    } else {
-        input_mannual();
-    }
-
-    for (int i = 0; i < complexesCount; ++i) {
-        Complex *comp1 = complexes[i];
-        for (int j = 0; j < complexesCount; ++j) {
-            if (j != i) {
-                Complex *comp2 = complexes[j];
-                Calculate_Hom(comp1, comp2);
-            }
-        }
-        break;
-    }
-
-    printf("\nThe End!\n");
-    return 0;
 }

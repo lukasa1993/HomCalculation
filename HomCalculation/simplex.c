@@ -304,7 +304,7 @@ void Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
         }
     }
 
-    LD_File *second_log = Init_file_util("./log2.txt", false);
+    LD_File *second_log = Init_file_util_ext("./log2", "txt", false);
     char *a = malloc(1024 * 10);
 
     if(k == 6) {
@@ -327,10 +327,12 @@ void Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
 
     for (int i = 0; i < BNeibr->simplexCount; ++i) {
         Simplex *simp = getSimpexAt(BNeibr, i);
-        Complex *simpSubs = AllSubSimplexses(simp);
+//        Complex *simpSubs = AllSubSimplexses(simp);
+        Complex *simpSubs = literalToComplex(simp->allowedSubSimplexes);
 
         for (int j = 0; j < simpSubs->simplexCount; ++j) {
             Simplex *subSimp = getSimpexAt(simpSubs, j);
+
             if (subSimp->elementCount > 0) {
                 Complex *temp1 = Init_Complex();
 
@@ -491,10 +493,10 @@ void Calculate_Hom(Complex *A, Complex *B) {
     printf("\n\n Safe House \n\n");
     fflush(stdout);
 
-    char *a = malloc(1024 * 10);
-    sprintf(a, "./hom_safe( %s ) ", complexToLiteral(A, true));
-
-    LD_File *file1 = Init_file_util_ext(a, "txt", false);
+    LD_File *file1 = Init_file_util_ext("./hom_safe", "txt", false);
+    wrtieLine(file1, complexToLiteral(A, true), true);
+    wrtieLine(file1, " -> ", true);
+    wrtieLine(file1, complexToLiteral(B, true), false);
     wrtieLine(file1, fvectorstr, false);
     for (long long V1 = 0; V1 < storage0->lietralCount; ++V1) {
         wrtieLine(file1, getLiteralAt(storage0, V1), false);
