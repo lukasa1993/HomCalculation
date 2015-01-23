@@ -27,7 +27,10 @@ typedef struct Simplex {
     int elementCapacity;
     SimplexElem *elements;
 
+    // polytop phase
     char* allowedSubSimplexes;
+    int dimension;
+    char* coords;
 
 } Simplex;
 

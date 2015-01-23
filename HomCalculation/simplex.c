@@ -17,7 +17,7 @@ int maxK;
 long long homFVector[HOMFVECTORSIZE]; // assuming that maximum dimmension would be 20
 long long fVectorDim(Complex *comp);
 
-static inline void DoProgress( char label[], int step, int total );
+static inline void DoProgress(char label[], int step, int total);
 
 void saveComplex(Complex *comp) {
 #pragma omp critical
@@ -150,22 +150,22 @@ Simplex *buildIntersectedSimplex(Complex *comp) {
     Simplex *intersectedSimplex = Init_Simplex();
 
 //    for (int i = 0; i < comp->simplexCount; ++i) {
-        Simplex *simp = getSimpexAt(comp, 0);
-        for (int j = 0; j < simp->elementCount; ++j) {
-            SimplexElem simpElem = getElementAt(simp, j);
-            bool isInAll         = true;
-            for (int l = 1; l < comp->simplexCount; ++l) {
-                Simplex *simp2 = getSimpexAt(comp, l);
+    Simplex *simp = getSimpexAt(comp, 0);
+    for (int j = 0; j < simp->elementCount; ++j) {
+        SimplexElem simpElem = getElementAt(simp, j);
+        bool isInAll = true;
+        for (int l = 1; l < comp->simplexCount; ++l) {
+            Simplex *simp2 = getSimpexAt(comp, l);
 
-                if(!containsElement(simp2, simpElem)) {
-                    isInAll = false;
-                }
-            }
-
-            if (isInAll) {
-                addElement(intersectedSimplex, simpElem);
+            if (!containsElement(simp2, simpElem)) {
+                isInAll = false;
             }
         }
+
+        if (isInAll) {
+            addElement(intersectedSimplex, simpElem);
+        }
+    }
 
 //    }
 
@@ -202,16 +202,16 @@ Complex *unionIntersection(Complex **posibilityList, int posibilityListLength) {
             if (walkIndexes[i] + 1 < posibilityList[i]->simplexCount) {
                 walkIndexes[i]++;
                 break;
-            } else if(i > 0) {
+            } else if (i > 0) {
                 walkIndexes[i] = 0;
             }
         }
 
-          //  printf("\n%s\n", complexToLiteral(comp, true));
+        //  printf("\n%s\n", complexToLiteral(comp, true));
 
         Simplex *intersectedSimplex = buildIntersectedSimplex(comp);
 
-      //  printf("\n%s\n", simplexToLiteral(intersectedSimplex));
+        //  printf("\n%s\n", simplexToLiteral(intersectedSimplex));
 
         if (intersectedSimplex->elementIndex > -1) {
             addSimplex(unionIntersection, intersectedSimplex);
@@ -292,8 +292,8 @@ void Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
         }
 
         if (fsiAT->elementCount > 0) {
-            Complex *comp  = upperSimplexContainingDot(B, fsiAT);
-            if(comp->simplexCount > 0) {
+            Complex *comp = upperSimplexContainingDot(B, fsiAT);
+            if (comp->simplexCount > 0) {
                 Simplex *first = getSimpexAt(comp, 0);
 
                 if (first->elementCount > 0) {
@@ -307,7 +307,7 @@ void Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
     LD_File *second_log = Init_file_util_ext("./log2", "txt", false);
     char *a = malloc(1024 * 10);
 
-    if(k == CalculatePoints(A)) {
+    if (k == CalculatePoints(A)) {
         sprintf(a, "\n-  FSI: %s\n", complexToLiteral(P, true));
         wrtieLine(second_log, a, false);
         for (int i = 0; i < posibilityListLength; ++i) {
@@ -317,7 +317,7 @@ void Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
     }
 
     Complex *BNeibr = unionIntersection(posibilityList, posibilityListLength);
-    if(k == CalculatePoints(A)) {
+    if (k == CalculatePoints(A)) {
         sprintf(a, "\n---  IBT: %s\n", complexToLiteral(BNeibr, true));
         wrtieLine(second_log, a, false);
     }
@@ -334,9 +334,9 @@ void Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
 
 //            bool allowed = true;
             bool allowed = false;
-            for(int bi = 0; bi < B->simplexCount; ++bi) {
-                Simplex* BSimp = getSimpexAt(B, bi);
-                if(containsSimplex(literalToComplex(BSimp->allowedSubSimplexes), subSimp)) {
+            for (int bi = 0; bi < B->simplexCount; ++bi) {
+                Simplex *BSimp = getSimpexAt(B, bi);
+                if (containsSimplex(literalToComplex(BSimp->allowedSubSimplexes), subSimp)) {
                     allowed = true;
                     break;
                 }
@@ -457,8 +457,16 @@ void Calculate_Hom(Complex *A, Complex *B) {
                 P = FSI(A, B, k - 1, V1);
             }
             if (P != NULL && P->simplexCount > 0) {
+                Simplex *s = Init_Simplex();
+                addElement(s, k);
+                Complex *AComps = upperSimplexContainingDot(A, s);
+                Simplex *ASim = getSimpexAt(AComps, 0);
 
-                Hom_Match(A, B, P, k);
+                if (true || ASim->dimension < k) {
+                    Hom_Match(A, B, P, k);
+                } else {
+                    k--;
+                }
                 Dest_Complex(P);
             }
 
@@ -594,23 +602,22 @@ void Calculate_Hom(Complex *A, Complex *B) {
 
 // Process has done i out of n rounds,
 // and we want a bar of width w and resolution r.
-static inline void loadBar(int x, int n, int r, int w)
-{
+static inline void loadBar(int x, int n, int r, int w) {
     // Only update r times.
-    if ( x % (n/r +1) != 0 ) return;
+    if (x % (n / r + 1) != 0) return;
 
     // Calculuate the ratio of complete-to-incomplete.
-    float ratio = x / (float)n;
-    int   c     = ratio * w;
+    float ratio = x / (float) n;
+    int c = ratio * w;
 
     // Show the percentage complete.
-    printf("%3d%% [", (int)(ratio*100) );
+    printf("%3d%% [", (int) (ratio * 100));
 
     // Show the load bar.
-    for (int x=0; x<c; x++)
+    for (int x = 0; x < c; x++)
         printf("=");
 
-    for (int x=c; x<w; x++)
+    for (int x = c; x < w; x++)
         printf(" ");
 
     // ANSI Control codes to go back to the
@@ -618,26 +625,25 @@ static inline void loadBar(int x, int n, int r, int w)
     printf("]\n\033[F\033[J");
 }
 
-static inline void DoProgress( char label[], int step, int total )
-{
+static inline void DoProgress(char label[], int step, int total) {
     //progress width
     const int pwidth = 72;
 
     //minus label len
-    int width = pwidth - strlen( label );
-    int pos = ( step * width ) / total ;
+    int width = pwidth - strlen(label);
+    int pos = (step * width) / total;
 
 
-    int percent = ( step * 100 ) / total;
+    int percent = (step * 100) / total;
 
-    printf( "%s[", label );
+    printf("%s[", label);
 
     //fill progress bar with =
-    for ( int i = 0; i < pos; i++ )  printf( "%c", '=' );
+    for (int i = 0; i < pos; i++) printf("%c", '=');
 
     //fill progress bar with spaces
-    printf( "% *c", width - pos + 1, ']' );
-    printf( " %3d%%\r", percent );
+    printf("% *c", width - pos + 1, ']');
+    printf(" %3d%%\r", percent);
     fflush(stdout);
 }
 
