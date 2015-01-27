@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 2.8.4)
 project(LD_SCIENCE)
 
+ADD_SUBDIRECTORY( lis )
+
+
 set(CMAKE_C_FLAGS "-std=c99")
 
 IF(true)

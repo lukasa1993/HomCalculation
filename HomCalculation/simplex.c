@@ -519,110 +519,85 @@ void Calculate_Hom(Complex *A, Complex *B) {
         wrtieLine(file1, getLiteralAt(storage0, V1), false);
     }
 
-//    Destroy_file(file);
-//    Dest_Complex(posetPrep);
-    Destory_Storage(storage0);
-    Dest_Simplex(fVA);
-    Dest_Simplex(fVB);
-    free(fVALit);
-    free(fVBLit);
 
-    /*
+    if (true) { // end fast
+        Destory_Storage(storage0);
+        Dest_Simplex(fVA);
+        Dest_Simplex(fVB);
+        free(fVALit);
+        free(fVBLit);
 
-    printf("\n\n Generation Result File \n\n");
-    fflush(stdout);
+    } else {
 
-    LD_File *file = Init_file_util_ext("./hom_result", "txt", false);
+        printf("\n\n Generation Result File \n\n");
+        fflush(stdout);
+
+        LD_File *file = Init_file_util_ext("./hom_result", "txt", false);
 
 
-    int bPoints = CalculatePoints(B);
-    Complex *posetPrep = Init_Complex();
+        int bPoints = CalculatePoints(B);
+        Complex *posetPrep = Init_Complex();
 
-    for (long long V1 = 0; V1 < storage0->lietralCount; ++V1) {
-        Complex *P = FSI(A, B, points, V1);
-        if (P != NULL && P->simplexCount > 0) {
-            Simplex *tmp = Init_Simplex();
+        for (long long V1 = 0; V1 < storage0->lietralCount; ++V1) {
+            Complex *P = FSI(A, B, points, V1);
+            if (P != NULL && P->simplexCount > 0) {
+                Simplex *tmp = Init_Simplex();
 
-            for (int i = 0; i < P->simplexCount; ++i) {
-                Simplex *simp = getSimpexAt(P, i);
-                for (int j = 0; j < simp->elementCount; ++j) {
-                    addElement(tmp, ((i * bPoints) + getElementAt(simp, j)));
-                }
-            }
-
-            if (!containsSimplex(posetPrep, tmp)) {
-                addSimplex(posetPrep, tmp);
-                int maxDim = 0;
-                int maxDimCount = 0;
-                char *maxSim;
                 for (int i = 0; i < P->simplexCount; ++i) {
                     Simplex *simp = getSimpexAt(P, i);
-                    if (maxDim < simp->elementCount) {
-                        maxDim = simp->elementCount;
-                        maxDimCount = 1;
-                        maxSim = simplexToLiteral(simp);
-                    } else {
-                        maxSim = malloc(sizeof(char));
+                    for (int j = 0; j < simp->elementCount; ++j) {
+                        addElement(tmp, ((i * bPoints) + getElementAt(simp, j)));
                     }
-                    char *simpLit = simplexToLiteral(simp);
-                    if (maxDim == simp->elementCount && maxSim != NULL && strcmp(maxSim, simpLit) != 0) {
-                        maxDimCount++;
-                    }
-
-                    free(maxSim);
-                    free(simpLit);
                 }
 
-            } else {
-                Dest_Simplex(tmp);
+                if (!containsSimplex(posetPrep, tmp)) {
+                    addSimplex(posetPrep, tmp);
+                    int maxDim = 0;
+                    int maxDimCount = 0;
+                    char *maxSim;
+                    for (int i = 0; i < P->simplexCount; ++i) {
+                        Simplex *simp = getSimpexAt(P, i);
+                        if (maxDim < simp->elementCount) {
+                            maxDim = simp->elementCount;
+                            maxDimCount = 1;
+                            maxSim = simplexToLiteral(simp);
+                        } else {
+                            maxSim = malloc(sizeof(char));
+                        }
+                        char *simpLit = simplexToLiteral(simp);
+                        if (maxDim == simp->elementCount && maxSim != NULL && strcmp(maxSim, simpLit) != 0) {
+                            maxDimCount++;
+                        }
+
+                        free(maxSim);
+                        free(simpLit);
+                    }
+
+                } else {
+                    Dest_Simplex(tmp);
+                }
+
+                Dest_Complex(P);
             }
-
-            Dest_Complex(P);
         }
+
+        char *complexLiteral = complexToLiteral(posetPrep, true);
+        wrtieLine(file, "RequirePackage(\"homology\");", false);
+        wrtieLine(file, "SimplicialHomology(OrderComplex(OrderRelationToPoset(", true);
+        wrtieLine(file, complexLiteral, true);
+        wrtieLine(file, ",IsSubset)));", false);
+
+        printf("\nResult is in:\n %s\n", file->path);
+
+        Destroy_file(file);
+        Destory_Storage(storage0);
+        Dest_Complex(posetPrep);
+        Dest_Simplex(fVA);
+        Dest_Simplex(fVB);
+        free(fVALit);
+        free(fVBLit);
+
     }
-
-    char *complexLiteral = complexToLiteral(posetPrep, true);
-    wrtieLine(file, "RequirePackage(\"homology\");", false);
-    wrtieLine(file, "SimplicialHomology(OrderComplex(OrderRelationToPoset(", true);
-    wrtieLine(file, complexLiteral, true);
-    wrtieLine(file, ",IsSubset)));", false);
-
-    printf("\nResult is in:\n %s\n", file->path);
-
-    Destroy_file(file);
-    Destory_Storage(storage0);
-    Dest_Complex(posetPrep);
-    Dest_Simplex(fVA);
-    Dest_Simplex(fVB);
-    free(fVALit);
-    free(fVBLit);
-
-    */
-}
-
-// Process has done i out of n rounds,
-// and we want a bar of width w and resolution r.
-static inline void loadBar(int x, int n, int r, int w) {
-    // Only update r times.
-    if (x % (n / r + 1) != 0) return;
-
-    // Calculuate the ratio of complete-to-incomplete.
-    float ratio = x / (float) n;
-    int c = ratio * w;
-
-    // Show the percentage complete.
-    printf("%3d%% [", (int) (ratio * 100));
-
-    // Show the load bar.
-    for (int x = 0; x < c; x++)
-        printf("=");
-
-    for (int x = c; x < w; x++)
-        printf(" ");
-
-    // ANSI Control codes to go back to the
-    // previous line and clear it.
-    printf("]\n\033[F\033[J");
 }
 
 static inline void DoProgress(char label[], int step, int total) {
