@@ -617,7 +617,7 @@ static inline void DoProgress(char label[], int step, int total) {
     for (int i = 0; i < pos; i++) printf("%c", '=');
 
     //fill progress bar with spaces
-    printf("% *c", width - pos + 1, ']');
+    printf("%d %c", width - pos + 1, ']');
     printf(" %3d%%\r", percent);
     fflush(stdout);
 }

@@ -3,9 +3,6 @@ project(LD_SCIENCE)
 
 ADD_SUBDIRECTORY( lis )
 
-
-set(CMAKE_C_FLAGS "-std=c99")
-
 IF(true)
 message(STATUS "Checking OpenMP")
 find_package(OpenMP)
@@ -37,6 +34,8 @@ polytop_struct.h
 polytop_struct.c
 simplex_basic.h
 simplex_basic.c
+poly_birdge.h
+poly_bridge.cpp
 )
 
 add_executable(LD_SCIENCE ${SOURCE_FILES})

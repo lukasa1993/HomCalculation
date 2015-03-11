@@ -6,8 +6,11 @@
 //  Copyright (c) 2013 Luka Dodelia. All rights reserved.
 //
 
+
 #include "simplex.h"
 #include "generate_complex.h"
+
+#include "poly_birdge.h"
 
 //#include "polytop_struct.h"
 
@@ -158,6 +161,8 @@ void input_file() {
 int main(int argc, const char *argv[]) {
     clock_t begin, end;
     double time_spent;
+
+    polymake_init();
 
     begin = clock();
 
