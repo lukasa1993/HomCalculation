@@ -7,12 +7,47 @@
 
 #include "complex_struct.h"
 
+Coordinates *Init_Coordinates() {
+    Coordinates *coords = (Coordinates *) malloc(sizeof(Coordinates));
+    coords->cooordinateIndex = -1;
+    coords->cooordinateCount = 0;
+    coords->cooordinateCapacity = 1;
+    coords->coordinates = malloc(coords->cooordinateCapacity * sizeof(double));
+    return coords;
+}
+
+void Dest_Coordinates(Coordinates *coords) {
+    free(coords->coordinates);
+    free(coords);
+}
+
+void addCoordinate(Coordinates *coord, Coord x) {
+    if (coord->cooordinateCapacity <= coord->cooordinateIndex + 1) {
+        coord->cooordinateCapacity <<= 1;
+        coord->coordinates = realloc(coord->coordinates, coord->cooordinateCapacity * sizeof(Coord));
+    }
+
+    coord->cooordinateCount++;
+    coord->coordinates[coord->cooordinateIndex + 1] = x;
+    coord->cooordinateIndex = coord->cooordinateCount - 1;
+}
+
+Coord getCoordtAt(Coordinates *coords, int index) {
+    if (coords->cooordinateIndex < index) {
+        return -1;
+    } else {
+        return coords->coordinates[index];
+    }
+}
+
 Simplex *Init_Simplex() {
     Simplex *simplex = (Simplex *) malloc(sizeof(Simplex));
     simplex->elementIndex = -1;
     simplex->elementCount = 0;
     simplex->elementCapacity = 1;
     simplex->elements = malloc(simplex->elementCapacity * sizeof(SimplexElem));
+
+    simplex->coodinates = Init_Coordinates();
 
     return simplex;
 }
@@ -269,3 +304,80 @@ Complex *literalToComplex(char *complexLiteral) {
     return complex;
 }
 
+
+Coordinates *lietralToCoordinates(char *coordinatesLiteral) {
+    Coordinates *coordinates = NULL;
+
+    char posibleSimplexElem[100];
+    memset(posibleSimplexElem,0,100);
+
+    int posibleSimplexElemi = 0;
+    int bracketsCount = 0;
+
+    for (int i = 0; i < strlen(coordinatesLiteral); ++i) {
+        char aChar = coordinatesLiteral[i];
+
+        if (aChar == startingChar) {
+            if (bracketsCount == 0) {
+                coordinates = Init_Coordinates();
+            }
+            bracketsCount++;
+        } else if (bracketsCount == 1 && ( aChar == '.' || isdigit(aChar))) {
+
+            posibleSimplexElem[posibleSimplexElemi] = aChar;
+            posibleSimplexElemi++;
+
+        } else if (bracketsCount == 1 && aChar == ',' && posibleSimplexElemi > 0) {
+            addCoordinate(coordinates, atof(posibleSimplexElem));
+
+            posibleSimplexElemi = 0;
+            memset(posibleSimplexElem,0,100);
+
+        } else if (aChar == endingChar) {
+            if (bracketsCount == 1 && posibleSimplexElemi > 0) {
+                posibleSimplexElemi = 0;
+                addCoordinate(coordinates, atof(posibleSimplexElem));
+            }
+            bracketsCount--;
+        }
+    }
+
+    return coordinates;
+}
+
+char *coordinatesToLiteral(Coordinates *coords) {
+    char literal[coords->cooordinateCount * 5];
+    int literali = 0;
+
+    literal[literali] = startingChar;
+    literali++;
+
+    for (int j = 0; j < coords->cooordinateCount; ++j) {
+        Coord coord = coords->coordinates[j];
+        char str[100];
+        sprintf(str, "%f", coord);
+
+        for (int s = 0; s < strlen(str); ++s) {
+            literal[literali] = str[s];
+            literali++;
+        }
+
+        if (j != coords->cooordinateCount - 1) {
+            literal[literali] = ',';
+            literali++;
+            if (true) {
+                literal[literali] = ' ';
+                literali++;
+            }
+        }
+    }
+
+    literal[literali] = endingChar;
+    literali++;
+
+    char *final = malloc((literali + 1) * sizeof(char));
+    memcpy(final, literal, literali);
+    final[literali] = 0;
+
+    return final;
+}

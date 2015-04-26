@@ -6,18 +6,19 @@
 //  Copyright (c) 2013 Luka Dodelia. All rights reserved.
 //
 
-
+#include "lis.h"
+#include "lis_bridge.h"
 #include "simplex.h"
 #include "generate_complex.h"
 
-#include "poly_birdge.h"
+//#include "poly_birdge.h"
 
 //#include "polytop_struct.h"
 
 #define MAX_STRING_LEN 1024
 
 Complex **complexes;
-int complexesCount;
+int     complexesCount;
 
 void input_mannual() {
     printf("\nFirst Complex:");
@@ -29,7 +30,7 @@ void input_mannual() {
     scanf("%s", secondComplexLitteral);
 
     complexesCount = 2;
-    complexes = malloc(complexesCount * sizeof(Complex *));
+    complexes      = malloc(complexesCount * sizeof(Complex *));
     complexes[0] = literalToComplex(firstComplexLitteral);
     complexes[1] = literalToComplex(secondComplexLitteral);
 }
@@ -54,7 +55,7 @@ void input_random() {
     Complex *secondComplex;
 
     if (strcmp(sameLimit, "yes") == 0 || strcmp(sameLimit, "y") == 0 || strcmp(sameLimit, "1") == 0) {
-        firstComplex = generateComplex(maxFacetCount, maxDimenssion, pointsCount);
+        firstComplex  = generateComplex(maxFacetCount, maxDimenssion, pointsCount);
         secondComplex = generateComplex(maxFacetCount, maxDimenssion, pointsCount);
     } else {
         int maxFacetCount1 = 0, maxDimenssion1 = 0, pointsCount1 = 0;
@@ -68,14 +69,14 @@ void input_random() {
         printf("\nnSecond Point Count:");
         scanf("%d", &pointsCount1);
 
-        firstComplex = generateComplex(maxFacetCount, maxDimenssion, pointsCount);
+        firstComplex  = generateComplex(maxFacetCount, maxDimenssion, pointsCount);
         secondComplex = generateComplex(maxFacetCount1, maxDimenssion1, pointsCount1);
     }
 
     printf("\nComplexes:\n%s\n%s\n", complexToLiteral(firstComplex, true), complexToLiteral(secondComplex, true));
 
     complexesCount = 2;
-    complexes = malloc(complexesCount * sizeof(Complex *));
+    complexes      = malloc(complexesCount * sizeof(Complex *));
     complexes[0] = firstComplex;
     complexes[1] = secondComplex;
 }
@@ -102,15 +103,15 @@ void input_file_random() {
     fflush(stdout);
 
     complexesCount = complexCount;
-    complexes = malloc(complexesCount * sizeof(Complex *));
+    complexes      = malloc(complexesCount * sizeof(Complex *));
 
 
     char str[15];
     sprintf(str, "%d", complexCount);
     wrtieLine(file, str, false);
     for (int i = 0; i < complexCount; ++i) {
-        Complex *complex = generateComplex(maxFacetCount, maxDimenssion, pointsCount);
-        char *complexLiteral = complexToLiteral(complex, true);
+        Complex *complex        = generateComplex(maxFacetCount, maxDimenssion, pointsCount);
+        char    *complexLiteral = complexToLiteral(complex, true);
         complexes[i] = complex;
 
         wrtieLine(file, complexLiteral, false);
@@ -127,8 +128,8 @@ void input_file() {
     char path[1024];
     scanf("%s", path);
 
-    LD_File *file = Init_file_util(path, false);
-    char *file_content = readFile(file);
+    LD_File *file         = Init_file_util(path, false);
+    char    *file_content = readFile(file);
 
     int complexCount = 0, offset = 0;
     sscanf(file_content, "%d", &complexCount);
@@ -138,7 +139,7 @@ void input_file() {
     offset = (int) strlen(str);
 
     complexesCount = complexCount;
-    complexes = malloc(complexesCount * sizeof(Complex *));
+    complexes      = malloc(complexesCount * sizeof(Complex *));
 
     for (int i = 0; i < complexCount; ++i) {
         char *literalComplex = malloc(2048);
@@ -158,11 +159,25 @@ void input_file() {
     }
 }
 
-int main(int argc, const char *argv[]) {
+int main(int argc, char *argv[]) {
     clock_t begin, end;
-    double time_spent;
+    double  time_spent;
 
-    polymake_init();
+    lis_initialize(&argc, &argv);
+
+    Coordinates *coord  = lietralToCoordinates("[2.5,1.5,3.5]");
+    Coordinates *coord1 = lietralToCoordinates("[5.2,5.1,5.3]");
+    Coordinates *coord2 = lietralToCoordinates("[2.4,5.6,7.6]");
+    Coordinates *coord3 = lietralToCoordinates("[1.2,3.5,2.6]");
+
+    Coordinates **coords = malloc(4 * sizeof(Coordinates *));
+    coords[0] = coord;
+    coords[1] = coord1;
+    coords[2] = coord2;
+    coords[3] = coord3;
+
+    basisAlphas(coords, 4, 2);
+    return -1;
 
     begin = clock();
 
@@ -178,19 +193,23 @@ int main(int argc, const char *argv[]) {
 //    Calculate_Hom(literalToComplex(n2), literalToComplex(n1));
 //    Calculate_Hom(literalToComplex(n1), literalToComplex(n3));
 //    Calculate_Hom(literalToComplex(n3), literalToComplex(n1));
+//
+//    char *l1 = "[[1,2],[2,3],[3,4],[1,4]]";
+//    char *l2 = "[[1,2,3],[2,4,5]]";
+//
+//    Complex *A = literalToComplex(l1);
+//    Complex *B = literalToComplex(l2);
+//
 
-    char *l1 = "[[1,2],[2,3],[3,4],[1,4]]";
-    char *l2 = "[[1,2,3],[2,4,5]]";
-
-    Complex *A = literalToComplex(l1);
-    Complex *B = literalToComplex(l2);
+    Complex *A = literalToComplex(n1);
+    Complex *B = literalToComplex(n2);
 
     for (int i = 0; i < A->simplexCount; ++i) {
         Simplex *simp = getSimpexAt(A, i);
         simp->allowedSubSimplexes = complexToLiteral(AllSubSimplexses(simp), true);
     }
 
-   for (int i = 0; i < B->simplexCount; ++i) {
+    for (int i = 0; i < B->simplexCount; ++i) {
         Simplex *simp = getSimpexAt(B, i);
         simp->allowedSubSimplexes = complexToLiteral(AllSubSimplexses(simp), true);
     }
@@ -200,7 +219,7 @@ int main(int argc, const char *argv[]) {
 //
 //    char* C = "[[1,2,4],[2,3,5],[3,1,6],[1,4,6],[4,2,5],[4,5,6],[3,6,5]]";
 
-    // ------ can't calcualate? --------------
+    // ------ can't calculate? ----------------
 
 //    Calculate_Hom(literalToComplex(A), literalToComplex(C));
 //
@@ -210,8 +229,10 @@ int main(int argc, const char *argv[]) {
 //    Calculate_Hom(literalToComplex(C), literalToComplex(B));
 //    Calculate_Hom(literalToComplex(C), literalToComplex(C));
 
-    end = clock();
+    end        = clock();
     time_spent = (double) (end - begin) / CLOCKS_PER_SEC;
 
     printf("\n %f The End.. \n", time_spent);
+
+    lis_finalize();
 }

@@ -33,7 +33,7 @@ typedef struct Polytop {
     int polsimplexIndex;
     int polsimplexCount;
     int polsimplexCapacity;
-    Simplex **polsimplexes;
+    Simplex *polsimplexes;
     PolCoordinates *polcoordinates;
 
 } Polytop;

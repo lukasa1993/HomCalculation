@@ -21,6 +21,16 @@
 
 typedef int SimplexElem;
 
+typedef double Coord;
+
+typedef struct Coordinates {
+    int cooordinateIndex;
+    int cooordinateCount;
+    int cooordinateCapacity;
+    Coord *coordinates;
+
+} Coordinates;
+
 typedef struct Simplex {
     int elementIndex;
     int elementCount;
@@ -30,9 +40,12 @@ typedef struct Simplex {
     // polytop phase
     char* allowedSubSimplexes;
     int dimension;
-    char* coords;
+
+    Coordinates* coodinates;
 
 } Simplex;
+
+
 
 typedef struct Complex {
     int simplexIndex;
@@ -71,6 +84,11 @@ bool containsSimplex(Complex *comp, Simplex *simp);
 Complex *literalToComplex(char *complexLiteral);
 
 char *complexToLiteral(Complex *complex, bool pretty);
+
+Coordinates *lietralToCoordinates(char *coordinatesLiteral);
+char *coordinatesToLiteral(Coordinates *coords);
+Coord getCoordtAt(Coordinates *coords, int index);
+
 
 #include "simplex_basic.h"
 

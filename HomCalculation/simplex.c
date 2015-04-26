@@ -413,8 +413,8 @@ Simplex *fVectorFromComplex(Complex *comp) {
 }
 
 void Calculate_Hom(Complex *A, Complex *B) {
-    printf("\n ------- Calculation ------- \n");
-    printf(" %s -> %s \n", complexToLiteral(A, true), complexToLiteral(B, true));
+    printf("\n------- Calculation ------- \n");
+    printf("%s -> %s \n", complexToLiteral(A, true), complexToLiteral(B, true));
 
 
     for (int i = 0; i < HOMFVECTORSIZE; ++i) {
@@ -605,7 +605,7 @@ static inline void DoProgress(char label[], int step, int total) {
     const int pwidth = 72;
 
     //minus label len
-    int width = pwidth - strlen(label);
+    int width = (int) (pwidth - strlen(label));
     int pos = (step * width) / total;
 
 
@@ -617,7 +617,7 @@ static inline void DoProgress(char label[], int step, int total) {
     for (int i = 0; i < pos; i++) printf("%c", '=');
 
     //fill progress bar with spaces
-    printf("%d %c", width - pos + 1, ']');
+    printf(" %d %c", width - pos + 1, ']');
     printf(" %3d%%\r", percent);
     fflush(stdout);
 }
