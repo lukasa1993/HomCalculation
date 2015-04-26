@@ -72,7 +72,7 @@ INCLUDE_DIRECTORIES(
 ADD_LIBRARY( lis
         ${lis_src_Files}
 )
-#SET_TARGET_PROPERTIES(lis PROPERTIES LINKER_LANGUAGE C)
+SET_TARGET_PROPERTIES(lis PROPERTIES LINKER_LANGUAGE C)
 
 # Link the standard C math library
 find_library(M_LIB m)
