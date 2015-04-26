@@ -8,6 +8,6 @@
 #include "complex_struct.h"
 #include "lis.h"
 
-void basisAlphas(Coordinates **coords, int length, int dim);
+Coordinates *basisAlphas(Coordinates **coords, int length);
 
 #endif //LD_SCIENCE_LIS_BRIDGE_H

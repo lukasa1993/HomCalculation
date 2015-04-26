@@ -47,8 +47,6 @@ Simplex *Init_Simplex() {
     simplex->elementCapacity = 1;
     simplex->elements = malloc(simplex->elementCapacity * sizeof(SimplexElem));
 
-    simplex->coodinates = Init_Coordinates();
-
     return simplex;
 }
 

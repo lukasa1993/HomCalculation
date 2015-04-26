@@ -4,11 +4,24 @@
 
 #include "lis_bridge.h"
 
-void basisAlphas(Coordinates **coords, int length, int dim) {
-    int i, j, n = dim, dim_i, xi, mi, mj;
+/*
+ * coords must have base coordinats anad + 1 which
+ * we are calcualation alphas for
+  * */
+
+Coordinates *basisAlphas(Coordinates **coords, int length) {
+    int i, j, n = coords[0]->cooordinateCount, xi, mi;
 
     Coordinates *first  = coords[0];
     Coordinates *needed = coords[length - 1];
+
+    for (i = 0; i < length; i++) {
+        if (n != coords[i]->cooordinateCount) {
+            printf("\n dimensions doesn't match \n");
+
+            return NULL;
+        }
+    }
 
 
     LIS_MATRIX A;
@@ -24,7 +37,6 @@ void basisAlphas(Coordinates **coords, int length, int dim) {
     for (xi = 0; xi < n; ++xi) {
         lis_vector_set_value(LIS_INS_VALUE, xi, getCoordtAt(needed, xi), b);
     }
-    lis_vector_print(b);
 
     lis_matrix_create(0, &A);
     lis_matrix_set_size(A, 0, n);
@@ -33,8 +45,6 @@ void basisAlphas(Coordinates **coords, int length, int dim) {
         double a1 = getCoordtAt(first, i);
         for (mi = 1, j = 0; mi < length - 1; ++mi, ++j) {
             double a = getCoordtAt(coords[mi], i);
-
-            printf("%f - %f = %f\n", a, a1, a - a1);
 
             lis_matrix_set_value(LIS_INS_VALUE, i, j, a - a1, A);
         }
@@ -48,7 +58,12 @@ void basisAlphas(Coordinates **coords, int length, int dim) {
     lis_solver_set_option("-tol 1.0e-12", solver);
 
     lis_solve(A, b, x, solver);
-    lis_vector_print(x);
-    printf("\nfinito\n");
 
+    Coordinates *alphas = Init_Coordinates();
+    for (i = 0; i < n; ++i) {
+        double alpha;
+        lis_vector_get_value(x, i, &alpha);
+        addCoordinate(alphas, alpha);
+    }
+    return alphas;
 }

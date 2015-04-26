@@ -169,14 +169,18 @@ int main(int argc, char *argv[]) {
     Coordinates *coord1 = lietralToCoordinates("[5.2,5.1,5.3]");
     Coordinates *coord2 = lietralToCoordinates("[2.4,5.6,7.6]");
     Coordinates *coord3 = lietralToCoordinates("[1.2,3.5,2.6]");
+    Coordinates *coord4 = lietralToCoordinates("[3.5,4.1,7.2]");
 
     Coordinates **coords = malloc(4 * sizeof(Coordinates *));
     coords[0] = coord;
     coords[1] = coord1;
     coords[2] = coord2;
     coords[3] = coord3;
+    coords[4] = coord4;
 
-    basisAlphas(coords, 4, 2);
+    Coordinates *alphas = basisAlphas(coords, 5);
+
+    printf("\nalphas: %s\n", coordinatesToLiteral(alphas));
     return -1;
 
     begin = clock();

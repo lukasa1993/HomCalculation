@@ -41,7 +41,8 @@ typedef struct Simplex {
     char* allowedSubSimplexes;
     int dimension;
 
-    Coordinates* coodinates;
+    //length of coordinates is same es elementCount
+    Coordinates** coordinates;
 
 } Simplex;
 
@@ -84,6 +85,11 @@ bool containsSimplex(Complex *comp, Simplex *simp);
 Complex *literalToComplex(char *complexLiteral);
 
 char *complexToLiteral(Complex *complex, bool pretty);
+
+Coordinates *Init_Coordinates();
+void Dest_Coordinates(Coordinates *coords);
+
+void addCoordinate(Coordinates *coord, Coord x);
 
 Coordinates *lietralToCoordinates(char *coordinatesLiteral);
 char *coordinatesToLiteral(Coordinates *coords);
