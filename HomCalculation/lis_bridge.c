@@ -5,7 +5,7 @@
 #include "lis_bridge.h"
 
 /*
- * coords must have base coordinats anad + 1 which
+ * coords must have base Coordinates anad + 1 which
  * we are calcualation alphas for
   * */
 
