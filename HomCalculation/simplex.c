@@ -336,7 +336,7 @@ void Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
             bool allowed = false;
             for (int bi = 0; bi < B->simplexCount; ++bi) {
                 Simplex *BSimp = getSimpexAt(B, bi);
-                if (containsSimplex(literalToComplex(BSimp->allowedSubSimplexes), subSimp)) {
+                if (containsSimplex(BSimp->allowedSubSimplexes, subSimp)) {
                     allowed = true;
                     break;
                 }
@@ -457,16 +457,16 @@ void Calculate_Hom(Complex *A, Complex *B) {
                 P = FSI(A, B, k - 1, V1);
             }
             if (P != NULL && P->simplexCount > 0) {
-                Simplex *s = Init_Simplex();
-                addElement(s, k);
-                Complex *AComps = upperSimplexContainingDot(A, s);
-                Simplex *ASim = getSimpexAt(AComps, 0);
+//                Simplex *s = Init_Simplex();
+//                addElement(s, k);
+//                Complex *AComps = upperSimplexContainingDot(A, s);
+//                Simplex *ASim = getSimpexAt(AComps, 0);
 
-                if (true || ASim->dimension < k) {
+//                if (true || ASim->dimension < k) {
                     Hom_Match(A, B, P, k);
-                } else {
-                    k--;
-                }
+//                } else {
+//                    k--;
+//                }
                 Dest_Complex(P);
             }
 

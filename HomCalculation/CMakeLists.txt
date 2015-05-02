@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.8.4)
 project(LD_SCIENCE)
 
+set(CMAKE_C_FLAGS "-std=c99")
 
 IF(true)
 message(STATUS "Checking OpenMP")
@@ -17,12 +18,12 @@ ELSE()
 ENDIF()
 ENDIF()
 
-include_directories(lis/include)
-add_subdirectory(lis)
+#include_directories(lis/include)
+#add_subdirectory(lis)
 
 set(SOURCE_FILES
-lis_bridge.h
-lis_bridge.c
+#lis_bridge.h
+#lis_bridge.c
 complex_struct.h
 complex_struct.c
 main.c
@@ -39,4 +40,4 @@ simplex_basic.c
 )
 
 add_executable(LD_SCIENCE ${SOURCE_FILES})
-target_link_libraries(LD_SCIENCE lis)
+#target_link_libraries(LD_SCIENCE lis)

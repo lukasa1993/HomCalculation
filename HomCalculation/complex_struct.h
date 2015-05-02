@@ -38,7 +38,7 @@ typedef struct Simplex {
     SimplexElem *elements;
 
     // polytop phase
-    char* allowedSubSimplexes;
+    struct Complex* allowedSubSimplexes;
     int dimension;
 
     //length of coordinates is same es elementCount
