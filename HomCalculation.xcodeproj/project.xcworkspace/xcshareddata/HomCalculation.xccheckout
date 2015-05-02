@@ -14,7 +14,7 @@
 		<string>https://github.com/lukasa1993/HomCalculation.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>HomCalculation.xcodeproj/project.xcworkspace</string>
+	<string>HomCalculation.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>0A12E30BD9F5E3F8905AB711EDD27A5CE8BD48DD</key>
