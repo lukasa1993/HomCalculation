@@ -446,6 +446,8 @@ void Calculate_Hom(Complex *A, Complex *B) {
         Dest_Complex(simpSubs);
     }
 
+    double max_time_spent = 0;
+
     storage0->lietralCount = k1;
     for (int k = 2; k <= points; ++k) {
 #pragma omp parallel for shared(A, B, storage0, storage1, k)
@@ -461,9 +463,22 @@ void Calculate_Hom(Complex *A, Complex *B) {
 //                addElement(s, k);
 //                Complex *AComps = upperSimplexContainingDot(A, s);
 //                Simplex *ASim = getSimpexAt(AComps, 0);
+                clock_t begin, end;
+                double time_spent;
 
+                //lis_initialize(&argc, &argv);
+
+                begin = clock();
 //                if (true || ASim->dimension < k) {
-                    Hom_Match(A, B, P, k);
+                Hom_Match(A, B, P, k);
+
+                end = clock();
+                time_spent = (double) (end - begin) / CLOCKS_PER_SEC;
+                if (max_time_spent < time_spent) {
+                    max_time_spent = time_spent;
+                    printf("\nHome time: %f \n", max_time_spent);
+                }
+
 //                } else {
 //                    k--;
 //                }
@@ -617,7 +632,7 @@ static inline void DoProgress(char label[], int step, int total) {
     for (int i = 0; i < pos; i++) printf("%c", '=');
 
     //fill progress bar with spaces
-    printf(" %d %c", width - pos + 1, ']');
+    printf(" (%d/%d) %c", step, total, ']');
     printf(" %3d%%\r", percent);
     fflush(stdout);
 }
