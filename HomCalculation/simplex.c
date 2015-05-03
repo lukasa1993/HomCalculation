@@ -6,6 +6,7 @@
 //  Copyright (c) 2013 Luka Dodelia. All rights reserved.
 //
 
+#include <math.h>
 #include "simplex.h"
 
 #define HOMFVECTORSIZE 40
@@ -452,7 +453,6 @@ void Calculate_Hom(Complex *A, Complex *B) {
     for (int k = 2; k <= points; ++k) {
 #pragma omp parallel for shared(A, B, storage0, storage1, k)
         for (long long V1 = 0; V1 < storage0->lietralCount; ++V1) {
-            DoProgress("", (int) V1, (int) storage0->lietralCount - 1);
             Complex *P = NULL;
 #pragma omp critical
             {
@@ -476,8 +476,13 @@ void Calculate_Hom(Complex *A, Complex *B) {
                 time_spent = (double) (end - begin) / CLOCKS_PER_SEC;
                 if (max_time_spent < time_spent) {
                     max_time_spent = time_spent;
-                    printf("\nHome time: %f \n", max_time_spent);
                 }
+
+                char extra[50];
+                sprintf(extra, "Home time: %f ", max_time_spent);
+
+                DoProgress(extra, (int) V1, (int) storage0->lietralCount - 1);
+
 
 //                } else {
 //                    k--;
@@ -617,10 +622,13 @@ void Calculate_Hom(Complex *A, Complex *B) {
 
 static inline void DoProgress(char label[], int step, int total) {
     //progress width
-    const int pwidth = 72;
+    const int pwidth = 80;
+
+    int s1 = (step == 0 ? 1 : ((int)(log10(fabs(step))+1) + (step < 0 ? 1 : 0)));
+    int s2 = (total == 0 ? 1 : ((int)(log10(fabs(total))+1) + (total < 0 ? 1 : 0)));
 
     //minus label len
-    int width = (int) (pwidth - strlen(label));
+    int width = (int) (pwidth - strlen(label) - s1 - s2 + 4);
     int pos = (step * width) / total;
 
 
