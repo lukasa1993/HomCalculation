@@ -3,11 +3,6 @@
 #include "trie.h"
 #include <stdlib.h>
 
-void TrieCreate(trieNode_t **root)
-{
-    *root = TrieCreateNode('\0', 0xffffffff);
-}
-
 trieNode_t *TrieCreateNode(char key, int data)
 {
     trieNode_t *node = NULL;
@@ -26,6 +21,11 @@ trieNode_t *TrieCreateNode(char key, int data)
     node->parent= NULL;
     node->prev= NULL;
     return node;
+}
+
+void TrieCreate(trieNode_t **root)
+{
+    *root = TrieCreateNode('\0', 0xffffffff);
 }
 
 void TrieAdd(trieNode_t **root, char *key, int data)

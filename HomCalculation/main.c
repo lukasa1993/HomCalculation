@@ -15,149 +15,6 @@
 
 //#include "polytop_struct.h"
 
-#define MAX_STRING_LEN 1024
-
-Complex **complexes;
-int complexesCount;
-
-void input_mannual() {
-    printf("\nFirst Complex:");
-    char firstComplexLitteral[8192];
-    scanf("%s", firstComplexLitteral);
-
-    printf("\nSecond Complex:");
-    char secondComplexLitteral[8192];
-    scanf("%s", secondComplexLitteral);
-
-    complexesCount = 2;
-    complexes = malloc(complexesCount * sizeof(Complex *));
-    complexes[0] = literalToComplex(firstComplexLitteral);
-    complexes[1] = literalToComplex(secondComplexLitteral);
-}
-
-void input_random() {
-    int maxFacetCount = 0, maxDimenssion = 0, pointsCount = 0;
-
-    printf("\nMax Facet Count:");
-    scanf("%d", &maxFacetCount);
-
-    printf("\nMax Dimmension:");
-    scanf("%d", &maxDimenssion);
-
-    printf("\nPoint Count:");
-    scanf("%d", &pointsCount);
-
-    printf("\nSame Limit For Second?:");
-    char sameLimit[128];
-    scanf("%s", sameLimit);
-
-    Complex *firstComplex;
-    Complex *secondComplex;
-
-    if (strcmp(sameLimit, "yes") == 0 || strcmp(sameLimit, "y") == 0 || strcmp(sameLimit, "1") == 0) {
-        firstComplex = generateComplex(maxFacetCount, maxDimenssion, pointsCount);
-        secondComplex = generateComplex(maxFacetCount, maxDimenssion, pointsCount);
-    } else {
-        int maxFacetCount1 = 0, maxDimenssion1 = 0, pointsCount1 = 0;
-
-        printf("\nSecond Max Facet Count:");
-        scanf("%d", &maxFacetCount1);
-
-        printf("\nnSecond Max Dimmension:");
-        scanf("%d", &maxDimenssion1);
-
-        printf("\nnSecond Point Count:");
-        scanf("%d", &pointsCount1);
-
-        firstComplex = generateComplex(maxFacetCount, maxDimenssion, pointsCount);
-        secondComplex = generateComplex(maxFacetCount1, maxDimenssion1, pointsCount1);
-    }
-
-    printf("\nComplexes:\n%s\n%s\n", complexToLiteral(firstComplex, true), complexToLiteral(secondComplex, true));
-
-    complexesCount = 2;
-    complexes = malloc(complexesCount * sizeof(Complex *));
-    complexes[0] = firstComplex;
-    complexes[1] = secondComplex;
-}
-
-void input_file_random() {
-    LD_File *file = Init_file_util_ext("./hom_data", "comp", true);
-
-    printf("\nMaximum Complex Count:");
-    int maxComplexCount = 0, maxFacetCount = 0, maxDimenssion = 0, pointsCount = 0;
-    scanf("%d", &maxComplexCount);
-
-    printf("\nMax Facet Count:");
-    scanf("%d", &maxFacetCount);
-
-    printf("\nMax Dimmension:");
-    scanf("%d", &maxDimenssion);
-
-    printf("\nPoint Count:");
-    scanf("%d", &pointsCount);
-
-    srand((int) time(NULL));
-    int complexCount = random_in_range(1, maxComplexCount);
-    printf("\nGenerating %d Complexes\n", complexCount);
-    fflush(stdout);
-
-    complexesCount = complexCount;
-    complexes = malloc(complexesCount * sizeof(Complex *));
-
-
-    char str[15];
-    sprintf(str, "%d", complexCount);
-    wrtieLine(file, str, false);
-    for (int i = 0; i < complexCount; ++i) {
-        Complex *complex = generateComplex(maxFacetCount, maxDimenssion, pointsCount);
-        char *complexLiteral = complexToLiteral(complex, true);
-        complexes[i] = complex;
-
-        wrtieLine(file, complexLiteral, false);
-        printf("%s\n", complexLiteral);
-        fflush(stdout);
-    }
-
-    printf("\nFile Path:\n%s", file->path);
-    fflush(stdout);
-}
-
-void input_file() {
-    printf("\nFiles Path:");
-    char path[1024];
-    scanf("%s", path);
-
-    LD_File *file = Init_file_util(path, false);
-    char *file_content = readFile(file);
-
-    int complexCount = 0, offset = 0;
-    sscanf(file_content, "%d", &complexCount);
-
-    char str[15];
-    sprintf(str, "%d", complexCount);
-    offset = (int) strlen(str);
-
-    complexesCount = complexCount;
-    complexes = malloc(complexesCount * sizeof(Complex *));
-
-    for (int i = 0; i < complexCount; ++i) {
-        char *literalComplex = malloc(2048);
-        sscanf(&file_content[offset], "%s", literalComplex);
-        offset += strlen(literalComplex);
-
-        while (file_content[offset] != '\n') {
-            offset++;
-        }
-
-        if (strlen(literalComplex) > 4) {
-            Complex *complex = literalToComplex(literalComplex);
-            complexes[i] = complex;
-            printf("\n%s\n", complexToLiteral(complex, true));
-        }
-        free(literalComplex);
-    }
-}
 
 int main(int argc, char *argv[]) {
     clock_t begin, end;
@@ -174,6 +31,19 @@ int main(int argc, char *argv[]) {
     char *n1 = "[[1,2,3],[2,3,4],[3,4,5],[4,5,6],[1,5,6],[2,4,6],[1,2,6]]";
     char *n2 = "[[1,2,6],[2,3,6],[3,4,6],[4,5,6],[1,5,6]]";
     char *n3 = "[[1,2,6],[2,3,4],[4,5,6],[2,4,6]]";
+    char *n4 = "[[1,2,6],[2,3,4],[4,5,6],[2,4,6]";
+
+    trieNode_t *root;
+    TrieCreate(&root);
+
+    TrieAdd(&root, n1, 1);
+    TrieAdd(&root, n2, 2);
+    TrieAdd(&root, n3, 3);
+
+    trieNode_t *a = TrieSearch(root->children, n3);
+
+    printf("\n%c\n", a->key);
+    exit(0);
 
 //    Calculate_Hom(literalToComplex(n1), literalToComplex(n2));
 //    Calculate_Hom(literalToComplex(n2), literalToComplex(n1));

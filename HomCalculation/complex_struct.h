@@ -15,6 +15,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <ctype.h>
+#include "trie.h"
 
 #define startingChar '['
 #define endingChar   ']'
