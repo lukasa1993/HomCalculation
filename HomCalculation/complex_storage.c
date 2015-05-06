@@ -17,12 +17,12 @@ Complex_Storage *Init_Storage() {
     storage->literalCapacity = 1;
     storage->complexLiterals = malloc((size_t) (storage->literalCapacity * sizeof(char *)));
 
-    TrieCreate(&storage->trie_root);
+//    TrieCreate(&storage->trie_root);
     return storage;
 }
 
 void Destory_Storage(Complex_Storage *storage) {
-    TrieDestroy(storage->trie_root);
+//    TrieDestroy(storage->trie_root);
     for (int i = 0; i < storage->lietralCount; ++i) {
         free(storage->complexLiterals[i]);
     }
@@ -42,11 +42,7 @@ void addLiteral(Complex_Storage *storage, char *literal) {
     storage->complexLiterals[storage->literalIndex + 1] = literal;
     storage->literalIndex = storage->lietralCount - 1;
 
-    char cpt[200];
-    strcpy(cpt, literal);
-
-
-    TrieAdd(&storage->trie_root, cpt, (int) storage->literalIndex);
+//    TrieAdd(&storage->trie_root, literal, (int) storage->literalIndex);
 }
 
 bool containsLiteral(Complex_Storage *storage, char *literal) {
