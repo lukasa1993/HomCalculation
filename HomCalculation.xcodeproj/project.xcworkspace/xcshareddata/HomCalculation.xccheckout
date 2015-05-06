@@ -7,14 +7,14 @@
 	<key>IDESourceControlProjectIdentifier</key>
 	<string>AB179BCF-AB8C-486A-8E13-BD22CBC3E72A</string>
 	<key>IDESourceControlProjectName</key>
-	<string>HomCalculation</string>
+	<string>project</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>0A12E30BD9F5E3F8905AB711EDD27A5CE8BD48DD</key>
 		<string>https://github.com/lukasa1993/HomCalculation.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>HomCalculation.xcodeproj</string>
+	<string>HomCalculation.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>0A12E30BD9F5E3F8905AB711EDD27A5CE8BD48DD</key>
