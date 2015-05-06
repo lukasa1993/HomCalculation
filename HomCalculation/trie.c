@@ -65,12 +65,6 @@ void TrieAdd(trieNode_t **root, char *key, int data)
         return;
     }
 
-    if(TrieSearch(pTrav, key))
-    {
-        printf("Duplicate!\n");
-        return;
-    }
-
     while(*key != '\0')
     {
         if(*key == pTrav->key)

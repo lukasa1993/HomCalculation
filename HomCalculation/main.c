@@ -15,7 +15,6 @@
 
 //#include "polytop_struct.h"
 
-
 int main(int argc, char *argv[]) {
     clock_t begin, end;
     double time_spent;
