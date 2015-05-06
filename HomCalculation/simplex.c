@@ -23,15 +23,8 @@ static inline void DoProgress(char label[], int step, int total);
 void saveComplex(Complex *comp) {
 #pragma omp critical
     {
-        bool save = true;
         char *literal = complexToLiteral(comp, true);
-        for (long long i = 0; i < storage1->lietralCount; ++i) {
-            char *lit = getLiteralAt(storage1, i);
-            if (lit != NULL && strcmp(literal, lit) == 0) {
-                save = false;
-                break;
-            }
-        }
+        bool save = !containsLiteral(storage1, literal);
 
         if (save) {
             if (comp->simplexCount == maxK) {
@@ -305,26 +298,26 @@ void Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
         }
     }
 
-    LD_File *second_log = Init_file_util_ext("./log2", "txt", false);
-    char *a = malloc(1024 * 10);
-
-    if (k == CalculatePoints(A)) {
-        sprintf(a, "\n-  FSI: %s\n", complexToLiteral(P, true));
-        wrtieLine(second_log, a, false);
-        for (int i = 0; i < posibilityListLength; ++i) {
-            sprintf(a, "\n-- BT%d %s \n", i, complexToLiteral(posibilityList[i], true));
-            wrtieLine(second_log, a, false);
-        }
-    }
+//    LD_File *second_log = Init_file_util_ext("./log2", "txt", false);
+//    char *a = malloc(1024);
+//
+//    if (k == CalculatePoints(A) && a != NULL) {
+//        sprintf(a, "\n-  FSI: %s\n", complexToLiteral(P, true));
+//        wrtieLine(second_log, a, false);
+//        for (int i = 0; i < posibilityListLength; ++i) {
+//            sprintf(a, "\n-- BT%d %s \n", i, complexToLiteral(posibilityList[i], true));
+//            wrtieLine(second_log, a, false);
+//        }
+//    }
 
     Complex *BNeibr = unionIntersection(posibilityList, posibilityListLength);
-    if (k == CalculatePoints(A)) {
-        sprintf(a, "\n---  IBT: %s\n", complexToLiteral(BNeibr, true));
-        wrtieLine(second_log, a, false);
-    }
-
-    Destroy_file(second_log);
-    free(a);
+//    if (k == CalculatePoints(A) && a != NULL) {
+//        sprintf(a, "\n---  IBT: %s\n", complexToLiteral(BNeibr, true));
+//        wrtieLine(second_log, a, false);
+//    }
+//
+//    Destroy_file(second_log);
+//    free(a);
 
     for (int i = 0; i < BNeibr->simplexCount; ++i) {
         Simplex *simp = getSimpexAt(BNeibr, i);
@@ -478,10 +471,10 @@ void Calculate_Hom(Complex *A, Complex *B) {
                     max_time_spent = time_spent;
                 }
 
-                char extra[50];
-                sprintf(extra, "Home time: %f ", max_time_spent);
-
-                DoProgress(extra, (int) V1, (int) storage0->lietralCount - 1);
+//                char extra[50];
+//                sprintf(extra, "k:%d Home time: %f ", k, max_time_spent);
+//
+//                DoProgress(extra, (int) V1, (int) storage0->lietralCount - 1);
 
 
 //                } else {
@@ -624,8 +617,8 @@ static inline void DoProgress(char label[], int step, int total) {
     //progress width
     const int pwidth = 80;
 
-    int s1 = (step == 0 ? 1 : ((int)(log10(fabs(step))+1) + (step < 0 ? 1 : 0)));
-    int s2 = (total == 0 ? 1 : ((int)(log10(fabs(total))+1) + (total < 0 ? 1 : 0)));
+    int s1 = (step == 0 ? 1 : ((int) (log10(fabs(step)) + 1) + (step < 0 ? 1 : 0)));
+    int s2 = (total == 0 ? 1 : ((int) (log10(fabs(total)) + 1) + (total < 0 ? 1 : 0)));
 
     //minus label len
     int width = (int) (pwidth - strlen(label) - s1 - s2 + 4);

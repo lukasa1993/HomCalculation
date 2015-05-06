@@ -13,12 +13,15 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
+#include "trie.h"
 
 typedef struct Complex_Storage {
     long long literalIndex;
     long long lietralCount;
     long long literalCapacity;
     char **complexLiterals;
+
+    trieNode_t *trie_root;
 } Complex_Storage;
 
 Complex_Storage *Init_Storage();
@@ -28,5 +31,7 @@ void Destory_Storage(Complex_Storage *storage);
 void addLiteral(Complex_Storage *storage, char *literal);
 
 char *getLiteralAt(Complex_Storage *storage, long long index);
+
+bool containsLiteral(Complex_Storage *storage, char *literal);
 
 #endif

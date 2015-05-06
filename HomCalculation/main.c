@@ -33,17 +33,6 @@ int main(int argc, char *argv[]) {
     char *n3 = "[[1,2,6],[2,3,4],[4,5,6],[2,4,6]]";
     char *n4 = "[[1,2,6],[2,3,4],[4,5,6],[2,4,6]";
 
-    trieNode_t *root;
-    TrieCreate(&root);
-
-    TrieAdd(&root, n1, 1);
-    TrieAdd(&root, n2, 2);
-    TrieAdd(&root, n3, 3);
-
-    trieNode_t *a = TrieSearch(root->children, n3);
-
-    printf("\n%c\n", a->key);
-    exit(0);
 
 //    Calculate_Hom(literalToComplex(n1), literalToComplex(n2));
 //    Calculate_Hom(literalToComplex(n2), literalToComplex(n1));
@@ -56,6 +45,17 @@ int main(int argc, char *argv[]) {
 //    Complex *A = literalToComplex(l1);
 //    Complex *B = literalToComplex(l2);
 //
+//    for (int i = 0; i < A->simplexCount; ++i) {
+//        Simplex *simp = getSimpexAt(A, i);
+//        simp->allowedSubSimplexes = AllSubSimplexses(simp);
+//    }
+//
+//    for (int i = 0; i < B->simplexCount; ++i) {
+//        Simplex *simp = getSimpexAt(B, i);
+//        simp->allowedSubSimplexes = AllSubSimplexses(simp);
+//    }
+//    Calculate_Hom(A, B);
+//    return 0;
 
 //    Complex *A = literalToComplex("[[1,2,3,4],[1,2,5,6],[5,6,7,8],[3,4,7,8],[2,3,5,8],[1,4,6,7],[2,7]]");
 //    Complex *B = literalToComplex("[[1,2,3,4],[1,2,5,6],[5,6,7,8],[3,4,7,8],[2,3,5,8],[1,4,6,7],[2,7]}");
