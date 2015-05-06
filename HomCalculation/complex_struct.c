@@ -184,7 +184,7 @@ char *simplexToLiteral(Simplex *simplex) {
     literali++;
 
     char *final = malloc((literali + 1) * sizeof(char));
-    memcpy(final, literal, literali);
+    memcpy(final, literal, (size_t) literali);
     final[literali] = 0;
 
     return final;
