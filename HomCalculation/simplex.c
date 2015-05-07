@@ -24,7 +24,7 @@ void saveComplex(Complex *comp) {
 #pragma omp critical
     {
         char *literal = complexToLiteral(comp, true);
-        bool save     = true;//!containsLiteral(storage1, literal);
+        bool save     = !containsLiteral(storage1, literal);
 
         if (save) {
             if (comp->simplexCount == maxK) {
@@ -319,8 +319,7 @@ void Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
 //    Destroy_file(second_log);
 //    free(a);
 
-    trieNode_t *trie_root;
-    TrieCreate(&trie_root);
+    Complex_Storage *storage = Init_Storage();
 
     int      ui = 0;
     for (int i  = 0; i < BNeibr->simplexCount; ++i) {
@@ -346,13 +345,10 @@ void Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
                 addSimplex(temp1, subSimp);
 
                 Complex *M1Complex = mergeComplexes(P, temp1, true);
+                char    *literal   = complexToLiteral(M1Complex, true);
 
-                char       *literal = complexToLiteral(M1Complex, true);
-                trieNode_t *a       = TrieSearch(trie_root->children, literal);
-
-                if (a == NULL) {
-                    TrieAdd(&trie_root, literal, ui++);
-                    free(literal);
+                if (!containsLiteral(storage, literal)) {
+                    addLiteral(storage, literal);
 
                     saveComplex(M1Complex);
                 }
@@ -361,7 +357,8 @@ void Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
             }
         }
     }
-    TrieDestroy(trie_root);
+    Destory_Storage(storage);
+
 
     if (posibilityListLength > 1) {
         for (int i = 0; i < posibilityListLength; ++i) {
@@ -457,22 +454,16 @@ void Calculate_Hom(Complex *A, Complex *B) {
 
     storage0->lietralCount = k1;
     for (int k = 2; k <= points; ++k) {
-        trieNode_t *trie_root;
-        TrieCreate(&trie_root);
-
-        int      ui = 0;
+        Complex_Storage *storage = Init_Storage();
 
 #pragma omp parallel for shared(A, B, storage0, storage1, k)
         for (long long V1 = 0; V1 < storage0->lietralCount; ++V1) {
 
-            Complex *P = FSI(A, B, k - 1, V1);
+            Complex *P       = FSI(A, B, k - 1, V1);
+            char    *literal = complexToLiteral(P, true);
 
-            char       *literal = complexToLiteral(P, true);
-            trieNode_t *a       = TrieSearch(trie_root->children, literal);
-
-            if (a == NULL) {
-                TrieAdd(&trie_root, literal, ui++);
-                free(literal);
+            if (!containsLiteral(storage, literal)) {
+                addLiteral(storage, literal);
             } else {
                 continue;
             }
@@ -502,7 +493,7 @@ void Calculate_Hom(Complex *A, Complex *B) {
 
         }
 
-        TrieDestroy(trie_root);
+        Destory_Storage(storage);
 
 #pragma omp barrier
 

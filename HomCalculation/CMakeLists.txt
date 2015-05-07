@@ -24,8 +24,6 @@ ENDIF()
 set(SOURCE_FILES
 #lis_bridge.h
 #lis_bridge.c
-trie.h
-trie.c
 complex_struct.h
 complex_struct.c
 main.c

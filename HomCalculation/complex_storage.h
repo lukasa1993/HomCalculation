@@ -13,7 +13,6 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
-#include "trie.h"
 
 typedef struct Complex_Storage {
     long long literalIndex;
@@ -21,7 +20,6 @@ typedef struct Complex_Storage {
     long long literalCapacity;
     char **complexLiterals;
 
-    trieNode_t *trie_root;
 } Complex_Storage;
 
 Complex_Storage *Init_Storage();
