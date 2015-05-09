@@ -466,7 +466,7 @@ void Calculate_Hom(Complex *A, Complex *B) {
             }
 
 
-            if (P != NULL && P->simplexCount > 0) {
+            if (P != NULL && P->simplexCount > 0 && P->simplexes[0]->elementCount > 0) {
                 clock_t begin, end;
                 double  time_spent;
 
