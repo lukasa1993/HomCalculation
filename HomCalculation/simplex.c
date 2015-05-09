@@ -485,7 +485,7 @@ void Calculate_Hom(Complex *A, Complex *B) {
 //                sprintf(extra, "k:%d Home time: %f ", k, max_time_spent);
 //                DoProgress(extra, (int) V1, (int) storage0->lietralCount - 1);
 
-                Dest_Complex(P);
+                Light_Dest_Complex(P);
             }
 
         }
