@@ -77,17 +77,17 @@ bool checkSimplexSubSimplex(Simplex *simplex, Simplex *subSimplex) {
 Complex *FSI(Complex *A, Complex *B, int K, long long V) {
     Complex *complex = Init_Complex();
     if (A->simplexCount > 0 && K == 1) {
-        int prevSubsCount = 0;
+        int pi = 0;
 
         for (int i = 0; i < B->simplexCount; i++) {
             Simplex *sim  = getSimpexAt(B, i);
-            int     expV  = prevSubsCount + (1 << sim->elementCount);
-            if (V > prevSubsCount && expV > V) {
-                V = V - prevSubsCount;
-                addSimplex(complex, simplexByExp(sim, V));
-                break;
+            Complex *subs = sim->allowedSubSimplexes;
+            for (int j = 0; j < subs->simplexCount; j++, pi++) {
+                if(pi == V) {
+                    addSimplex(complex, getSimpexAt(subs, j));
+                    return complex;
+                }
             }
-            prevSubsCount = expV - 1;
         }
     }
     else {
@@ -444,10 +444,7 @@ void Calculate_Hom(Complex *A, Complex *B) {
     long long k1 = 0;
     for (int  i  = 0; i < B->simplexCount; ++i) {
         Simplex *simp     = getSimpexAt(B, i);
-        Complex *simpSubs = AllSubSimplexses(simp);
-        k1 += simpSubs->simplexCount;
-
-        Dest_Complex(simpSubs);
+        k1 += simp->allowedSubSimplexes->simplexCount;
     }
 
     double max_time_spent = 0;
