@@ -82,12 +82,7 @@ Complex *FSI(Complex *A, Complex *B, int K, long long V) {
         for (int i = 0; i < B->simplexCount; i++) {
             Simplex *sim  = getSimpexAt(B, i);
             Complex *subs = sim->allowedSubSimplexes;
-            for (int j = 0; j < subs->simplexCount; j++, pi++) {
-                if(pi == V) {
-                    addSimplex(complex, getSimpexAt(subs, j));
-                    return complex;
-                }
-            }
+            addSimplex(complex, getSimpexAt(subs, (int) V));
         }
     }
     else {
@@ -443,20 +438,25 @@ void Calculate_Hom(Complex *A, Complex *B) {
 
     long long k1 = 0;
     for (int  i  = 0; i < B->simplexCount; ++i) {
-        Simplex *simp     = getSimpexAt(B, i);
-        k1 += simp->allowedSubSimplexes->simplexCount;
+        Simplex *simp = getSimpexAt(B, i);
+        Complex *subs = simp->allowedSubSimplexes;
+        for (int  j  = 0; j < subs->simplexCount; ++j) {
+            Complex* comp = Init_Complex();
+            addSimplex(comp, getSimpexAt(subs, j));
+            addLiteral(storage0, complexToLiteral(comp, true));
+            Light_Dest_Complex(comp);
+        }
     }
 
     double max_time_spent = 0;
 
-    storage0->lietralCount = k1;
     for (int k = 2; k <= points; ++k) {
         Complex_Storage *storage = Init_Storage();
 
 #pragma omp parallel for shared(A, B, storage0, storage1, k)
         for (long long V1 = 0; V1 < storage0->lietralCount; ++V1) {
 
-            Complex *P       = FSI(A, B, k - 1, V1);
+            Complex *P       = getComplex(V1);
             char    *literal = complexToLiteral(P, true);
 
             if (!containsLiteral(storage, literal)) {
