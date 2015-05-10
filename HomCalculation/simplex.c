@@ -6,7 +6,6 @@
 //  Copyright (c) 2013 Luka Dodelia. All rights reserved.
 //
 
-#include <math.h>
 #include "simplex.h"
 
 #define HOMFVECTORSIZE 40
@@ -650,17 +649,6 @@ void Calculate_Hom(Complex *A, Complex *B) {
 }
 
 static inline void DoProgress(char label[], int step, int total) {
-    //progress width
-    const int pwidth = 80;
-
-    int s1 = (step == 0 ? 1 : ((int) (log10(fabs(step)) + 1) + (step < 0 ? 1 : 0)));
-    int s2 = (total == 0 ? 1 : ((int) (log10(fabs(total)) + 1) + (total < 0 ? 1 : 0)));
-
-    //minus label len
-    int width = (int) (pwidth - strlen(label) - s1 - s2 + 4);
-    int pos = (step * width) / total;
-
-
     int percent = (step * 100) / total;
 
     printf("%s[", label);
