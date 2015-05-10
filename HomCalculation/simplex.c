@@ -445,6 +445,12 @@ void Calculate_Hom(Complex *A, Complex *B) {
     for (int k = 2; k <= points; ++k) {
         Complex_Storage *storage = Init_Storage();
 
+        clock_t begin, end;
+        double time_spent;
+
+        begin = clock();
+
+
 #pragma omp parallel for ordered
         for (long long V1 = 0; V1 < storage0->lietralCount; ++V1) {
             Complex *P = NULL;
@@ -483,8 +489,10 @@ void Calculate_Hom(Complex *A, Complex *B) {
 
         Destory_Storage(storage);
 
+        end = clock();
+        time_spent = (double) (end - begin) / CLOCKS_PER_SEC;
 
-        printf("\n-- %d => %lld\n", k, storage1->lietralCount);
+        printf("\n-- %d => %lld, %f\n", k, storage1->lietralCount, time_spent);
         fflush(stdout);
 
         if (k == 2) {
