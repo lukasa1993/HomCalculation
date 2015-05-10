@@ -54,6 +54,10 @@ CMakeFiles
 Makefile
 cmake_install.cmake
 *.exe
+*.rar
+*.stackdump
+hom*.txt
+*.txt_*
 install_manifest.txt
 
 
