@@ -70,7 +70,6 @@ bool checkSimplexSubSimplex(Simplex *simplex, Simplex *subSimplex) {
 Complex *FSI(Complex *A, Complex *B, int K, long long V) {
     Complex *complex = Init_Complex();
     if (A->simplexCount > 0 && K == 1) {
-        int pi = 0;
 
         for (int i = 0; i < B->simplexCount; i++) {
             Simplex *sim  = getSimpexAt(B, i);
@@ -309,7 +308,6 @@ void Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
 
     Complex_Storage *storage = Init_Storage();
 
-    int      ui = 0;
     for (int i  = 0; i < BNeibr->simplexCount; ++i) {
         Simplex *simp     = getSimpexAt(BNeibr, i);
         Complex *simpSubs = AllSubSimplexses(simp);
@@ -429,7 +427,6 @@ void Calculate_Hom(Complex *A, Complex *B) {
     printf("\nAF: %s\n", fVALit);
     printf("\nBF: %s\n", fVBLit);
 
-    long long k1 = 0;
     for (int  i  = 0; i < B->simplexCount; ++i) {
         Simplex *simp = getSimpexAt(B, i);
         Complex *subs = simp->allowedSubSimplexes;
