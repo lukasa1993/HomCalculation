@@ -455,7 +455,10 @@ void Calculate_Hom(Complex *A, Complex *B) {
             char *literal = complexToLiteral(P, true);
 
             if (!containsLiteral(storage, literal)) {
-                addLiteral(storage, literal);
+#pragma omp critical
+                {
+                    addLiteral(storage, literal);
+                }
             } else {
                 continue;
             }
