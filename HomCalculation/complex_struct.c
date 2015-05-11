@@ -129,6 +129,16 @@ bool containsElement(Simplex *simp, SimplexElem elem) {
     return false;
 }
 
+bool containsSubSimplex(Simplex *simp, Simplex *sub) {
+    for (int i = 0; i < sub->elementCount; ++i) {
+        SimplexElem  elem = getElementAt(sub, i);
+        if(!containsElement(simp, elem)) {
+            return false;
+        }
+    }
+
+    return true;
+}
 
 bool containsSimplex(Complex *comp, Simplex *simp) {
     for (int i = 0; i < comp->simplexCount; ++i) {
@@ -151,6 +161,29 @@ bool containsSimplex(Complex *comp, Simplex *simp) {
     }
 
     return false;
+}
+
+Simplex* getFacet(Complex *comp, Simplex *simp) {
+    for (int i = 0; i < comp->simplexCount; ++i) {
+        Simplex *simp2 = getSimpexAt(comp, i);
+        bool containsSimplex = true;
+
+        for (int s1 = 0; s1 < simp->elementCount; ++s1) {
+            SimplexElem elem1 = getElementAt(simp, s1);
+            bool containsElem = containsElement(simp2, elem1);
+
+            if (containsElem == false) {
+                containsSimplex = false;
+                break;
+            }
+        }
+
+        if (containsSimplex == true) {
+            return simp2;
+        }
+    }
+
+    return NULL;
 }
 
 char *simplexToLiteral(Simplex *simplex) {

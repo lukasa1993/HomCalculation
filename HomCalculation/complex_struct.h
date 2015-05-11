@@ -81,6 +81,8 @@ void addSimplex(Complex *comp, Simplex *simp);
 Simplex *getSimpexAt(Complex *comp, int index);
 
 bool containsSimplex(Complex *comp, Simplex *simp);
+bool containsSubSimplex(Simplex *simp, Simplex *sub);
+Simplex* getFacet(Complex *comp, Simplex *simp);
 
 Complex *literalToComplex(char *complexLiteral);
 
