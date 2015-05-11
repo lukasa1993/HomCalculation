@@ -21,12 +21,12 @@ static inline void DoProgress(char label[], int step, int total);
 
 void saveComplex(Complex *comp) {
 
-        char *literal = complexToLiteral(comp, true);
-        if (comp->simplexCount == maxK) {
-            long long dim = fVectorDim(comp);
+    char *literal = complexToLiteral(comp, true);
+    if (comp->simplexCount == maxK) {
+        long long dim = fVectorDim(comp);
 #pragma omp atomic
-            homFVector[dim]++;
-        }
+        homFVector[dim]++;
+    }
 #pragma omp critical
     {
         addLiteral(storage1, literal);
@@ -300,6 +300,12 @@ void Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
 //            wrtieLine(second_log, a, false);
 //        }
 //    }
+
+    if (posibilityListLength == 0) {
+        Light_Dest_Complex(ANeibr);
+        free(posibilityList);
+        return;
+    }
 
     Complex *BNeibr = unionIntersection(posibilityList, posibilityListLength);
 //    if (k == CalculatePoints(A) && a != NULL) {
