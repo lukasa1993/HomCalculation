@@ -457,33 +457,31 @@ void Calculate_Hom(Complex *A, Complex *B) {
         begin = clock();
 
 
-#pragma omp parallel for ordered
+#pragma omp parallel for
         for (long long V1 = 0; V1 < storage0->lietralCount; ++V1) {
             Complex *P = NULL;
 #pragma omp critical
             {
                 P = getComplex(V1);
             }
-            char *literal = complexToLiteral(P, true);
 
-            if (!containsLiteral(storage, literal)) {
+            if (k == 2) {
 #pragma omp critical
                 {
-                    addLiteral(storage, literal);
+                    char *literal = complexToLiteral(P, true);
+                    if (!containsLiteral(storage, literal)) {
+                        addLiteral(storage, literal);
+                    } else {
+                        Light_Dest_Complex(P);
+                        P = NULL;
+                    }
                 }
-            } else {
-                continue;
             }
 
             if (P != NULL && P->simplexCount > 0 && P->simplexes[0]->elementCount > 0) {
                 //lis_initialize(&argc, &argv);
 
                 Hom_Match(A, B, P, k);
-
-                char extra[50];
-                sprintf(extra, "- k:%d ", k);
-#pragma omp ordered
-                DoProgress(extra, (int) V1, (int) storage0->lietralCount - 1);
 
 
                 Light_Dest_Complex(P);
