@@ -492,7 +492,7 @@ void Calculate_Hom(Complex *A, Complex *B) {
         end = clock();
         time_spent = (double) (end - begin) / CLOCKS_PER_SEC;
 
-        printf("\n-- %d => %lld, %f\n", k, storage1->lietralCount, time_spent);
+        printf("\n-- %f, k=%d => %lld\n", time_spent, k, storage1->lietralCount);
         fflush(stdout);
 
         if (k == 2) {
