@@ -114,10 +114,10 @@ int main(int argc, char *argv[]) {
     simpB1->allowedSubSimplexes = literalToComplex("[[1],[2],[3],[4],[1,2],[2,3],[1,4],[3,4],[1,2,3,4]]");
 
     Simplex *simpA2 = getSimpexAt(A, 1);
-    simpA2->allowedSubSimplexes = literalToComplex("[[1],[4],[5],[6],[1,4],[2,5],[4,6],[5,6],[1,4,5,6]]");
+    simpA2->allowedSubSimplexes = literalToComplex("[[1],[4],[5],[6],[1,4],[1,5],[4,6],[5,6],[1,4,5,6]]");
 
     Simplex *simpB2 = getSimpexAt(B, 1);
-    simpB2->allowedSubSimplexes = literalToComplex("[[1],[4],[5],[6],[1,4],[2,5],[4,6],[5,6],[1,4,5,6]]");
+    simpB2->allowedSubSimplexes = literalToComplex("[[1],[4],[5],[6],[1,4],[1,5],[4,6],[5,6],[1,4,5,6]]");
 
     Simplex *simpA3 = getSimpexAt(A, 2);
     simpA3->allowedSubSimplexes = literalToComplex("[[2],[3],[5],[6],[2,3],[2,6],[3,5],[5,6],[2,3,5,6]]");
