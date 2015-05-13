@@ -131,8 +131,8 @@ bool containsElement(Simplex *simp, SimplexElem elem) {
 
 bool containsSubSimplex(Simplex *simp, Simplex *sub) {
     for (int i = 0; i < sub->elementCount; ++i) {
-        SimplexElem  elem = getElementAt(sub, i);
-        if(!containsElement(simp, elem)) {
+        SimplexElem elem = getElementAt(sub, i);
+        if (!containsElement(simp, elem)) {
             return false;
         }
     }
@@ -163,7 +163,7 @@ bool containsSimplex(Complex *comp, Simplex *simp) {
     return false;
 }
 
-Simplex* getFacet(Complex *comp, Simplex *simp) {
+Simplex *getFacet(Complex *comp, Simplex *simp) {
     for (int i = 0; i < comp->simplexCount; ++i) {
         Simplex *simp2 = getSimpexAt(comp, i);
         bool containsSimplex = true;
@@ -319,11 +319,12 @@ Complex *literalToComplex(char *complexLiteral) {
 
             posibleSimplexElemi = 0;
             addElement(getSimpexAt(complex, complex->simplexIndex), atoi(posibleSimplexElem));
-
+            memset(posibleSimplexElem, 0, 10);
         } else if (aChar == endingChar) {
             if (bracketsCount == 2 && posibleSimplexElemi > 0) {
                 posibleSimplexElemi = 0;
                 addElement(getSimpexAt(complex, complex->simplexIndex), atoi(posibleSimplexElem));
+                memset(posibleSimplexElem, 0, 10);
             } else if (bracketsCount == 1) {
                 break;
             }
@@ -340,7 +341,7 @@ Coordinates *lietralToCoordinates(char *coordinatesLiteral) {
     Coordinates *coordinates = NULL;
 
     char posibleSimplexElem[100];
-    memset(posibleSimplexElem,0,100);
+    memset(posibleSimplexElem, 0, 100);
 
     int posibleSimplexElemi = 0;
     int bracketsCount = 0;
@@ -353,7 +354,7 @@ Coordinates *lietralToCoordinates(char *coordinatesLiteral) {
                 coordinates = Init_Coordinates();
             }
             bracketsCount++;
-        } else if (bracketsCount == 1 && ( aChar == '.' || isdigit(aChar))) {
+        } else if (bracketsCount == 1 && (aChar == '.' || isdigit(aChar))) {
 
             posibleSimplexElem[posibleSimplexElemi] = aChar;
             posibleSimplexElemi++;
@@ -362,7 +363,7 @@ Coordinates *lietralToCoordinates(char *coordinatesLiteral) {
             addCoordinate(coordinates, atof(posibleSimplexElem));
 
             posibleSimplexElemi = 0;
-            memset(posibleSimplexElem,0,100);
+            memset(posibleSimplexElem, 0, 100);
 
         } else if (aChar == endingChar) {
             if (bracketsCount == 1 && posibleSimplexElemi > 0) {
