@@ -126,8 +126,34 @@ int main(int argc, char *argv[]) {
     simpB3->allowedSubSimplexes = literalToComplex("[[2],[3],[5],[6],[2,3],[2,6],[3,5],[5,6],[2,3,5,6]]");
 
 
-    Calculate_Hom(A, B);
-//
+//    Calculate_Hom(A, B);
+
+    Complex *A1 = literalToComplex("[[1,2,3,4],[1,4,5,6],[2,3,5,6]]");
+    Complex *B1 = literalToComplex("[[1,2,3,4],[1,4,5,6],[2,3,5,6]]");
+
+    Simplex *simpA11 = getSimpexAt(A1, 0);
+    simpA11->allowedSubSimplexes = literalToComplex("[[1],[2],[3],[4],[1,2],[2,3],[1,4],[3,4],[1,2,3,4]]");
+
+    Simplex *simpB11 = getSimpexAt(B1, 0);
+    simpB11->allowedSubSimplexes = literalToComplex("[[1],[2],[3],[4],[1,2],[2,3],[1,4],[3,4],[1,2,3,4]]");
+
+    Simplex *simpA12 = getSimpexAt(A1, 1);
+    simpA12->allowedSubSimplexes = literalToComplex("[[1],[4],[5],[6],[1,4],[1,5],[4,6],[5,6],[1,4,5,6]]");
+
+    Simplex *simpB12 = getSimpexAt(B1, 1);
+    simpB12->allowedSubSimplexes = literalToComplex("[[1],[4],[5],[6],[1,4],[1,5],[4,6],[5,6],[1,4,5,6]]");
+
+    Simplex *simpA13 = getSimpexAt(A1, 2);
+    simpA13->allowedSubSimplexes = literalToComplex("[[2],[3],[5],[6],[2,3],[2,5],[3,6],[5,6],[2,3,5,6]]");
+
+    Simplex *simpB13 = getSimpexAt(B1, 2);
+    simpB13->allowedSubSimplexes = literalToComplex("[[2],[3],[5],[6],[2,3],[2,5],[3,6],[5,6],[2,3,5,6]]");
+
+
+
+    Calculate_Hom(A1, B1);
+
+
 //    char* C = "[[1,2,4],[2,3,5],[3,1,6],[1,4,6],[4,2,5],[4,5,6],[3,6,5]]";
 
     // ------ can't calculate? ----------------

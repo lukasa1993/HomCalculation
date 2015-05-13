@@ -502,34 +502,29 @@ void Calculate_Hom(Complex *A, Complex *B) {
 
     Destory_Storage(storage1);
 
-    char *fvectorstr = "";
+    int len = 0;
+    for (int i = HOMFVECTORSIZE - 1; i >= 0; --i) {
+        if(homFVector[i] > 0) {
+            len = i + 1;
+            break;
+        }
+    }
 
+    char *fvectorstr = "";
     fvectorstr = concat(fvectorstr, "\n\n F-Vector: [");
     printf("\n\n F-Vector: [");
-    for (int i = 0; i < HOMFVECTORSIZE; ++i) {
-        if (homFVector[i] == 0) continue;
-
+    for (int i = 0; i < len; ++i) {
         char tmp[10];
         sprintf(tmp, "%lld", homFVector[i]);
         fvectorstr = concat(fvectorstr, tmp);
         printf("%lld", homFVector[i]);
-        if (i + 1 != HOMFVECTORSIZE && homFVector[i + 1] != 0) {
+        if (i != len - 1) {
             fvectorstr = concat(fvectorstr, ", ");
             printf(", ");
         }
     }
     printf("]\n\n");
     fvectorstr = concat(fvectorstr, "]\n\n");
-
-    printf("\n\n F-Vector: [");
-    for (int i = 0; i < HOMFVECTORSIZE; ++i) {
-        printf("%lld", homFVector[i]);
-        if (i + 1 != HOMFVECTORSIZE) {
-            printf(", ");
-        }
-    }
-    printf("]\n\n");
-// hdd-return
 
     printf("\n\n Safe House \n\n");
     fflush(stdout);
