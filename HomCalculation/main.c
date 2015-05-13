@@ -26,25 +26,27 @@ int main(int argc, char *argv[]) {
 //    char* A = "[[1,2,6],[2,3,6],[3,4,6],[4,5,6],[1,5,6]]";
 //    char* B = "[[1,2,6],[2,3,4],[2,4,6],[4,5,6]]";
 
+    char *old_a = "[[1,2,7],[2,3,7],[3,4,7],[4,5,7],[5,6,7]]";
 
-//    char *n1 = "[[1,2,3],[2,3,4],[3,4,5],[4,5,6],[1,5,6],[2,4,6],[1,2,6]]";
-//    char *n2 = "[[1,2,6],[2,3,6],[3,4,6],[4,5,6],[1,5,6]]";
-//    char *n3 = "[[1,2,6],[2,3,4],[4,5,6],[2,4,6]]";
-//    char *n4 = "[[1,2,6],[2,3,4],[4,5,6],[2,4,6]";
-//
-//    Complex *A = literalToComplex(n1);
-//    Complex *B = literalToComplex(n2);
-//
-//    for (int i = 0; i < A->simplexCount; ++i) {
-//        Simplex *simp = getSimpexAt(A, i);
-//        simp->allowedSubSimplexes = AllSubSimplexses(simp);
-//    }
-//
-//    for (int i = 0; i < B->simplexCount; ++i) {
-//        Simplex *simp = getSimpexAt(B, i);
-//        simp->allowedSubSimplexes = AllSubSimplexses(simp);
-//    }
-//    Calculate_Hom(A, B);
+
+    char *n1 = "[[1,2,3],[2,3,4],[3,4,5],[4,5,6],[1,5,6],[2,4,6],[1,2,6]]";
+    char *n2 = "[[1,2,6],[2,3,6],[3,4,6],[4,5,6],[1,5,6]]";
+    char *n3 = "[[1,2,6],[2,3,4],[4,5,6],[2,4,6]]";
+    char *n4 = "[[1,2,6],[2,3,4],[4,5,6],[2,4,6]";
+
+    Complex *A = literalToComplex(old_a);
+    Complex *B = literalToComplex(old_a);
+
+    for (int i = 0; i < A->simplexCount; ++i) {
+        Simplex *simp = getSimpexAt(A, i);
+        simp->allowedSubSimplexes = AllSubSimplexses(simp);
+    }
+
+    for (int i = 0; i < B->simplexCount; ++i) {
+        Simplex *simp = getSimpexAt(B, i);
+        simp->allowedSubSimplexes = AllSubSimplexses(simp);
+    }
+    Calculate_Hom(A, B);
 
 
 //    Calculate_Hom(literalToComplex(n1), literalToComplex(n2));
@@ -104,54 +106,54 @@ int main(int argc, char *argv[]) {
 //    Simplex *simpB7 = getSimpexAt(B, 6);
 //    simpB7->allowedSubSimplexes = literalToComplex("[[2],[7],[2,7]]");
 
-    Complex *A = literalToComplex("[[1,2,3,4],[1,4,5,6],[2,3,5,6]]");
-    Complex *B = literalToComplex("[[1,2,3,4],[1,4,5,6],[2,3,5,6]]");
-
-    Simplex *simpA1 = getSimpexAt(A, 0);
-    simpA1->allowedSubSimplexes = literalToComplex("[[1],[2],[3],[4],[1,2],[2,3],[1,4],[3,4],[1,2,3,4]]");
-
-    Simplex *simpB1 = getSimpexAt(B, 0);
-    simpB1->allowedSubSimplexes = literalToComplex("[[1],[2],[3],[4],[1,2],[2,3],[1,4],[3,4],[1,2,3,4]]");
-
-    Simplex *simpA2 = getSimpexAt(A, 1);
-    simpA2->allowedSubSimplexes = literalToComplex("[[1],[4],[5],[6],[1,4],[1,5],[4,6],[5,6],[1,4,5,6]]");
-
-    Simplex *simpB2 = getSimpexAt(B, 1);
-    simpB2->allowedSubSimplexes = literalToComplex("[[1],[4],[5],[6],[1,4],[1,5],[4,6],[5,6],[1,4,5,6]]");
-
-    Simplex *simpA3 = getSimpexAt(A, 2);
-    simpA3->allowedSubSimplexes = literalToComplex("[[2],[3],[5],[6],[2,3],[2,6],[3,5],[5,6],[2,3,5,6]]");
-
-    Simplex *simpB3 = getSimpexAt(B, 2);
-    simpB3->allowedSubSimplexes = literalToComplex("[[2],[3],[5],[6],[2,3],[2,6],[3,5],[5,6],[2,3,5,6]]");
+//    Complex *A = literalToComplex("[[1,2,3,4],[1,4,5,6],[2,3,5,6]]");
+//    Complex *B = literalToComplex("[[1,2,3,4],[1,4,5,6],[2,3,5,6]]");
+//
+//    Simplex *simpA1 = getSimpexAt(A, 0);
+//    simpA1->allowedSubSimplexes = literalToComplex("[[1],[2],[3],[4],[1,2],[2,3],[1,4],[3,4],[1,2,3,4]]");
+//
+//    Simplex *simpB1 = getSimpexAt(B, 0);
+//    simpB1->allowedSubSimplexes = literalToComplex("[[1],[2],[3],[4],[1,2],[2,3],[1,4],[3,4],[1,2,3,4]]");
+//
+//    Simplex *simpA2 = getSimpexAt(A, 1);
+//    simpA2->allowedSubSimplexes = literalToComplex("[[1],[4],[5],[6],[1,4],[1,5],[4,6],[5,6],[1,4,5,6]]");
+//
+//    Simplex *simpB2 = getSimpexAt(B, 1);
+//    simpB2->allowedSubSimplexes = literalToComplex("[[1],[4],[5],[6],[1,4],[1,5],[4,6],[5,6],[1,4,5,6]]");
+//
+//    Simplex *simpA3 = getSimpexAt(A, 2);
+//    simpA3->allowedSubSimplexes = literalToComplex("[[2],[3],[5],[6],[2,3],[2,6],[3,5],[5,6],[2,3,5,6]]");
+//
+//    Simplex *simpB3 = getSimpexAt(B, 2);
+//    simpB3->allowedSubSimplexes = literalToComplex("[[2],[3],[5],[6],[2,3],[2,6],[3,5],[5,6],[2,3,5,6]]");
 
 
 //    Calculate_Hom(A, B);
 
-    Complex *A1 = literalToComplex("[[1,2,3,4],[1,4,5,6],[2,3,5,6]]");
-    Complex *B1 = literalToComplex("[[1,2,3,4],[1,4,5,6],[2,3,5,6]]");
-
-    Simplex *simpA11 = getSimpexAt(A1, 0);
-    simpA11->allowedSubSimplexes = literalToComplex("[[1],[2],[3],[4],[1,2],[2,3],[1,4],[3,4],[1,2,3,4]]");
-
-    Simplex *simpB11 = getSimpexAt(B1, 0);
-    simpB11->allowedSubSimplexes = literalToComplex("[[1],[2],[3],[4],[1,2],[2,3],[1,4],[3,4],[1,2,3,4]]");
-
-    Simplex *simpA12 = getSimpexAt(A1, 1);
-    simpA12->allowedSubSimplexes = literalToComplex("[[1],[4],[5],[6],[1,4],[1,5],[4,6],[5,6],[1,4,5,6]]");
-
-    Simplex *simpB12 = getSimpexAt(B1, 1);
-    simpB12->allowedSubSimplexes = literalToComplex("[[1],[4],[5],[6],[1,4],[1,5],[4,6],[5,6],[1,4,5,6]]");
-
-    Simplex *simpA13 = getSimpexAt(A1, 2);
-    simpA13->allowedSubSimplexes = literalToComplex("[[2],[3],[5],[6],[2,3],[2,5],[3,6],[5,6],[2,3,5,6]]");
-
-    Simplex *simpB13 = getSimpexAt(B1, 2);
-    simpB13->allowedSubSimplexes = literalToComplex("[[2],[3],[5],[6],[2,3],[2,5],[3,6],[5,6],[2,3,5,6]]");
-
-
-
-    Calculate_Hom(A1, B1);
+//    Complex *A1 = literalToComplex("[[1,2,3,4],[1,4,5,6],[2,3,5,6]]");
+//    Complex *B1 = literalToComplex("[[1,2,3,4],[1,4,5,6],[2,3,5,6]]");
+//
+//    Simplex *simpA11 = getSimpexAt(A1, 0);
+//    simpA11->allowedSubSimplexes = literalToComplex("[[1],[2],[3],[4],[1,2],[2,3],[1,4],[3,4],[1,2,3,4]]");
+//
+//    Simplex *simpB11 = getSimpexAt(B1, 0);
+//    simpB11->allowedSubSimplexes = literalToComplex("[[1],[2],[3],[4],[1,2],[2,3],[1,4],[3,4],[1,2,3,4]]");
+//
+//    Simplex *simpA12 = getSimpexAt(A1, 1);
+//    simpA12->allowedSubSimplexes = literalToComplex("[[1],[4],[5],[6],[1,4],[1,5],[4,6],[5,6],[1,4,5,6]]");
+//
+//    Simplex *simpB12 = getSimpexAt(B1, 1);
+//    simpB12->allowedSubSimplexes = literalToComplex("[[1],[4],[5],[6],[1,4],[1,5],[4,6],[5,6],[1,4,5,6]]");
+//
+//    Simplex *simpA13 = getSimpexAt(A1, 2);
+//    simpA13->allowedSubSimplexes = literalToComplex("[[2],[3],[5],[6],[2,3],[2,5],[3,6],[5,6],[2,3,5,6]]");
+//
+//    Simplex *simpB13 = getSimpexAt(B1, 2);
+//    simpB13->allowedSubSimplexes = literalToComplex("[[2],[3],[5],[6],[2,3],[2,5],[3,6],[5,6],[2,3,5,6]]");
+//
+//
+//
+//    Calculate_Hom(A1, B1);
 
 
 //    char* C = "[[1,2,4],[2,3,5],[3,1,6],[1,4,6],[4,2,5],[4,5,6],[3,6,5]]";
