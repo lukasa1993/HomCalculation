@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
 //    char* B = "[[1,2,6],[2,3,4],[2,4,6],[4,5,6]]";
 
     char *old_a = "[[1,2,7],[2,3,7],[3,4,7],[4,5,7],[5,6,7],[1,6,7]]";
-    char *old_b = "[[1,2,9],[2,8,9],[2,8,10],[2,3,10],[3,5,10],[3,4,5],[5,6,10],[6,8,10],[6,7,8]]";
+    char *old_b = "[[1,2,9],[2,3,10],[2,9,10],[3,4,5],[3,5,10],[5,6,10],[6,7,8],[6,8,10],[8,9,10]]";
     char *old_c = "[[1,4,5],[1,2,4],[1,3,5],[2,4,6],[2,3,6],[3,5,6],[4,5,6]]";
 
 
@@ -36,8 +36,8 @@ int main(int argc, char *argv[]) {
     char *n3 = "[[1,2,6],[2,3,4],[4,5,6],[2,4,6]]";
     char *n4 = "[[1,2,6],[2,3,4],[4,5,6],[2,4,6]";
 
-    Complex *A = literalToComplex(old_a);
-    Complex *B = literalToComplex(old_a);
+    Complex *A = literalToComplex(old_b);
+    Complex *B = literalToComplex(old_c);
 
     for (int i = 0; i < A->simplexCount; ++i) {
         Simplex *simp = getSimpexAt(A, i);
