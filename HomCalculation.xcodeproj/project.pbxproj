@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		801E1A0C19238F2A00007C61 /* simplex_basic.c in Sources */ = {isa = PBXBuildFile; fileRef = 801E1A0B19238F2A00007C61 /* simplex_basic.c */; };
-		802707611AF9EE8500708DFB /* trie.c in Sources */ = {isa = PBXBuildFile; fileRef = 8027075F1AF9EE8500708DFB /* trie.c */; };
 		803994CF195EB49C00D0B4B7 /* complex_storage.c in Sources */ = {isa = PBXBuildFile; fileRef = 803994CE195EB49C00D0B4B7 /* complex_storage.c */; };
 		8060D063195EB801007B0235 /* file_util.c in Sources */ = {isa = PBXBuildFile; fileRef = 8060D061195EB801007B0235 /* file_util.c */; };
 		80A2816319238B8C00A906E9 /* generate_complex.c in Sources */ = {isa = PBXBuildFile; fileRef = 80A2816219238B8C00A906E9 /* generate_complex.c */; };
@@ -32,8 +31,6 @@
 /* Begin PBXFileReference section */
 		801E1A0B19238F2A00007C61 /* simplex_basic.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = simplex_basic.c; sourceTree = "<group>"; };
 		801E1A0D19238F3900007C61 /* simplex_basic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = simplex_basic.h; sourceTree = "<group>"; };
-		8027075F1AF9EE8500708DFB /* trie.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = trie.c; sourceTree = "<group>"; };
-		802707601AF9EE8500708DFB /* trie.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = trie.h; sourceTree = "<group>"; };
 		803994CD195EB49200D0B4B7 /* complex_storage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = complex_storage.h; sourceTree = "<group>"; };
 		803994CE195EB49C00D0B4B7 /* complex_storage.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = complex_storage.c; sourceTree = "<group>"; };
 		8060D061195EB801007B0235 /* file_util.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = file_util.c; sourceTree = "<group>"; };
@@ -78,8 +75,6 @@
 		80DDCA32184F05B300284F59 /* HomCalculation */ = {
 			isa = PBXGroup;
 			children = (
-				8027075F1AF9EE8500708DFB /* trie.c */,
-				802707601AF9EE8500708DFB /* trie.h */,
 				80DDCA33184F05B300284F59 /* main.c */,
 				80DDCA3E184F0D7600284F59 /* simplex.h */,
 				80DDCA3C184F0D6500284F59 /* simplex.c */,
@@ -151,7 +146,6 @@
 				80DDCA3D184F0D6500284F59 /* simplex.c in Sources */,
 				8060D063195EB801007B0235 /* file_util.c in Sources */,
 				80A2816319238B8C00A906E9 /* generate_complex.c in Sources */,
-				802707611AF9EE8500708DFB /* trie.c in Sources */,
 				80AF0C8A1913F18B00DF62B4 /* complex_struct.c in Sources */,
 				801E1A0C19238F2A00007C61 /* simplex_basic.c in Sources */,
 				80DDCA34184F05B300284F59 /* main.c in Sources */,

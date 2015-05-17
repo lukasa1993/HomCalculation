@@ -37,7 +37,7 @@ int main(int argc, char *argv[]) {
     char *n4 = "[[1,2,6],[2,3,4],[4,5,6],[2,4,6]";
 
     Complex *A = literalToComplex(old_b);
-    Complex *B = literalToComplex(old_c);
+    Complex *B = literalToComplex(old_b);
 
     for (int i = 0; i < A->simplexCount; ++i) {
         Simplex *simp = getSimpexAt(A, i);
