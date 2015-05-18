@@ -20,9 +20,8 @@ long long fVectorDim(Complex *comp);
 static inline void DoProgress(char label[], int step, int total);
 
 void saveComplex(Complex *comp) {
-
-    char *literal = complexToLiteral(comp, true);
     if (comp->simplexCount == maxK) {
+        char *literal = complexToLiteral(comp, true);
         long long dim = fVectorDim(comp);
 
         homFVector[dim]++;
