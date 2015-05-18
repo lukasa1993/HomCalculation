@@ -19,6 +19,7 @@ int main(int argc, char *argv[]) {
     clock_t begin, end;
     double time_spent;
 
+
     //lis_initialize(&argc, &argv);
 
     begin = clock();
