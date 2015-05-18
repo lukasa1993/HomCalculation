@@ -288,6 +288,7 @@ Complex_Storage *Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
                 }
             }
         }
+        Dest_Simplex(fsiAT);
     }
 
 //    LD_File *second_log = Init_file_util_ext("./log2", "txt", false);
