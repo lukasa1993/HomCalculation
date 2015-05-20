@@ -434,6 +434,9 @@ void Calculate_Hom(Complex *A, Complex *B) {
     printf("\nAF: %s\n", fVALit);
     printf("\nBF: %s\n", fVBLit);
 
+    LD_File *file1 = Init_file_util_ext("./hom_safe", "txt", false);
+
+
     for (int i = 0; i < B->simplexCount; ++i) {
         Simplex *simp = getSimpexAt(B, i);
         Complex *subs = simp->allowedSubSimplexes;
@@ -467,7 +470,7 @@ void Calculate_Hom(Complex *A, Complex *B) {
             int ksize = P->simplexCount;
 
             while (P != NULL) {
-                Complex_Storage *tmp = Hom_Match(A, B, P, tmpk);
+                Complex_Storage *tmp = Hom_Match(A, B, P, tmpk); // must be stored in array of storages
 
                 for (int l = 0; l < tmp->lietralCount; ++l) {
                     addLiteral(rstorage, getLiteralAt(tmp, l));
@@ -491,10 +494,13 @@ void Calculate_Hom(Complex *A, Complex *B) {
                 }
             }
 
+            wrtieLine(file1, complexToLiteral(A, true), true);
+            wrtieLine(file1, " -> ", true);
+            wrtieLine(file1, complexToLiteral(B, true), false);
 
-            printf("\n we wait\n");
-            getchar();
-
+            for (long long V11 = 0; V11 < storage1->lietralCount; ++V11) {
+                wrtieLine(file1, getLiteralAt(storage1, V11), false);
+            }
             Destory_Storage(rstorage);
         }
 
@@ -523,18 +529,20 @@ void Calculate_Hom(Complex *A, Complex *B) {
     }
     printf("]\n\n");
     fvectorstr = concat(fvectorstr, "]\n\n");
+    wrtieLine(file1, fvectorstr, false);
 
     printf("\n\n Safe House \n\n");
     fflush(stdout);
+    getchar();
 
-    LD_File *file1 = Init_file_util_ext("./hom_safe", "txt", false);
-    wrtieLine(file1, complexToLiteral(A, true), true);
-    wrtieLine(file1, " -> ", true);
-    wrtieLine(file1, complexToLiteral(B, true), false);
-    wrtieLine(file1, fvectorstr, false);
-    for (long long V1 = 0; V1 < storage0->lietralCount; ++V1) {
-        wrtieLine(file1, getLiteralAt(storage0, V1), false);
-    }
+//    LD_File *file1 = Init_file_util_ext("./hom_safe", "txt", false);
+//    wrtieLine(file1, complexToLiteral(A, true), true);
+//    wrtieLine(file1, " -> ", true);
+//    wrtieLine(file1, complexToLiteral(B, true), false);
+//    wrtieLine(file1, fvectorstr, false);
+//    for (long long V1 = 0; V1 < storage0->lietralCount; ++V1) {
+//        wrtieLine(file1, getLiteralAt(storage0, V1), false);
+//    }
 
 
     if (true)   // end fast
