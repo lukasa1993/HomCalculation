@@ -483,6 +483,9 @@ void Calculate_Hom(Complex *A, Complex *B) {
         for (long long V11 = 0; V11 < storage1->lietralCount; ++V11) {
             wrtieLine(file1, getLiteralAt(storage1, V11), false);
         }
+
+        Destory_Storage(storage1);
+        storage1 = Init_Storage();
     }
 
     int      len = 0;
