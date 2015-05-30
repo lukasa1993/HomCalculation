@@ -97,6 +97,8 @@ Coordinates *lietralToCoordinates(char *coordinatesLiteral);
 char *coordinatesToLiteral(Coordinates *coords);
 Coord getCoordtAt(Coordinates *coords, int index);
 
+Simplex* compySimplex(Simplex* a);
+
 
 #include "simplex_basic.h"
 
