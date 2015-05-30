@@ -341,7 +341,10 @@ Complex_Storage *Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
                     addLiteral(storage, literal);
 
                     saveComplex(M1Complex);
+                } else {
+                    free(literal);
                 }
+
                 Light_Dest_Complex(M1Complex);
                 Light_Dest_Complex(temp1);
             }
