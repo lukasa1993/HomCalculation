@@ -51,7 +51,7 @@ int main(int argc, char *argv[]) {
     }
     Calculate_Hom(A, B);
 
-
+ 
 //    Calculate_Hom(literalToComplex(n1), literalToComplex(n2));
 //    Calculate_Hom(literalToComplex(n2), literalToComplex(n1));
 //    Calculate_Hom(literalToComplex(n1), literalToComplex(n3));
