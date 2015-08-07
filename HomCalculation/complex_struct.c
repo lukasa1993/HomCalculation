@@ -90,6 +90,15 @@ void addSimplex(Complex *comp, Simplex *simp) {
     comp->simplexIndex = comp->simplexCount - 1;
 }
 
+Simplex* compySimplex(Simplex* a) {
+    Simplex* b = Init_Simplex();
+    for (int i = 0; i < a->elementCount; ++i) {
+        addElement(b, getElementAt(a, i));
+    }
+    
+    return b;
+}
+
 void addElement(Simplex *simp, SimplexElem elem) {
     if (simp->elementCapacity <= simp->elementIndex + 1) {
         simp->elementCapacity <<= 1;

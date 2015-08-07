@@ -92,7 +92,11 @@ Complex *upperSimplexContainingDot(Complex *comp, Simplex *searchSimp) {
         Simplex *simp = getSimpexAt(comp, i);
 
         if (checkSimplexSubSimplex(simp, searchSimp)) {
-            addSimplex(neibr, simp);
+            Simplex* tmpSimp = Init_Simplex();
+            for (int j      = 0; j < simp->elementCount; ++j) {
+                addElement(tmpSimp, getElementAt(simp, j));
+            }
+            addSimplex(neibr, tmpSimp);
         }
     }
 
@@ -105,7 +109,7 @@ Complex *mergeComplexes(Complex *a, Complex *b, bool basic) {
     }
     Complex  *merged = Init_Complex();
     for (int i       = 0; i < a->simplexCount; ++i) {
-        addSimplex(merged, getSimpexAt(a, i));
+        addSimplex(merged, compySimplex(getSimpexAt(a, i)));
     }
 
     for (int i = 0; i < b->simplexCount; ++i) {
@@ -121,7 +125,7 @@ Complex *mergeComplexes(Complex *a, Complex *b, bool basic) {
         }
 
         if (basic || unique) {
-            addSimplex(merged, getSimpexAt(b, i));
+            addSimplex(merged, compySimplex(getSimpexAt(b, i)));
         }
     }
 
@@ -168,7 +172,7 @@ Complex *unionIntersection(Complex **posibilityList, int posibilityListLength) {
     do {
         Complex  *comp = Init_Complex();
         for (int i     = 0; i < posibilityListLength; ++i) {
-            addSimplex(comp, getSimpexAt(posibilityList[i], walkIndexes[i]));
+            addSimplex(comp, compySimplex(getSimpexAt(posibilityList[i], walkIndexes[i])));
         }
 
 
@@ -203,7 +207,7 @@ Complex *unionIntersection(Complex **posibilityList, int posibilityListLength) {
             Dest_Simplex(intersectedSimplex);
         }
 
-        Light_Dest_Complex(comp);
+        Dest_Complex(comp);
     }
     while (cont);
 
@@ -255,7 +259,7 @@ Complex_Storage *Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
             Dest_Simplex(aNebrSimplex);
         }
     }
-    Light_Dest_Complex(ANeibrTemp);
+    Dest_Complex(ANeibrTemp);
 
     size_t  posibleSize          = (size_t) (A->simplexCount + B->simplexCount + P->simplexCount);
     Complex **posibilityList     = calloc(posibleSize, sizeof(Complex *));
@@ -305,7 +309,7 @@ Complex_Storage *Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
 
     Complex_Storage *storage = Init_Storage();
     if (posibilityListLength == 0) {
-        Light_Dest_Complex(ANeibr);
+        Dest_Complex(ANeibr);
         free(posibilityList);
         return storage;
     }
@@ -332,7 +336,7 @@ Complex_Storage *Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
             if (subSimp->elementCount > 0 && allowed) {
                 Complex *temp1 = Init_Complex();
 
-                addSimplex(temp1, subSimp);
+                addSimplex(temp1, compySimplex(subSimp));
 
                 Complex *M1Complex = mergeComplexes(P, temp1, true);
                 char    *literal   = complexToLiteral(M1Complex, true);
@@ -345,8 +349,8 @@ Complex_Storage *Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
                     free(literal);
                 }
 
-                Light_Dest_Complex(M1Complex);
-                Light_Dest_Complex(temp1);
+                Dest_Complex(M1Complex);
+                Dest_Complex(temp1);
             }
         }
     }
@@ -355,17 +359,12 @@ Complex_Storage *Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
 
     if (posibilityListLength > 1) {
         for (int i = 0; i < posibilityListLength; ++i) {
-            Light_Dest_Complex(posibilityList[i]);
+            Dest_Complex(posibilityList[i]);
         }
     }
 
-    if (posibilityListLength > 1) {
-        Dest_Complex(BNeibr);
-    }
-    else {
-        Light_Dest_Complex(BNeibr);
-    }
-    Light_Dest_Complex(ANeibr);
+    Dest_Complex(BNeibr);
+    Dest_Complex(ANeibr);
 
 
     free(posibilityList);
@@ -518,7 +517,6 @@ void Calculate_Hom(Complex *A, Complex *B) {
 
     printf("\n\n Safe House \n\n");
     fflush(stdout);
-    getchar();
 
 //    LD_File *file1 = Init_file_util_ext("./hom_safe", "txt", false);
 //    wrtieLine(file1, complexToLiteral(A, true), true);
