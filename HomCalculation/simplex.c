@@ -517,7 +517,6 @@ void Calculate_Hom(Complex *A, Complex *B) {
 
     printf("\n\n Safe House \n\n");
     fflush(stdout);
-    getchar();
 
 //    LD_File *file1 = Init_file_util_ext("./hom_safe", "txt", false);
 //    wrtieLine(file1, complexToLiteral(A, true), true);
