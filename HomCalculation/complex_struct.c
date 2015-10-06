@@ -90,12 +90,12 @@ void addSimplex(Complex *comp, Simplex *simp) {
     comp->simplexIndex = comp->simplexCount - 1;
 }
 
-Simplex* compySimplex(Simplex* a) {
-    Simplex* b = Init_Simplex();
+Simplex *compySimplex(Simplex *a) {
+    Simplex *b = Init_Simplex();
     for (int i = 0; i < a->elementCount; ++i) {
         addElement(b, getElementAt(a, i));
     }
-    
+
     return b;
 }
 
@@ -343,6 +343,46 @@ Complex *literalToComplex(char *complexLiteral) {
     }
 
     return complex;
+}
+
+
+Simplex *literalToSimplex(char *simplexLiteral) {
+    Simplex *simplex = NULL;
+
+    char posibleSimplexElem[10];
+
+    int posibleSimplexElemi = 0;
+
+    for (int i = 0; i < strlen(simplexLiteral); ++i) {
+        char aChar = simplexLiteral[i];
+
+        if (aChar == '[') {
+            aChar = startingChar;
+        } else if (aChar == ']') {
+            aChar = endingChar;
+        }
+
+        if (aChar == startingChar) {
+            simplex = Init_Simplex();
+        } else if (isdigit(aChar)) {
+            posibleSimplexElem[posibleSimplexElemi] = aChar;
+            posibleSimplexElemi++;
+        } else if (aChar == ',' && posibleSimplexElemi > 0) {
+
+            posibleSimplexElemi = 0;
+            addElement(simplex, atoi(posibleSimplexElem));
+            memset(posibleSimplexElem, 0, 10);
+        } else if (aChar == endingChar) {
+            if (posibleSimplexElemi > 0) {
+                posibleSimplexElemi = 0;
+                addElement(simplex, atoi(posibleSimplexElem));
+                memset(posibleSimplexElem, 0, 10);
+            }
+        }
+
+    }
+
+    return simplex;
 }
 
 

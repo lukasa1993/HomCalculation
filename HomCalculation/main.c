@@ -14,6 +14,7 @@
 //#include "poly_birdge.h"
 
 //#include "polytop_struct.h"
+void parse_input(char *filename);
 
 int main(int argc, char *argv[]) {
     clock_t begin, end;
@@ -21,70 +22,9 @@ int main(int argc, char *argv[]) {
 
     begin = clock();
 
-    // a b c d e f g h
-    // 1 2 3 4 5 6 7 8
 
-
-    Complex *A = literalToComplex("[[1,2,3,4],[3,4,7,8],[5,6,7,8],[1,2,5,6],[2,3,6,7],[1,4,5,8],[1,7]]");
-
-    Simplex *simpA1 = getSimpexAt(A, 0);
-    simpA1->allowedSubSimplexes = literalToComplex("[[1],[2],[3],[4],[1,2],[2,3],[1,4],[3,4],[1,2,3,4]]");
-
-    Simplex *simpA2 = getSimpexAt(A, 1);
-    simpA2->allowedSubSimplexes = literalToComplex("[[3],[4],[7],[8],[3,4],[3,7],[4,7],[7,8],[3,4,7,8]]");
-
-    Simplex *simpA3 = getSimpexAt(A, 2);
-    simpA3->allowedSubSimplexes = literalToComplex("[[5],[6],[7],[8],[5,6],[6,7],[7,8],[5,8],[5,6,7,8]]");
-
-    Simplex *simpA4 = getSimpexAt(A, 3);
-    simpA4->allowedSubSimplexes = literalToComplex("[[1],[2],[5],[6],[1,2],[1,5],[2,6],[5,6],[1,2,5,6]]");
-
-    Simplex *simpA5 = getSimpexAt(A, 4);
-    simpA5->allowedSubSimplexes = literalToComplex("[[2],[3],[6],[7],[2,3],[3,7],[6,7],[2,6],[2,3,6,7]]");
-
-    Simplex *simpA6 = getSimpexAt(A, 5);
-    simpA6->allowedSubSimplexes = literalToComplex("[[1],[4],[5],[8],[1,4],[1,5],[4,8],[5,8],[1,4,5,8]]");
-
-    Simplex *simpA7 = getSimpexAt(A, 6);
-    simpA7->allowedSubSimplexes = literalToComplex("[[1],[6],[1,7]");
-
-    Complex *B = literalToComplex("[[1,2,3,4],[1,2,5,6],[3,4,5,6]]");
-
-    Simplex *simpB1 = getSimpexAt(B, 0);
-    simpB1->allowedSubSimplexes = literalToComplex("[[1],[2],[3],[4],[1,2],[2,3],[1,4],[3,4],[1,2,3,4]]");
-
-    Simplex *simpB2 = getSimpexAt(B, 1);
-    simpB2->allowedSubSimplexes = literalToComplex("[[1],[2],[5],[6],[1,2],[1,5],[2,6],[5,6],[1,2,5,6]]");
-
-    Simplex *simpB3 = getSimpexAt(B, 2);
-    simpB3->allowedSubSimplexes = literalToComplex("[[3],[4],[5],[6],[3,4],[4,5],[5,6],[3,6],[3,4,5,6]]");
-
-
-    Complex *C = literalToComplex("[[1,2,3,4],[1,2,5,6],[5,6,7,8],[3,4,5,8]]");
-
-    Simplex *simpC1 = getSimpexAt(C, 0);
-    simpC1->allowedSubSimplexes = literalToComplex("[[1],[2],[3],[4],[1,2],[2,3],[1,4],[3,4],[1,2,3,4]]");
-
-    Simplex *simpC2 = getSimpexAt(C, 1);
-    simpC2->allowedSubSimplexes = literalToComplex("[[1],[2],[5],[6],[1,2],[2,5],[5,6],[1,6],[1,2,5,6]]");
-
-    Simplex *simpC3 = getSimpexAt(C, 2);
-    simpC3->allowedSubSimplexes = literalToComplex("[[5],[6],[7],[8],[5,6],[6,7],[7,8],[5,8],[5,6,7,8]]");
-
-    Simplex *simpC4 = getSimpexAt(C, 3);
-    simpC4->allowedSubSimplexes = literalToComplex("[[3],[4],[5],[8],[3,4],[4,8],[5,8],[3,5],[3,4,5,8]]");
-
-//    Calculate_Hom(A, A);
-//    Calculate_Hom(A, B);
-//    Calculate_Hom(A, C);
-
-//    Calculate_Hom(B, B);
-//    Calculate_Hom(B, A);
-//    Calculate_Hom(B, C);
-
-    Calculate_Hom(C, C);
-//    Calculate_Hom(C, A);
-//    Calculate_Hom(C, B);
+    parse_input("A.txt");
+    parse_input("B.txt");
 
     end = clock();
     time_spent = (double) (end - begin) / CLOCKS_PER_SEC;
@@ -92,4 +32,90 @@ int main(int argc, char *argv[]) {
     printf("\n %f The End.. \n", time_spent);
 
     return 0;
+}
+
+char *file_to_string(char *filename) {
+    FILE *f = fopen(filename, "rb");
+    if (f == NULL) {
+        perror(sprintf("Error while opening %s. \n", filename));
+        exit(EXIT_FAILURE);
+    }
+
+    fseek(f, 0, SEEK_END);
+    size_t fsize = (size_t) ftell(f);
+    fseek(f, 0, SEEK_SET);
+
+    char *string = malloc(fsize + 1);
+    fread(string, fsize, 1, f);
+    fclose(f);
+
+    string[fsize] = 0;
+
+    return string;
+}
+
+void parse_input(char *filename) {
+    char *file_content = file_to_string(filename);
+    size_t file_length = strlen(file_content);
+
+    Complex *Comp = NULL;
+    char Comp_Literal[1000];
+    int Comp_Literal_i = 0;
+
+    int Comp_Sim_i = 0;
+
+    char Comp_Sub_Literal[1000];
+    int Comp_Sub_Literal_i = 0;
+
+    int line_count = 0;
+    bool line_skip = false;
+
+    for (int i = 0; i < file_length; i++) {
+        char aChar = file_content[i];
+        if (aChar == '#') {
+            line_skip = true;
+        }
+
+        if (!line_skip) {
+
+            if (aChar == '[') {
+                if (Comp == NULL) {
+                    Comp_Literal[Comp_Literal_i++] = aChar;
+                } else {
+                    Comp_Sub_Literal[Comp_Sub_Literal_i++] = aChar;
+                }
+            }
+
+
+
+            if (Comp_Literal_i > 0) {
+                Comp_Literal[Comp_Literal_i++] = aChar;
+            } else if (Comp_Sub_Literal_i > 0) {
+                Comp_Sub_Literal[Comp_Sub_Literal_i++] = aChar;
+            } else if(isdigit(aChar)) {
+                Simplex *simplex = getSimpexAt(Comp, Comp_Sim_i);
+                // aChar is matrix value of simplex->allowedSubSimplexes->simplexIndex
+
+            }
+        }
+
+        if (aChar == '\n') {
+            line_count++;
+            line_skip = false;
+
+            if (Comp_Literal_i > 0 && Comp == NULL) {
+                Comp = literalToComplex(Comp_Literal);
+                Comp_Literal_i = 0;
+            } else if (Comp_Sub_Literal_i > 0) {
+                Simplex *simplex = getSimpexAt(Comp, Comp_Sim_i);
+
+                if (simplex->allowedSubSimplexes == NULL) {
+                    simplex->allowedSubSimplexes = Init_Complex();
+                }
+                addSimplex(simplex->allowedSubSimplexes, literalToSimplex(Comp_Sub_Literal));
+            }
+        }
+    }
+
+    printf("%i\n", line_count);
 }

@@ -18,12 +18,12 @@ ELSE()
 ENDIF()
 ENDIF()
 
-#include_directories(lis/include)
-#add_subdirectory(lis)
+include_directories(lis/include)
+add_subdirectory(lis)
 
 set(SOURCE_FILES
-#lis_bridge.h
-#lis_bridge.c
+lis_bridge.h
+lis_bridge.c
 complex_struct.h
 complex_struct.c
 main.c
@@ -38,6 +38,10 @@ generate_complex.c
 simplex_basic.h
 simplex_basic.c
 )
+
+configure_file(A.txt ${CMAKE_CURRENT_BINARY_DIR}/A.txt COPYONLY)
+configure_file(B.txt ${CMAKE_CURRENT_BINARY_DIR}/B.txt COPYONLY)
+
 
 add_executable(LD_SCIENCE ${SOURCE_FILES})
 #target_link_libraries(LD_SCIENCE lis)

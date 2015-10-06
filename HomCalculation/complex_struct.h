@@ -86,6 +86,8 @@ Simplex* getFacet(Complex *comp, Simplex *simp);
 
 Complex *literalToComplex(char *complexLiteral);
 
+Simplex *literalToSimplex(char *simplexLiteral);
+
 char *complexToLiteral(Complex *complex, bool pretty);
 
 Coordinates *Init_Coordinates();
