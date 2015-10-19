@@ -21,15 +21,17 @@
 
 typedef int SimplexElem;
 
-typedef double Coord;
+typedef struct Matrix {
+    int mIndex;
+    int mCount;
+    int mCapacity;
 
-typedef struct Coordinates {
-    int cooordinateIndex;
-    int cooordinateCount;
-    int cooordinateCapacity;
-    Coord *coordinates;
+    int rows;
+    int columns;
 
-} Coordinates;
+    double *m;
+} Matrix;
+
 
 typedef struct Simplex {
     int elementIndex;
@@ -41,11 +43,9 @@ typedef struct Simplex {
     struct Complex* allowedSubSimplexes;
     int dimension;
 
-    //length of coordinates is same es elementCount
-    Coordinates** coordinates;
-
+    Matrix* coodinates;
+    Matrix* inequalityMatrix;
 } Simplex;
-
 
 
 typedef struct Complex {
@@ -55,6 +55,7 @@ typedef struct Complex {
     Simplex **simplexes;
 
 } Complex;
+
 
 // Simplex Manipulations
 Simplex *Init_Simplex();
@@ -90,17 +91,13 @@ Simplex *literalToSimplex(char *simplexLiteral);
 
 char *complexToLiteral(Complex *complex, bool pretty);
 
-Coordinates *Init_Coordinates();
-void Dest_Coordinates(Coordinates *coords);
-
-void addCoordinate(Coordinates *coord, Coord x);
-
-Coordinates *lietralToCoordinates(char *coordinatesLiteral);
-char *coordinatesToLiteral(Coordinates *coords);
-Coord getCoordtAt(Coordinates *coords, int index);
-
 Simplex* compySimplex(Simplex* a);
 
+
+Matrix *Init_Matrix();
+void Dest_Matrix(Matrix *m);
+void addMElement(Matrix *matrix, double elem);
+char *matrixToLiteral(Matrix *matrix);
 
 #include "simplex_basic.h"
 

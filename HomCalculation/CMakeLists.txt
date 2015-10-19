@@ -44,4 +44,4 @@ configure_file(B.txt ${CMAKE_CURRENT_BINARY_DIR}/B.txt COPYONLY)
 
 
 add_executable(LD_SCIENCE ${SOURCE_FILES})
-#target_link_libraries(LD_SCIENCE lis)
+target_link_libraries(LD_SCIENCE lis)

@@ -7,37 +7,57 @@
 
 #include "complex_struct.h"
 
-Coordinates *Init_Coordinates() {
-    Coordinates *coords = (Coordinates *) malloc(sizeof(Coordinates));
-    coords->cooordinateIndex = -1;
-    coords->cooordinateCount = 0;
-    coords->cooordinateCapacity = 1;
-    coords->coordinates = malloc(coords->cooordinateCapacity * sizeof(double));
-    return coords;
+Matrix *Init_Matrix() {
+    Matrix *matrix = (Matrix *) malloc(sizeof(Matrix));
+    matrix->mIndex = -1;
+    matrix->mCount = 0;
+    matrix->mCapacity = 1;
+    matrix->m = malloc(matrix->mCapacity * sizeof(double));
+
+    matrix->columns = -1;
+    matrix->rows = -1;
+
+    return matrix;
 }
 
-void Dest_Coordinates(Coordinates *coords) {
-    free(coords->coordinates);
-    free(coords);
+void Dest_Matrix(Matrix *m) {
+    free(m->m);
+    free(m);
 }
 
-void addCoordinate(Coordinates *coord, Coord x) {
-    if (coord->cooordinateCapacity <= coord->cooordinateIndex + 1) {
-        coord->cooordinateCapacity <<= 1;
-        coord->coordinates = realloc(coord->coordinates, coord->cooordinateCapacity * sizeof(Coord));
+void addMElement(Matrix *matrix, double elem) {
+    if (matrix->mCapacity <= matrix->mIndex + 1) {
+        matrix->mCapacity <<= 1;
+        matrix->m = realloc(matrix->m, matrix->mCapacity * sizeof(double));
     }
 
-    coord->cooordinateCount++;
-    coord->coordinates[coord->cooordinateIndex + 1] = x;
-    coord->cooordinateIndex = coord->cooordinateCount - 1;
+    matrix->mCount++;
+    matrix->m[matrix->mIndex + 1] = elem;
+    matrix->mIndex = matrix->mCount - 1;
 }
 
-Coord getCoordtAt(Coordinates *coords, int index) {
-    if (coords->cooordinateIndex < index) {
-        return -1;
-    } else {
-        return coords->coordinates[index];
+
+char *matrixToLiteral(Matrix *matrix) {
+    char literal[1000];
+    int literali = 0;
+    for (int i = 0; i < matrix->columns; i++) {
+        for (int j = 0; j < matrix->rows; j++) {
+            double mElem = matrix->m[(i * matrix->rows) + j];
+            char str[100];
+            sprintf(str, "%f", mElem);
+            for (int s = 0; s < strlen(str); ++s) {
+                literal[literali++] = str[s];
+            }
+            literal[literali++] = ' ';
+        }
+        literal[literali++] = '\n';
     }
+
+    char *final = malloc((literali + 1) * sizeof(char));
+    memcpy(final, literal, (size_t) literali);
+    final[literali] = 0;
+
+    return final;
 }
 
 Simplex *Init_Simplex() {
@@ -46,6 +66,9 @@ Simplex *Init_Simplex() {
     simplex->elementCount = 0;
     simplex->elementCapacity = 1;
     simplex->elements = malloc(simplex->elementCapacity * sizeof(SimplexElem));
+
+    simplex->allowedSubSimplexes = NULL;
+    simplex->dimension = -1;
 
     return simplex;
 }
@@ -383,82 +406,4 @@ Simplex *literalToSimplex(char *simplexLiteral) {
     }
 
     return simplex;
-}
-
-
-Coordinates *lietralToCoordinates(char *coordinatesLiteral) {
-    Coordinates *coordinates = NULL;
-
-    char posibleSimplexElem[100];
-    memset(posibleSimplexElem, 0, 100);
-
-    int posibleSimplexElemi = 0;
-    int bracketsCount = 0;
-
-    for (int i = 0; i < strlen(coordinatesLiteral); ++i) {
-        char aChar = coordinatesLiteral[i];
-
-        if (aChar == startingChar) {
-            if (bracketsCount == 0) {
-                coordinates = Init_Coordinates();
-            }
-            bracketsCount++;
-        } else if (bracketsCount == 1 && (aChar == '.' || isdigit(aChar))) {
-
-            posibleSimplexElem[posibleSimplexElemi] = aChar;
-            posibleSimplexElemi++;
-
-        } else if (bracketsCount == 1 && aChar == ',' && posibleSimplexElemi > 0) {
-            addCoordinate(coordinates, atof(posibleSimplexElem));
-
-            posibleSimplexElemi = 0;
-            memset(posibleSimplexElem, 0, 100);
-
-        } else if (aChar == endingChar) {
-            if (bracketsCount == 1 && posibleSimplexElemi > 0) {
-                posibleSimplexElemi = 0;
-                addCoordinate(coordinates, atof(posibleSimplexElem));
-            }
-            bracketsCount--;
-        }
-    }
-
-    return coordinates;
-}
-
-char *coordinatesToLiteral(Coordinates *coords) {
-    char literal[coords->cooordinateCount * 5];
-    int literali = 0;
-
-    literal[literali] = startingChar;
-    literali++;
-
-    for (int j = 0; j < coords->cooordinateCount; ++j) {
-        Coord coord = coords->coordinates[j];
-        char str[100];
-        sprintf(str, "%f", coord);
-
-        for (int s = 0; s < strlen(str); ++s) {
-            literal[literali] = str[s];
-            literali++;
-        }
-
-        if (j != coords->cooordinateCount - 1) {
-            literal[literali] = ',';
-            literali++;
-            if (true) {
-                literal[literali] = ' ';
-                literali++;
-            }
-        }
-    }
-
-    literal[literali] = endingChar;
-    literali++;
-
-    char *final = malloc((literali + 1) * sizeof(char));
-    memcpy(final, literal, literali);
-    final[literali] = 0;
-
-    return final;
 }
