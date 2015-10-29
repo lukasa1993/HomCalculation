@@ -234,24 +234,24 @@ Complex *parse_input(char *filename) {
 
 
     // testing what we read
-/*
-    printf("%s\n", complexToLiteral(Comp, true));
-    for (int a1 = 0; a1 < Comp->simplexCount; a1++) {
-        Simplex *simp = getSimpexAt(Comp, a1);
 
-        for (int a2 = 0; a2 < simp->allowedSubSimplexes->simplexCount; a2++) {
-            Simplex *subSimp = getSimpexAt(simp->allowedSubSimplexes, a2);
+//    printf("%s\n", complexToLiteral(Comp, true));
+//    for (int a1 = 0; a1 < Comp->simplexCount; a1++) {
+//        Simplex *simp = getSimpexAt(Comp, a1);
+//
+//        for (int a2 = 0; a2 < simp->allowedSubSimplexes->simplexCount; a2++) {
+//            Simplex *subSimp = getSimpexAt(simp->allowedSubSimplexes, a2);
+//
+//            printf("%s\n", simplexToLiteral(subSimp));
+//            printf("%s\n", matrixToLiteral(subSimp->inequalityMatrix));
+//        }
+//        printf("%d\n", simp->dimension);
+//        printf("%s\n", matrixToLiteral(simp->coodinates));
+//
+//        printf("\n ---- Sub Simp END ----\n");
+//    }
 
-            printf("%s\n", simplexToLiteral(subSimp));
-            printf("%s\n", matrixToLiteral(subSimp->inequalityMatrix));
-        }
-        printf("%d\n", simp->dimension);
-        printf("%s\n", matrixToLiteral(simp->coodinates));
-
-        printf("\n ---- Sub Simp END ----\n");
-    }
-*/
-    return Comp;
+   return Comp;
 }
 
 
