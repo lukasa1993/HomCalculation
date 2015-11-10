@@ -9,36 +9,34 @@
 #include "simplex.h"
 
 #define HOMFVECTORSIZE 40
+#define GAPENABLED 1
 
 Complex_Storage *storage0;
 Complex_Storage *storage1;
 
-int       maxK;
+int maxK;
 long long homFVector[HOMFVECTORSIZE]; // assuming that maximum dimmension would be 20
 long long fVectorDim(Complex *comp);
 
-static inline void DoProgress(char label[], int step, int total);
-
 void saveComplex(Complex *comp) {
     if (comp->simplexCount == maxK) {
-        char      *literal = complexToLiteral(comp, true);
-        long long dim      = fVectorDim(comp);
+        char *literal = complexToLiteral(comp, true);
+        long long dim = fVectorDim(comp);
 
         homFVector[dim]++;
         addLiteral(storage1, literal);
     }
-//    printf("\n%s\n", literal);
 }
 
 Complex *getComplex(long long v) {
-    char    *literal = getLiteralAt(storage0, v);
-    Complex *comp    = literalToComplex(literal);
+    char *literal = getLiteralAt(storage0, v);
+    Complex *comp = literalToComplex(literal);
     return comp;
 }
 
 long long fVectorDim(Complex *comp) {
     long long dim = 0;
-    for (int  i   = 0; i < comp->simplexCount; ++i) {
+    for (int i = 0; i < comp->simplexCount; ++i) {
         Simplex *simp = getSimpexAt(comp, i);
         dim += (simp->elementCount - 1);
     }
@@ -46,12 +44,12 @@ long long fVectorDim(Complex *comp) {
 }
 
 bool checkSimplexSubSimplex(Simplex *simplex, Simplex *subSimplex) {
-    bool     result = true;
-    for (int i      = 0; i < subSimplex->elementCount; ++i) {
+    bool result = true;
+    for (int i = 0; i < subSimplex->elementCount; ++i) {
         SimplexElem subSimElem = getElementAt(subSimplex, i);
 
         bool elemMatch = false;
-        for (int    j          = 0; j < simplex->elementCount; ++j) {
+        for (int j = 0; j < simplex->elementCount; ++j) {
             SimplexElem simElem = getElementAt(simplex, j);
 
             if (subSimElem == simElem) {
@@ -68,32 +66,14 @@ bool checkSimplexSubSimplex(Simplex *simplex, Simplex *subSimplex) {
     return result;
 }
 
-Complex *FSI(Complex *A, Complex *B, int K, long long V) {
-    Complex *complex = Init_Complex();
-    if (A->simplexCount > 0 && K == 1) {
-
-        for (int i = 0; i < B->simplexCount; i++) {
-            Simplex *sim  = getSimpexAt(B, i);
-            Complex *subs = sim->allowedSubSimplexes;
-            addSimplex(complex, getSimpexAt(subs, (int) V));
-        }
-    }
-    else {
-        Dest_Complex(complex);
-        complex = getComplex(V);
-    }
-
-    return complex;
-}
-
 Complex *upperSimplexContainingDot(Complex *comp, Simplex *searchSimp) {
-    Complex  *neibr = Init_Complex();
-    for (int i      = 0; i < comp->simplexCount; ++i) {
+    Complex *neibr = Init_Complex();
+    for (int i = 0; i < comp->simplexCount; ++i) {
         Simplex *simp = getSimpexAt(comp, i);
 
         if (checkSimplexSubSimplex(simp, searchSimp)) {
-            Simplex* tmpSimp = Init_Simplex();
-            for (int j      = 0; j < simp->elementCount; ++j) {
+            Simplex *tmpSimp = Init_Simplex();
+            for (int j = 0; j < simp->elementCount; ++j) {
                 addElement(tmpSimp, getElementAt(simp, j));
             }
             addSimplex(neibr, tmpSimp);
@@ -107,14 +87,14 @@ Complex *mergeComplexes(Complex *a, Complex *b, bool basic) {
     if (a == NULL || a->simplexCount == 0) {
         return b;
     }
-    Complex  *merged = Init_Complex();
-    for (int i       = 0; i < a->simplexCount; ++i) {
+    Complex *merged = Init_Complex();
+    for (int i = 0; i < a->simplexCount; ++i) {
         addSimplex(merged, compySimplex(getSimpexAt(a, i)));
     }
 
     for (int i = 0; i < b->simplexCount; ++i) {
-        bool     unique = true;
-        for (int j      = 0; j < merged->simplexCount; ++j) {
+        bool unique = true;
+        for (int j = 0; j < merged->simplexCount; ++j) {
             char *aLit = simplexToLiteral(merged->simplexes[j]);
             char *bLit = simplexToLiteral(b->simplexes[i]);
             if (strcmp(aLit, bLit) == 0) {
@@ -135,12 +115,11 @@ Complex *mergeComplexes(Complex *a, Complex *b, bool basic) {
 Simplex *buildIntersectedSimplex(Complex *comp) {
     Simplex *intersectedSimplex = Init_Simplex();
 
-//    for (int i = 0; i < comp->simplexCount; ++i) {
-    Simplex  *simp = getSimpexAt(comp, 0);
-    for (int j     = 0; j < simp->elementCount; ++j) {
+    Simplex *simp = getSimpexAt(comp, 0);
+    for (int j = 0; j < simp->elementCount; ++j) {
         SimplexElem simpElem = getElementAt(simp, j);
         bool isInAll = true;
-        for (int    l        = 1; l < comp->simplexCount; ++l) {
+        for (int l = 1; l < comp->simplexCount; ++l) {
             Simplex *simp2 = getSimpexAt(comp, l);
 
             if (!containsElement(simp2, simpElem)) {
@@ -153,8 +132,6 @@ Simplex *buildIntersectedSimplex(Complex *comp) {
         }
     }
 
-//    }
-
     return intersectedSimplex;
 }
 
@@ -162,16 +139,13 @@ Complex *unionIntersection(Complex **posibilityList, int posibilityListLength) {
     if (posibilityListLength == 1) {
         return posibilityList[0];
     }
-    int  *walkIndexes = calloc((size_t) posibilityListLength, sizeof(int));//malloc(posibilityListLength * sizeof(int));
-
-    // printf("\n-- generation start -- \n");
-
+    int *walkIndexes = calloc((size_t) posibilityListLength, sizeof(int));
     Complex *unionIntersection = Init_Complex();
 
     bool cont;
     do {
-        Complex  *comp = Init_Complex();
-        for (int i     = 0; i < posibilityListLength; ++i) {
+        Complex *comp = Init_Complex();
+        for (int i = 0; i < posibilityListLength; ++i) {
             addSimplex(comp, compySimplex(getSimpexAt(posibilityList[i], walkIndexes[i])));
         }
 
@@ -194,11 +168,7 @@ Complex *unionIntersection(Complex **posibilityList, int posibilityListLength) {
             }
         }
 
-        //  printf("\n%s\n", complexToLiteral(comp, true));
-
         Simplex *intersectedSimplex = buildIntersectedSimplex(comp);
-
-        //  printf("\n%s\n", simplexToLiteral(intersectedSimplex));
 
         if (intersectedSimplex->elementIndex > -1) {
             addSimplex(unionIntersection, intersectedSimplex);
@@ -219,8 +189,8 @@ int CalculatePoints(Complex *comp) {
     SimplexElem elem = -1;
 
     for (int i = 0; i < comp->simplexCount; ++i) {
-        Simplex  *simp = getSimpexAt(comp, i);
-        for (int j     = 0; j < simp->elementCount; ++j) {
+        Simplex *simp = getSimpexAt(comp, i);
+        for (int j = 0; j < simp->elementCount; ++j) {
             SimplexElem elemMax = getElementAt(simp, j);
             if (elemMax > elem) {
                 elem = elemMax;
@@ -239,8 +209,8 @@ Complex_Storage *Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
     Complex *ANeibrTemp = upperSimplexContainingDot(A, temp);
     Dest_Simplex(temp);
 
-    Complex  *ANeibr = Init_Complex();
-    for (int i       = 0; i < ANeibrTemp->simplexCount; ++i) {
+    Complex *ANeibr = Init_Complex();
+    for (int i = 0; i < ANeibrTemp->simplexCount; ++i) {
         Simplex *aNeibrSim = getSimpexAt(ANeibrTemp, i);
 
         Simplex *aNebrSimplex = Init_Simplex();
@@ -261,19 +231,19 @@ Complex_Storage *Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
     }
     Dest_Complex(ANeibrTemp);
 
-    size_t  posibleSize          = (size_t) (A->simplexCount + B->simplexCount + P->simplexCount);
-    Complex **posibilityList     = calloc(posibleSize, sizeof(Complex *));
-    int     posibilityListLength = 0;
+    size_t posibleSize = (size_t) (A->simplexCount + B->simplexCount + P->simplexCount);
+    Complex **posibilityList = calloc(posibleSize, sizeof(Complex *));
+    int posibilityListLength = 0;
 
     for (int i = 0; i < ANeibr->simplexCount; ++i) {
         Simplex *aNeibrSim = getSimpexAt(ANeibr, i);
-        Simplex *fsiAT     = Init_Simplex();
+        Simplex *fsiAT = Init_Simplex();
 
         for (int j = 0; j < aNeibrSim->elementCount; ++j) {
             SimplexElem elem = getElementAt(aNeibrSim, j);
 
-            Simplex  *pSimp = getSimpexAt(P, elem - 1);
-            for (int l      = 0; l < pSimp->elementCount; ++l) {
+            Simplex *pSimp = getSimpexAt(P, elem - 1);
+            for (int l = 0; l < pSimp->elementCount; ++l) {
                 SimplexElem pElem = getElementAt(pSimp, l);
                 if (!containsElement(fsiAT, pElem)) {
                     addElement(fsiAT, pElem);
@@ -295,18 +265,6 @@ Complex_Storage *Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
         Dest_Simplex(fsiAT);
     }
 
-//    LD_File *second_log = Init_file_util_ext("./log2", "txt", false);
-//    char *a = malloc(1024);
-//
-//    if (k == CalculatePoints(A) && a != NULL) {
-//        sprintf(a, "\n-  FSI: %s\n", complexToLiteral(P, true));
-//        wrtieLine(second_log, a, false);
-//        for (int i = 0; i < posibilityListLength; ++i) {
-//            sprintf(a, "\n-- BT%d %s \n", i, complexToLiteral(posibilityList[i], true));
-//            wrtieLine(second_log, a, false);
-//        }
-//    }
-
     Complex_Storage *storage = Init_Storage();
     if (posibilityListLength == 0) {
         Dest_Complex(ANeibr);
@@ -315,23 +273,16 @@ Complex_Storage *Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
     }
 
     Complex *BNeibr = unionIntersection(posibilityList, posibilityListLength);
-//    if (k == CalculatePoints(A) && a != NULL) {
-//        sprintf(a, "\n---  IBT: %s\n", complexToLiteral(BNeibr, true));
-//        wrtieLine(second_log, a, false);
-//    }
-//
-//    Destroy_file(second_log);
-//    free(a);
 
     for (int i = 0; i < BNeibr->simplexCount; ++i) {
-        Simplex *simp     = getSimpexAt(BNeibr, i);
-        Simplex *bsimp    = getFacet(B, simp);
+        Simplex *simp = getSimpexAt(BNeibr, i);
+        Simplex *bsimp = getFacet(B, simp);
         Complex *simpSubs = bsimp->allowedSubSimplexes;
 
 
         for (int j = 0; j < simpSubs->simplexCount; ++j) {
             Simplex *subSimp = getSimpexAt(simpSubs, j);
-            bool allowed     = containsSubSimplex(simp, subSimp);
+            bool allowed = containsSubSimplex(simp, subSimp);
 
             if (subSimp->elementCount > 0 && allowed) {
                 Complex *temp1 = Init_Complex();
@@ -339,7 +290,7 @@ Complex_Storage *Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
                 addSimplex(temp1, compySimplex(subSimp));
 
                 Complex *M1Complex = mergeComplexes(P, temp1, true);
-                char    *literal   = complexToLiteral(M1Complex, true);
+                char *literal = complexToLiteral(M1Complex, true);
 
                 if (!containsLiteral(storage, literal)) {
                     addLiteral(storage, literal);
@@ -354,8 +305,6 @@ Complex_Storage *Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
             }
         }
     }
-//    Destory_Storage(storage);
-
 
     if (posibilityListLength > 1) {
         for (int i = 0; i < posibilityListLength; ++i) {
@@ -377,17 +326,14 @@ Simplex *fVectorFromComplex(Complex *comp) {
     Simplex *AfVector = Init_Simplex();
 
     for (int i = 0; i < comp->simplexCount; ++i) {
-        Simplex  *simp     = getSimpexAt(comp, i);
-        Complex  *simpSubs = AllSubSimplexses(simp);
-        //        printf("\n%s\n", complexToLiteral(simpSubs, true));
-        for (int j         = 0; j < simpSubs->simplexCount; ++j) {
+        Simplex *simp = getSimpexAt(comp, i);
+        Complex *simpSubs = AllSubSimplexses(simp);
+
+        for (int j = 0; j < simpSubs->simplexCount; ++j) {
             Simplex *pSimp = getSimpexAt(simpSubs, j);
-            //          x  printf("\n%s\n", simplexToLiteral(pSimp));
+
             if (!containsSimplex(fComplex, pSimp)) {
                 addSimplex(fComplex, pSimp);
-            }
-            else {
-                //                Dest_Simplex(pSimp);
             }
         }
     }
@@ -403,8 +349,6 @@ Simplex *fVectorFromComplex(Complex *comp) {
         AfVector->elements[simp->elementCount - 1]++;
     }
 
-
-    //    printf("\n%s\n", complexToLiteral(fComplex, true));
 
     Dest_Complex(fComplex);
 
@@ -424,6 +368,53 @@ void df_hom_match(Complex *A, Complex *B, Complex_Storage *storage, int k) {
         }
         Destory_Storage(next_storage);
 
+    }
+}
+
+void Poset_add(Complex *posetPrep, int bPoints) {
+
+    for (long long V1 = 0; V1 < storage0->lietralCount; ++V1) {
+        Complex *P = literalToComplex(getLiteralAt(storage1, V1));
+        Simplex *tmp = Init_Simplex();
+
+        for (int i = 0; i < P->simplexCount; ++i) {
+            Simplex *simp = getSimpexAt(P, i);
+            for (int j = 0; j < simp->elementCount; ++j) {
+                addElement(tmp, ((i * bPoints) + getElementAt(simp, j)));
+            }
+        }
+
+        if (!containsSimplex(posetPrep, tmp)) {
+            addSimplex(posetPrep, tmp);
+            int maxDim = 0;
+            int maxDimCount = 0;
+            char *maxSim;
+            for (int i = 0; i < P->simplexCount; ++i) {
+                Simplex *simp = getSimpexAt(P, i);
+                if (maxDim < simp->elementCount) {
+                    maxDim = simp->elementCount;
+                    maxDimCount = 1;
+                    maxSim = simplexToLiteral(simp);
+                }
+                else {
+                    maxSim = malloc(sizeof(char));
+                }
+                char *simpLit = simplexToLiteral(simp);
+                if (maxDim == simp->elementCount && maxSim != NULL &&
+                    strcmp(maxSim, simpLit) != 0) {
+                    maxDimCount++;
+                }
+
+                free(maxSim);
+                free(simpLit);
+            }
+
+        }
+        else {
+            Dest_Simplex(tmp);
+        }
+
+        Dest_Complex(P);
     }
 }
 
@@ -452,15 +443,18 @@ void Calculate_Hom(Complex *A, Complex *B) {
     printf("\nAF: %s\n", fVALit);
     printf("\nBF: %s\n", fVBLit);
 
+    int bPoints = CalculatePoints(B);
+    Complex *posetPrep = Init_Complex();
+
     LD_File *file1 = Init_file_util_ext("./hom_safe", "txt", false);
     wrtieLine(file1, complexToLiteral(A, true), true);
     wrtieLine(file1, " -> ", true);
     wrtieLine(file1, complexToLiteral(B, true), false);
 
     for (int i = 0; i < B->simplexCount; ++i) {
-        Simplex  *simp = getSimpexAt(B, i);
-        Complex  *subs = simp->allowedSubSimplexes;
-        for (int j     = 0; j < subs->simplexCount; ++j) {
+        Simplex *simp = getSimpexAt(B, i);
+        Complex *subs = simp->allowedSubSimplexes;
+        for (int j = 0; j < subs->simplexCount; ++j) {
             Complex *comp = Init_Complex();
             addSimplex(comp, getSimpexAt(subs, j));
             if (comp->simplexCount > 0 && comp->simplexes[0]->elementCount > 0) {
@@ -474,13 +468,17 @@ void Calculate_Hom(Complex *A, Complex *B) {
 
 
     for (long long V1 = 0; V1 < storage0->lietralCount; ++V1) {
-        Complex         *P            = getComplex(V1);
+        Complex *P = getComplex(V1);
         Complex_Storage *startStorage = Init_Storage();
         addLiteral(startStorage, complexToLiteral(P, true));
 
         df_hom_match(A, B, startStorage, 2);
 
         Destory_Storage(startStorage);
+
+        if (GAPENABLED) {
+            Poset_add(posetPrep, bPoints);
+        }
 
         for (long long V11 = 0; V11 < storage1->lietralCount; ++V11) {
             wrtieLine(file1, getLiteralAt(storage1, V11), false);
@@ -490,8 +488,8 @@ void Calculate_Hom(Complex *A, Complex *B) {
         storage1 = Init_Storage();
     }
 
-    int      len = 0;
-    for (int i   = HOMFVECTORSIZE - 1; i >= 0; --i) {
+    int len = 0;
+    for (int i = HOMFVECTORSIZE - 1; i >= 0; --i) {
         if (homFVector[i] > 0) {
             len = i + 1;
             break;
@@ -515,143 +513,29 @@ void Calculate_Hom(Complex *A, Complex *B) {
     fvectorstr = concat(fvectorstr, "]\n\n");
     wrtieLine(file1, fvectorstr, false);
 
-    printf("\n\n Safe House \n\n");
-    fflush(stdout);
 
-//    LD_File *file1 = Init_file_util_ext("./hom_safe", "txt", false);
-//    wrtieLine(file1, complexToLiteral(A, true), true);
-//    wrtieLine(file1, " -> ", true);
-//    wrtieLine(file1, complexToLiteral(B, true), false);
-//    wrtieLine(file1, fvectorstr, false);
-//    for (long long V1 = 0; V1 < storage0->lietralCount; ++V1) {
-//        wrtieLine(file1, getLiteralAt(storage0, V1), false);
-//    }
-
-
-    if (true)   // end fast
-    {
-        Destory_Storage(storage0);
-        Dest_Simplex(fVA);
-        Dest_Simplex(fVB);
-        free(fVALit);
-        free(fVBLit);
-
-    }
-    else {
-
+    if (posetPrep->simplexCount > 0) {
         printf("\n\n Generation Result File \n\n");
         fflush(stdout);
 
         LD_File *file = Init_file_util_ext("./hom_result", "txt", false);
 
-
-        int     bPoints    = CalculatePoints(B);
-        Complex *posetPrep = Init_Complex();
-
-        for (
-                long long V1 = 0;
-                V1 < storage0->
-                        lietralCount;
-                ++V1) {
-            Complex *P = FSI(A, B, points, V1);
-            if (P != NULL && P->simplexCount > 0) {
-                Simplex *tmp = Init_Simplex();
-
-                for (
-                        int i = 0;
-                        i < P->
-                                simplexCount;
-                        ++i) {
-                    Simplex     *simp = getSimpexAt(P, i);
-                    for (
-                            int j     = 0;
-                            j < simp->
-                                    elementCount;
-                            ++j) {
-                        addElement(tmp, ((i
-                                          * bPoints) +
-                                         getElementAt(simp, j
-                                         )));
-                    }
-                }
-
-                if (!
-                        containsSimplex(posetPrep, tmp
-                        )) {
-                    addSimplex(posetPrep, tmp
-                    );
-                    int         maxDim      = 0;
-                    int         maxDimCount = 0;
-                    char        *maxSim;
-                    for (
-                            int i           = 0;
-                            i < P->
-                                    simplexCount;
-                            ++i) {
-                        Simplex *simp = getSimpexAt(P, i);
-                        if (maxDim < simp->elementCount) {
-                            maxDim      = simp->elementCount;
-                            maxDimCount = 1;
-                            maxSim      = simplexToLiteral(simp);
-                        }
-                        else {
-                            maxSim = malloc(sizeof(char));
-                        }
-                        char *simpLit = simplexToLiteral(simp);
-                        if (maxDim == simp->elementCount && maxSim != NULL &&
-                            strcmp(maxSim, simpLit
-                            ) != 0) {
-                            maxDimCount++;
-                        }
-
-                        free(maxSim);
-                        free(simpLit);
-                    }
-
-                }
-                else {
-                    Dest_Simplex(tmp);
-                }
-
-                Dest_Complex(P);
-            }
-        }
-
         char *complexLiteral = complexToLiteral(posetPrep, true);
-        wrtieLine(file,
-                  "RequirePackage(\"homology\");", false);
-        wrtieLine(file,
-                  "SimplicialHomology(OrderComplex(OrderRelationToPoset(", true);
-        wrtieLine(file, complexLiteral,
-                  true);
-        wrtieLine(file,
-                  ",IsSubset)));", false);
+        wrtieLine(file, "RequirePackage(\"homology\");", false);
+        wrtieLine(file, "SimplicialHomology(OrderComplex(OrderRelationToPoset(", true);
+        wrtieLine(file, complexLiteral, true);
+        wrtieLine(file, ",IsSubset)));", false);
 
         printf("\nResult is in:\n %s\n", file->path);
 
         Destroy_file(file);
-        Destory_Storage(storage0);
         Dest_Complex(posetPrep);
-        Dest_Simplex(fVA);
-        Dest_Simplex(fVB);
-        free(fVALit);
-        free(fVBLit);
-
     }
+
+    Destory_Storage(storage0);
+    Dest_Simplex(fVA);
+    Dest_Simplex(fVB);
+    free(fVALit);
+    free(fVBLit);
+
 }
-
-static inline void DoProgress(char label[], int step, int total) {
-    int percent = (step * 100) / total;
-
-    printf("%s[", label);
-
-    //fill progress bar with =
-//    for (int i = 0; i < pos; i++) printf("%c", '=');
-
-    //fill progress bar with spaces
-    printf(" %d / %d %c", step, total, ']');
-    printf(" %3d%%\r", percent);
-    fflush(stdout);
-}
-
-
