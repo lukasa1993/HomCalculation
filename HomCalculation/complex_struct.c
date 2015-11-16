@@ -173,25 +173,36 @@ bool containsSubSimplex(Simplex *simp, Simplex *sub) {
 }
 
 bool containsSimplex(Complex *comp, Simplex *simp) {
+    char* simpTmp = simplexToLiteral(simp);
     for (int i = 0; i < comp->simplexCount; ++i) {
         Simplex *simp2 = getSimpexAt(comp, i);
-        bool containsSimplex = true;
 
-        for (int s1 = 0; s1 < simp->elementCount; ++s1) {
-            SimplexElem elem1 = getElementAt(simp, s1);
-            bool containsElem = containsElement(simp2, elem1);
+        char* simp2Tmp = simplexToLiteral(simp2);
 
-            if (containsElem == false) {
-                containsSimplex = false;
-                break;
-            }
-        }
 
-        if (containsSimplex == true) {
+        if(strcmp(simpTmp, simp2Tmp) == 0) {
+            free(simpTmp);
+            free(simp2Tmp);
             return true;
         }
+        free(simp2Tmp);
+//        bool containsSimplex = true;
+//
+//        for (int s1 = 0; s1 < simp->elementCount; ++s1) {
+//            SimplexElem elem1 = getElementAt(simp, s1);
+//            bool containsElem = containsElement(simp2, elem1);
+//
+//            if (containsElem == false) {
+//                containsSimplex = false;
+//                break;
+//            }
+//        }
+//
+//        if (containsSimplex == true) {
+//            return true;
+//        }
     }
-
+    free(simpTmp);
     return false;
 }
 

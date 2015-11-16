@@ -384,8 +384,12 @@ void Poset_add(Complex *posetPrep, int bPoints) {
             }
         }
 
+
+
+//        printf("tmpPoset: %s\n", simplexToLiteral(tmp));
         if (!containsSimplex(posetPrep, tmp)) {
             addSimplex(posetPrep, tmp);
+//            printf("posetPrep: %s\n", complexToLiteral(posetPrep, true));
             int maxDim = 0;
             int maxDimCount = 0;
             char *maxSim;
