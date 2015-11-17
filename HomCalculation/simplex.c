@@ -497,7 +497,7 @@ void Calculate_Hom(Complex *A, Complex *B) {
         end = clock();
         time_spent = (double) (end - begin) / CLOCKS_PER_SEC;
 
-        printf("\n--- %lli/%lli T:%lf  ---\n", V1, storage0->lietralCount, time_spent);
+        printf("\n--- %lli/%lli T:%lf FSI:%lli ---\n", V1, storage0->lietralCount, time_spent, storage1->lietralCount);
 
         Destory_Storage(storage1);
         storage1 = Init_Storage();
