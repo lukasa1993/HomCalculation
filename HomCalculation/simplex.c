@@ -373,7 +373,7 @@ void df_hom_match(Complex *A, Complex *B, Complex_Storage *storage, int k) {
 
 void Poset_add(Complex *posetPrep, int bPoints) {
 
-    for (long long V1 = 0; V1 < storage0->lietralCount; ++V1) {
+    for (long long V1 = 0; V1 < storage1->lietralCount; ++V1) {
         Complex *P = literalToComplex(getLiteralAt(storage1, V1));
         Simplex *tmp = Init_Simplex();
 
@@ -404,8 +404,7 @@ void Poset_add(Complex *posetPrep, int bPoints) {
                     maxSim = malloc(sizeof(char));
                 }
                 char *simpLit = simplexToLiteral(simp);
-                if (maxDim == simp->elementCount && maxSim != NULL &&
-                    strcmp(maxSim, simpLit) != 0) {
+                if (maxDim == simp->elementCount && maxSim != NULL && strcmp(maxSim, simpLit) != 0) {
                     maxDimCount++;
                 }
 
@@ -415,6 +414,7 @@ void Poset_add(Complex *posetPrep, int bPoints) {
 
         }
         else {
+            printf("tmpPoset: %s\n", simplexToLiteral(tmp));
             Dest_Simplex(tmp);
         }
 
@@ -541,5 +541,20 @@ void Calculate_Hom(Complex *A, Complex *B) {
     Dest_Simplex(fVB);
     free(fVALit);
     free(fVBLit);
+
+}
+
+
+void Poset_test() {
+
+    storage1 = Init_Storage();
+
+    addLiteral(storage1, "[[1,2,4,5,6],[7,8,9,10,11,12],[13,14,15],[16,17],[18,19]]");
+
+    Complex* poset = Init_Complex();
+
+    Poset_add(poset, 20);
+
+    printf("\n%s\n", complexToLiteral(poset, true));
 
 }

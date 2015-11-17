@@ -22,6 +22,7 @@ int main(int argc, char *argv[]) {
 
     begin = clock();
 
+
     Complex* A = parse_input("A.txt");
     Complex* B = parse_input("B.txt");
 

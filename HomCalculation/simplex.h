@@ -30,4 +30,6 @@ void Calculate_Hom(Complex *A, Complex *B);
 
 Complex *unionIntersection(Complex **posibilityList, int posibilityListLength);
 
+void Poset_test();
+
 #endif
