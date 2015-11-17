@@ -450,6 +450,7 @@ void Calculate_Hom(Complex *A, Complex *B) {
     int bPoints = CalculatePoints(B);
     Complex *posetPrep = Init_Complex();
 
+
     LD_File *file1 = Init_file_util_ext("./hom_safe", "txt", false);
     wrtieLine(file1, complexToLiteral(A, true), true);
     wrtieLine(file1, " -> ", true);
@@ -470,11 +471,16 @@ void Calculate_Hom(Complex *A, Complex *B) {
         }
     }
 
-
+    long long fsiCount = 0;
     for (long long V1 = 0; V1 < storage0->lietralCount; ++V1) {
         Complex *P = getComplex(V1);
         Complex_Storage *startStorage = Init_Storage();
         addLiteral(startStorage, complexToLiteral(P, true));
+
+        clock_t begin, end;
+        double time_spent;
+
+        begin = clock();
 
         df_hom_match(A, B, startStorage, 2);
 
@@ -486,11 +492,19 @@ void Calculate_Hom(Complex *A, Complex *B) {
 
         for (long long V11 = 0; V11 < storage1->lietralCount; ++V11) {
             wrtieLine(file1, getLiteralAt(storage1, V11), false);
+            fsiCount++;
         }
+        end = clock();
+        time_spent = (double) (end - begin) / CLOCKS_PER_SEC;
+
+        printf("\n--- %lli/%lli T:%lf  ---\n", V1, storage0->lietralCount, time_spent);
 
         Destory_Storage(storage1);
         storage1 = Init_Storage();
     }
+
+    printf("\n Poset Count: %d \n", posetPrep->simplexCount);
+    printf("\n FSI Count: %lli \n", fsiCount);
 
     int len = 0;
     for (int i = HOMFVECTORSIZE - 1; i >= 0; --i) {
@@ -551,7 +565,7 @@ void Poset_test() {
 
     addLiteral(storage1, "[[1,2,4,5,6],[7,8,9,10,11,12],[13,14,15],[16,17],[18,19]]");
 
-    Complex* poset = Init_Complex();
+    Complex *poset = Init_Complex();
 
     Poset_add(poset, 20);
 

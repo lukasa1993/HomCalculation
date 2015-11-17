@@ -39,9 +39,13 @@ simplex_basic.h
 simplex_basic.c
 )
 
-configure_file(A.txt ${CMAKE_CURRENT_BINARY_DIR}/A.txt COPYONLY)
-configure_file(B.txt ${CMAKE_CURRENT_BINARY_DIR}/B.txt COPYONLY)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_HOME_DIRECTORY}/build/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_HOME_DIRECTORY}/build/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_HOME_DIRECTORY}/build/bin)
 
+configure_file(A.txt ${CMAKE_HOME_DIRECTORY}/build/bin/A.txt COPYONLY)
+configure_file(B.txt ${CMAKE_HOME_DIRECTORY}/build/bin/B.txt COPYONLY)
 
 add_executable(LD_SCIENCE ${SOURCE_FILES})
+
 target_link_libraries(LD_SCIENCE lis)
