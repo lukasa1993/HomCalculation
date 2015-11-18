@@ -1,0 +1,128 @@
+# A polytopes complex
+
+[[1,2,3],[2,3,4],[3,4,5]]
+
+# A1 sub polytopes
+[1,2,3]
+# matrix dimensions
+2 2
+0 0
+0 0
+[1,2]
+2 2
+0 0
+0 0
+[2,3]
+2 2
+0 0
+0 0
+[1,3]
+2 2
+0 0
+0 0
+[1]
+2 2
+0 0
+0 0
+[2]
+2 2
+0 0
+0 0
+[3]
+2 2
+0 0
+0 0
+# coordinates
+# we need dimension first
+2
+
+#1
+0 0.5
+#2
+1 1
+#6
+0 1
+
+# A2 sub polytopes
+[2,3,4]
+# matrix dimensions
+2 2
+0 0
+0 0
+[2,3]
+2 2
+0 0
+0 0
+[2,4]
+2 2
+0 0
+0 0
+[3,4]
+2 2
+0 0
+0 0
+[2]
+2 2
+0 0
+0 0
+[3]
+2 2
+0 0
+0 0
+[4]
+2 2
+0 0
+0 0
+
+# coordinates
+# coordinates dimension
+2
+#2
+1 1
+#3
+0 1
+#4
+2 1
+
+# A3 sub polytopes
+[3,4,5]
+# matrix dimensions
+2 2
+0 0
+0 0
+[3,4]
+2 2
+0 0
+0 0
+[3,5]
+2 2
+0 0
+0 0
+[4,5]
+2 2
+0 0
+0 0
+[3]
+2 2
+0 0
+0 0
+[4]
+2 2
+0 0
+0 0
+[5]
+2 2
+0 0
+0 0
+
+# coordinates
+# coordinates dimension
+2
+#2
+1 1
+#3
+0 1
+#4
+2 1
+
+# always end with empty new line
