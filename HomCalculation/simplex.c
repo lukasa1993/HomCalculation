@@ -371,55 +371,20 @@ void df_hom_match(Complex *A, Complex *B, Complex_Storage *storage, int k) {
     }
 }
 
-void Poset_add(Complex *posetPrep, int bPoints) {
+void Poset_add(char *literal, Complex *posetPrep, int bPoints) {
+    Complex *P = literalToComplex(literal);
+    Simplex *tmp = Init_Simplex();
 
-    for (long long V1 = 0; V1 < storage1->lietralCount; ++V1) {
-        Complex *P = literalToComplex(getLiteralAt(storage1, V1));
-        Simplex *tmp = Init_Simplex();
-
-        for (int i = 0; i < P->simplexCount; ++i) {
-            Simplex *simp = getSimpexAt(P, i);
-            for (int j = 0; j < simp->elementCount; ++j) {
-                addElement(tmp, ((i * bPoints) + getElementAt(simp, j)));
-            }
+    for (int i = 0; i < P->simplexCount; ++i) {
+        Simplex *simp = getSimpexAt(P, i);
+        for (int j = 0; j < simp->elementCount; ++j) {
+            addElement(tmp, ((i * bPoints) + getElementAt(simp, j)));
         }
-
-
-
-//        printf("tmpPoset: %s\n", simplexToLiteral(tmp));
-        if (!containsSimplex(posetPrep, tmp)) {
-            addSimplex(posetPrep, tmp);
-//            printf("posetPrep: %s\n", complexToLiteral(posetPrep, true));
-            int maxDim = 0;
-            int maxDimCount = 0;
-            char *maxSim;
-            for (int i = 0; i < P->simplexCount; ++i) {
-                Simplex *simp = getSimpexAt(P, i);
-                if (maxDim < simp->elementCount) {
-                    maxDim = simp->elementCount;
-                    maxDimCount = 1;
-                    maxSim = simplexToLiteral(simp);
-                }
-                else {
-                    maxSim = malloc(sizeof(char));
-                }
-                char *simpLit = simplexToLiteral(simp);
-                if (maxDim == simp->elementCount && maxSim != NULL && strcmp(maxSim, simpLit) != 0) {
-                    maxDimCount++;
-                }
-
-                free(maxSim);
-                free(simpLit);
-            }
-
-        }
-        else {
-            printf("tmpPoset: %s\n", simplexToLiteral(tmp));
-            Dest_Simplex(tmp);
-        }
-
-        Dest_Complex(P);
     }
+
+
+    addSimplex(posetPrep, tmp);
+    Dest_Complex(P);
 }
 
 void Calculate_Hom(Complex *A, Complex *B) {
@@ -486,13 +451,13 @@ void Calculate_Hom(Complex *A, Complex *B) {
 
         Destory_Storage(startStorage);
 
-        if (GAPENABLED) {
-            Poset_add(posetPrep, bPoints);
-        }
-
         for (long long V11 = 0; V11 < storage1->lietralCount; ++V11) {
             wrtieLine(file1, getLiteralAt(storage1, V11), false);
             fsiCount++;
+
+            if (GAPENABLED) {
+                Poset_add(getLiteralAt(storage1, V11), posetPrep, bPoints);
+            }
         }
         end = clock();
         time_spent = (double) (end - begin) / CLOCKS_PER_SEC;
@@ -503,8 +468,7 @@ void Calculate_Hom(Complex *A, Complex *B) {
         storage1 = Init_Storage();
     }
 
-    printf("\n Poset Count: %d \n", posetPrep->simplexCount);
-    printf("\n FSI Count: %lli \n", fsiCount);
+    printf("\n Poset Count: %d = %lli : FSI Count \n", posetPrep->simplexCount, fsiCount);
 
     int len = 0;
     for (int i = HOMFVECTORSIZE - 1; i >= 0; --i) {
@@ -532,6 +496,12 @@ void Calculate_Hom(Complex *A, Complex *B) {
     wrtieLine(file1, fvectorstr, false);
 
 
+    Destory_Storage(storage0);
+    Dest_Simplex(fVA);
+    Dest_Simplex(fVB);
+    free(fVALit);
+    free(fVBLit);
+
     if (posetPrep->simplexCount > 0) {
         printf("\n\n Generation Result File \n\n");
         fflush(stdout);
@@ -547,28 +517,7 @@ void Calculate_Hom(Complex *A, Complex *B) {
         printf("\nResult is in:\n %s\n", file->path);
 
         Destroy_file(file);
-        Dest_Complex(posetPrep);
     }
-
-    Destory_Storage(storage0);
-    Dest_Simplex(fVA);
-    Dest_Simplex(fVB);
-    free(fVALit);
-    free(fVBLit);
-
-}
-
-
-void Poset_test() {
-
-    storage1 = Init_Storage();
-
-    addLiteral(storage1, "[[1,2,4,5,6],[7,8,9,10,11,12],[13,14,15],[16,17],[18,19]]");
-
-    Complex *poset = Init_Complex();
-
-    Poset_add(poset, 20);
-
-    printf("\n%s\n", complexToLiteral(poset, true));
+    Dest_Complex(posetPrep);
 
 }

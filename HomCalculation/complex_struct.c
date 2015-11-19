@@ -274,8 +274,8 @@ char *complexToLiteral(Complex *complex, bool pretty) {
         }
         charCount *= 5;
     }
-    char literal[charCount];
-    int literali = 0;
+    char* literal = malloc((size_t) (charCount + 100));
+    int literali  = 0;
 
     literal[literali] = startingChar;
     literali++;
@@ -325,6 +325,8 @@ char *complexToLiteral(Complex *complex, bool pretty) {
     char *final = malloc((literali + 1) * sizeof(char));
     memcpy(final, literal, literali);
     final[literali] = 0;
+
+    free(literal);
 
     return final;
 }
