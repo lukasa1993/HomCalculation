@@ -17,6 +17,7 @@
 #include "complex_struct.h"
 #include "file_util.h"
 #include "complex_storage.h"
+#include "ipsolve_bridge.h"
 
 Complex *AllSubSimplexses(Simplex *simplex);
 

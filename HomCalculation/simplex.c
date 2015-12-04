@@ -18,8 +18,14 @@ int maxK;
 long long homFVector[HOMFVECTORSIZE]; // assuming that maximum dimmension would be 20
 long long fVectorDim(Complex *comp);
 
+bool geometry_check(Complex *A, Complex *B, Complex *fsi) {
+    solve_complex(A, B, fsi);
+
+    return true;
+}
+
 void saveComplex(Complex *comp) {
-    if (comp->simplexCount == maxK) {
+    if (comp->simplexCount == maxK && geometry_check(comp)) {
         char *literal = complexToLiteral(comp, true);
         long long dim = fVectorDim(comp);
 
@@ -295,7 +301,9 @@ Complex_Storage *Hom_Match(Complex *A, Complex *B, Complex *P, int k) {
                 if (!containsLiteral(storage, literal)) {
                     addLiteral(storage, literal);
 
-                    saveComplex(M1Complex);
+                    if (geometry_check(A, B, M1Complex)) {
+                        saveComplex(M1Complex);
+                    }
                 } else {
                     free(literal);
                 }
@@ -463,12 +471,14 @@ void Calculate_Hom(Complex *A, Complex *B) {
         time_spent = (double) (end - begin) / CLOCKS_PER_SEC;
 
         printf("\n--- %lli/%lli T:%lf FSI:%lli ---\n", V1, storage0->lietralCount, time_spent, storage1->lietralCount);
+        fflush(stdout);
 
         Destory_Storage(storage1);
         storage1 = Init_Storage();
     }
 
     printf("\n Poset Count: %d = %lli : FSI Count \n", posetPrep->simplexCount, fsiCount);
+    fflush(stdout);
 
     int len = 0;
     for (int i = HOMFVECTORSIZE - 1; i >= 0; --i) {

@@ -14,7 +14,7 @@
 //#include "poly_birdge.h"
 
 //#include "polytop_struct.h"
-Complex* parse_input(char *filename);
+Complex *parse_input(char *filename);
 
 int main(int argc, char *argv[]) {
     clock_t begin, end;
@@ -23,8 +23,8 @@ int main(int argc, char *argv[]) {
     begin = clock();
 
 
-    Complex* A = parse_input("A.txt");
-    Complex* B = parse_input("B.txt");
+    Complex *A = parse_input("A.txt");
+    Complex *B = parse_input("B.txt");
 
     Calculate_Hom(A, B);
 
@@ -252,7 +252,7 @@ Complex *parse_input(char *filename) {
 //        printf("\n ---- Sub Simp END ----\n");
 //    }
 
-   return Comp;
+    return Comp;
 }
 
 
