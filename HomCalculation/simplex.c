@@ -25,7 +25,7 @@ bool geometry_check(Complex *A, Complex *B, Complex *fsi) {
 }
 
 void saveComplex(Complex *comp) {
-    if (comp->simplexCount == maxK && geometry_check(comp)) {
+    if (comp->simplexCount == maxK) {
         char *literal = complexToLiteral(comp, true);
         long long dim = fVectorDim(comp);
 
