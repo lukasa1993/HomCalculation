@@ -36,7 +36,7 @@ void addMElement(Matrix *matrix, double elem) {
     matrix->mIndex = matrix->mCount - 1;
 }
 
-double matrixElem(Matrix *matrix, int i, int j) {
+double getMatrixElem(Matrix *matrix, int i, int j) {
     return matrix->m[(i * matrix->rows) + j];
 }
 

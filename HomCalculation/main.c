@@ -26,6 +26,7 @@ int main(int argc, char *argv[]) {
     Complex *A = parse_input("A.txt");
     Complex *B = parse_input("B.txt");
 
+
     Calculate_Hom(A, B);
 
     end = clock();
