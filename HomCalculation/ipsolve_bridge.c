@@ -7,36 +7,36 @@
 #include "lp_lib.h"
 
 void solve_complex(Complex *A, Complex *B, Complex *fsi) {
-
+return;
     printf("\nsolve start \n");
     printf("\n %s \n", complexToLiteral(fsi, true));
 
     lprec *lp;
-    int Ncol, *colno = NULL, ret = 0;
-    REAL *row = NULL;
+    int   Ncol, *colno = NULL, ret = 0;
+    REAL *row          = NULL;
 
-    Matrix *matrix = Init_Matrix();
+    Matrix *matrix                 = Init_Matrix();
 
     Matrix *inquelityMatrixes[fsi->simplexCount];
-    int inquelityMatrixes_index = 0;
+    int    inquelityMatrixes_index = 0;
 
-    int dimensionSum = 0;
-    for (int j = 0; j < fsi->simplexCount; ++j) {
+    int      dimensionSum = 0;
+    for (int j            = 0; j < fsi->simplexCount; ++j) {
         Simplex *Ki = getSimpexAt(fsi, j);
 
-        int dimCheck = -1;
-        for (int i = 0; i < B->simplexCount; ++i) {
-            Simplex *Bi = getSimpexAt(B, i);
-            if (containsSubSimplex(Bi, Ki)) {
-                for (int ij = 0; ij < Bi->allowedSubSimplexes->simplexCount; ++ij) {
-                    if (containsSubSimplex(getSimpexAt(Bi->allowedSubSimplexes, ij), Ki)) {
-                        dimCheck += Bi->coodinates->rows;
-                        inquelityMatrixes[inquelityMatrixes_index++] = Bi->inequalityMatrix;
-                    }
+        int      dimCheck = -1;
+        for (int i        = 0; i < B->simplexCount; ++i) {
+            Simplex  *Bi = getSimpexAt(B, i);
+            for (int ij  = 0; ij < Bi->allowedSubSimplexes->simplexCount; ++ij) {
+                Simplex *Bij = getSimpexAt(Bi->allowedSubSimplexes, ij);
+                if (containsSubSimplex(Bij, Ki)) {
+                    dimCheck += Bi->coodinates->rows;
+                    inquelityMatrixes[inquelityMatrixes_index++] = Bi->inequalityMatrix;
                 }
-                if (dimCheck == -1) {
-                    printf("\nProblem: %s\n", simplexToLiteral(Bi));
-                }
+            }
+            if (dimCheck == -1) {
+                printf("\nProblem: %s\n", simplexToLiteral(Bi));
+            } else {
                 break;
             }
         }
@@ -53,7 +53,7 @@ void solve_complex(Complex *A, Complex *B, Complex *fsi) {
         Matrix *BiInequelity = inquelityMatrixes[k];
 
         for (int i = 0; i < BiInequelity->columns; ++i) {
-            int prevFill = 0;
+            int prevFill      = 0;
             int dimensionFill = dimensionSum;
 
             for (int l = 0; l < prevFill; ++l) {
@@ -78,8 +78,8 @@ void solve_complex(Complex *A, Complex *B, Complex *fsi) {
 
     Complex *comp = literalToComplex("[[]]");
 
-    Ncol = matrix->rows - 1;
-    lp = make_lp(0, Ncol);
+    Ncol    = matrix->rows - 1;
+    lp      = make_lp(0, Ncol);
     if (lp == NULL)
         ret = 1; /* couldn't construct a new model... */
 
@@ -95,8 +95,8 @@ void solve_complex(Complex *A, Complex *B, Complex *fsi) {
         }
 
         /* create space large enough for one row */
-        colno = (int *) malloc(Ncol * sizeof(*colno));
-        row = (REAL *) malloc(Ncol * sizeof(*row));
+        colno   = (int *) malloc(Ncol * sizeof(*colno));
+        row     = (REAL *) malloc(Ncol * sizeof(*row));
         if ((colno == NULL) || (row == NULL))
             ret = 2;
     }
@@ -113,7 +113,7 @@ void solve_complex(Complex *A, Complex *B, Complex *fsi) {
                 SimplexElem elem = getElementAt(simp, j);
 
                 colno[j] = j + 1;
-                row[j] = elem;
+                row[j]   = elem;
             }
 
             /* add the row to lpsolve */
@@ -133,7 +133,7 @@ void solve_complex(Complex *A, Complex *B, Complex *fsi) {
 
         for (int i = 1; i <= Ncol; ++i) {
             colno[i - 1] = i;
-            row[i - 1] = 1;
+            row[i - 1]   = 1;
         }
 
         /* set the objective in lpsolve */
@@ -155,7 +155,7 @@ void solve_complex(Complex *A, Complex *B, Complex *fsi) {
         set_verbose(lp, IMPORTANT);
 
         /* Now let lpsolve calculate a solution */
-        ret = solve(lp);
+        ret     = solve(lp);
         if (ret == OPTIMAL)
             ret = 0;
         else
@@ -195,13 +195,13 @@ void solve_complex(Complex *A, Complex *B, Complex *fsi) {
 
 int demo() {
     lprec *lp;
-    int Ncol, *colno = NULL, j, ret = 0;
-    REAL *row = NULL;
+    int   Ncol, *colno = NULL, j, ret = 0;
+    REAL  *row         = NULL;
 
     /* We will build the model row by row
        So we start with creating a model with 0 rows and 2 columns */
-    Ncol = 2; /* there are two variables in the model */
-    lp = make_lp(0, Ncol);
+    Ncol    = 2; /* there are two variables in the model */
+    lp      = make_lp(0, Ncol);
     if (lp == NULL)
         ret = 1; /* couldn't construct a new model... */
 
@@ -211,8 +211,8 @@ int demo() {
         set_col_name(lp, 2, "y");
 
         /* create space large enough for one row */
-        colno = (int *) malloc(Ncol * sizeof(*colno));
-        row = (REAL *) malloc(Ncol * sizeof(*row));
+        colno   = (int *) malloc(Ncol * sizeof(*colno));
+        row     = (REAL *) malloc(Ncol * sizeof(*row));
         if ((colno == NULL) || (row == NULL))
             ret = 2;
     }
@@ -294,7 +294,7 @@ int demo() {
         set_verbose(lp, IMPORTANT);
 
         /* Now let lpsolve calculate a solution */
-        ret = solve(lp);
+        ret     = solve(lp);
         if (ret == OPTIMAL)
             ret = 0;
         else
