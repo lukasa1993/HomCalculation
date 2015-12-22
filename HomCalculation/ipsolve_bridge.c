@@ -7,7 +7,7 @@
 #include "lp_lib.h"
 
 void solve_complex(Complex *A, Complex *B, Complex *fsi) {
-return;
+
     printf("\nsolve start \n");
     printf("\n %s \n", complexToLiteral(fsi, true));
 
@@ -31,7 +31,7 @@ return;
                 Simplex *Bij = getSimpexAt(Bi->allowedSubSimplexes, ij);
                 if (containsSubSimplex(Bij, Ki)) {
                     dimCheck += Bi->coodinates->rows;
-                    inquelityMatrixes[inquelityMatrixes_index++] = Bi->inequalityMatrix;
+                    inquelityMatrixes[inquelityMatrixes_index++] = Bij->inequalityMatrix;
                 }
             }
             if (dimCheck == -1) {

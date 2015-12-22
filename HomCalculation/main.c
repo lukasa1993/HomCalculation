@@ -96,6 +96,8 @@ Complex *parse_input(char *filename) {
     int line_count = 0;
     bool line_skip = false;
 
+    int basisIndex = 0;
+
     for (int i = 0; i < file_length; i++) {
         char aChar = file_content[i];
         if (aChar == '#') {
@@ -130,13 +132,13 @@ Complex *parse_input(char *filename) {
                         matrix = Init_Matrix();
                     }
 
-                    if (matrix->columns == -1) {
-                        matrix->columns = atoi(Matrix_Literal);
+                    if (matrix->rows == -1) {
+                        matrix->rows = atoi(Matrix_Literal);
 
                         memset(Matrix_Literal, 0, Matrix_Literal_i + 10);
                         Matrix_Literal_i = 0;
-                    } else if (matrix->rows == -1) {
-                        matrix->rows = atoi(Matrix_Literal);
+                    } else if (matrix->columns == -1) {
+                        matrix->columns = atoi(Matrix_Literal);
 
                         memset(Matrix_Literal, 0, Matrix_Literal_i + 10);
                         Matrix_Literal_i = 0;
@@ -153,11 +155,16 @@ Complex *parse_input(char *filename) {
                         if (coordinates == NULL) {
 
                             coordinates = Init_Matrix();
-                            coordinates->rows = simplex->dimension;
-                            coordinates->columns = simplex->elementCount;
+                            coordinates->rows = simplex->dimension + 1;
+                            coordinates->columns = coordinates->rows + ((simplex->elementCount - coordinates->rows) * simplex->dimension);
+                            basisIndex = simplex->dimension;
                         }
 
                         addMElement(coordinates, atof(Coordinates_literal));
+                        if(coordinates->mCount < coordinates->rows * coordinates->rows && coordinates->mCount == basisIndex) {
+                            addMElement(coordinates, 0);
+                            basisIndex = coordinates->mCount + simplex->dimension;
+                        }
 
                         memset(Coordinates_literal, 0, Coordinates_literal_I + 10);
                         Coordinates_literal_I = 0;
@@ -219,6 +226,11 @@ Complex *parse_input(char *filename) {
                     simplex->dimension = atoi(Coordinates_literal);
                 } else {
                     addMElement(coordinates, atof(Coordinates_literal));
+                    if(coordinates->mCount < coordinates->rows * coordinates->rows && coordinates->mCount == basisIndex) {
+                        addMElement(coordinates, 0);
+                        basisIndex = coordinates->mCount + simplex->dimension;
+                    }
+
                     if (coordinates->rows * coordinates->columns == coordinates->mCount) {
                         simplex->coodinates = coordinates;
                         coordinates = NULL;
