@@ -47,12 +47,13 @@ void solve_complex(Complex *A, Complex *B, Complex *fsi) {
             printf("\nProblem: %s\n", complexToLiteral(fsi, true));
         }
     }
+
     matrix->columns = dimensionSum;
 
     for (int k = 0; k < fsi->simplexCount; ++k) {
         Matrix *BiInequelity = inquelityMatrixes[k];
 
-        for (int i = 0; i < BiInequelity->columns; ++i) {
+        for (int i = 0; i < BiInequelity->rows; ++i) {
             int prevFill      = 0;
             int dimensionFill = dimensionSum;
 
@@ -60,7 +61,7 @@ void solve_complex(Complex *A, Complex *B, Complex *fsi) {
                 addMElement(matrix, 0);
             }
 
-            for (int j = 0; j < BiInequelity->rows; ++j) {
+            for (int j = 0; j < BiInequelity->columns; ++j) {
                 addMElement(matrix, getMatrixElem(BiInequelity, i, j));
                 dimensionFill--;
                 prevFill++;

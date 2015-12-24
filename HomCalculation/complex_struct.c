@@ -37,15 +37,15 @@ void addMElement(Matrix *matrix, double elem) {
 }
 
 double getMatrixElem(Matrix *matrix, int i, int j) {
-    return matrix->m[(i * matrix->rows) + j];
+    return matrix->m[(i * matrix->columns) + j];
 }
 
 char *matrixToLiteral(Matrix *matrix) {
     char literal[1000];
     int literali = 0;
-    for (int i = 0; i < matrix->columns; i++) {
-        for (int j = 0; j < matrix->rows; j++) {
-            double mElem = matrix->m[(i * matrix->rows) + j];
+    for (int i = 0; i < matrix->rows; i++) {
+        for (int j = 0; j < matrix->columns; j++) {
+            double mElem = matrix->m[(i * matrix->columns) + j];
             char str[100];
             sprintf(str, "%f", mElem);
             for (int s = 0; s < strlen(str); ++s) {

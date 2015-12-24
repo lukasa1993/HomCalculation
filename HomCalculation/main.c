@@ -155,13 +155,15 @@ Complex *parse_input(char *filename) {
                         if (coordinates == NULL) {
 
                             coordinates = Init_Matrix();
-                            coordinates->rows = simplex->dimension + 1;
-                            coordinates->columns = coordinates->rows + ((simplex->elementCount - coordinates->rows) * simplex->dimension);
+                            coordinates->columns = simplex->dimension + 1;
+                            coordinates->rows = coordinates->columns +
+                                                ((simplex->elementCount - coordinates->columns) * simplex->dimension);
                             basisIndex = simplex->dimension;
                         }
 
                         addMElement(coordinates, atof(Coordinates_literal));
-                        if(coordinates->mCount < coordinates->rows * coordinates->rows && coordinates->mCount == basisIndex) {
+                        if (coordinates->mCount < coordinates->columns * coordinates->columns &&
+                            coordinates->mCount == basisIndex) {
                             addMElement(coordinates, 0);
                             basisIndex = coordinates->mCount + simplex->dimension;
                         }
@@ -192,13 +194,13 @@ Complex *parse_input(char *filename) {
                 memset(Comp_Sub_Literal, 0, Comp_Sub_Literal_i + 10);
                 Comp_Sub_Literal_i = 0;
             } else if (Matrix_Literal_i > 0) {
-                if (matrix->columns == -1) {
-                    matrix->columns = atoi(Matrix_Literal);
+                if (matrix->rows == -1) {
+                    matrix->rows = atoi(Matrix_Literal);
 
                     memset(Matrix_Literal, 0, Matrix_Literal_i + 10);
                     Matrix_Literal_i = 0;
-                } else if (matrix->rows == -1) {
-                    matrix->rows = atoi(Matrix_Literal);
+                } else if (matrix->columns == -1) {
+                    matrix->columns = atoi(Matrix_Literal);
 
                     memset(Matrix_Literal, 0, Matrix_Literal_i + 10);
                     Matrix_Literal_i = 0;
@@ -226,7 +228,8 @@ Complex *parse_input(char *filename) {
                     simplex->dimension = atoi(Coordinates_literal);
                 } else {
                     addMElement(coordinates, atof(Coordinates_literal));
-                    if(coordinates->mCount < coordinates->rows * coordinates->rows && coordinates->mCount == basisIndex) {
+                    if (coordinates->mCount < coordinates->columns * coordinates->columns &&
+                        coordinates->mCount == basisIndex) {
                         addMElement(coordinates, 0);
                         basisIndex = coordinates->mCount + simplex->dimension;
                     }
@@ -249,21 +252,21 @@ Complex *parse_input(char *filename) {
 
     // testing what we read
 
-//    printf("%s\n", complexToLiteral(Comp, true));
-//    for (int a1 = 0; a1 < Comp->simplexCount; a1++) {
-//        Simplex *simp = getSimpexAt(Comp, a1);
-//
-//        for (int a2 = 0; a2 < simp->allowedSubSimplexes->simplexCount; a2++) {
-//            Simplex *subSimp = getSimpexAt(simp->allowedSubSimplexes, a2);
-//
-//            printf("%s\n", simplexToLiteral(subSimp));
-//            printf("%s\n", matrixToLiteral(subSimp->inequalityMatrix));
-//        }
-//        printf("%d\n", simp->dimension);
-//        printf("%s\n", matrixToLiteral(simp->coodinates));
-//
-//        printf("\n ---- Sub Simp END ----\n");
-//    }
+    printf("%s\n", complexToLiteral(Comp, true));
+    for (int a1 = 0; a1 < Comp->simplexCount; a1++) {
+        Simplex *simp = getSimpexAt(Comp, a1);
+
+        for (int a2 = 0; a2 < simp->allowedSubSimplexes->simplexCount; a2++) {
+            Simplex *subSimp = getSimpexAt(simp->allowedSubSimplexes, a2);
+
+            printf("%s\n", simplexToLiteral(subSimp));
+            printf("%s\n", matrixToLiteral(subSimp->inequalityMatrix));
+        }
+        printf("%d\n", simp->dimension);
+        printf("%s\n", matrixToLiteral(simp->coodinates));
+
+        printf("\n ---- Sub Simp END ----\n");
+    }
 
     return Comp;
 }
