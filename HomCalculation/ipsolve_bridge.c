@@ -30,7 +30,7 @@ void solve_complex(Complex *A, Complex *B, Complex *fsi) {
             for (int ij  = 0; ij < Bi->allowedSubSimplexes->simplexCount; ++ij) {
                 Simplex *Bij = getSimpexAt(Bi->allowedSubSimplexes, ij);
                 if (containsSubSimplex(Bij, Ki)) {
-                    dimCheck += Bi->coodinates->rows;
+                    dimCheck += Bi->coodinates->columns;
                     inquelityMatrixes[inquelityMatrixes_index++] = Bij->inequalityMatrix;
                 }
             }
@@ -47,7 +47,7 @@ void solve_complex(Complex *A, Complex *B, Complex *fsi) {
             printf("\nProblem: %s\n", complexToLiteral(fsi, true));
         }
     }
-
+    dimensionSum += 1;
     matrix->columns = dimensionSum;
 
     for (int k = 0; k < fsi->simplexCount; ++k) {
