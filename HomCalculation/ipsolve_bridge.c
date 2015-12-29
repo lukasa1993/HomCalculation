@@ -61,7 +61,8 @@ void solve_complex(Complex *A, Complex *B, Complex *fsi) {
                 addMElement(matrix, 0);
             }
 
-            for (int j = 0; j < BiInequelity->columns; ++j) {
+            dimensionFill--;
+            for (int j = 0; j < BiInequelity->columns - 1; ++j) {
                 addMElement(matrix, getMatrixElem(BiInequelity, i, j));
                 dimensionFill--;
                 prevFill++;
@@ -70,21 +71,18 @@ void solve_complex(Complex *A, Complex *B, Complex *fsi) {
             for (int r = 0; r < dimensionFill; ++r) {
                 addMElement(matrix, 0);
             }
+            addMElement(matrix, getMatrixElem(BiInequelity, i, BiInequelity->columns - 1));
             matrix->rows++;
         }
     }
 
-    printf("\n%s\n", matrixToLiteral(matrix));
-    exit(-1);
-
-    Complex *comp = literalToComplex("[[]]");
 
     Ncol    = matrix->rows - 1;
     lp      = make_lp(0, Ncol);
     if (lp == NULL)
         ret = 1; /* couldn't construct a new model... */
 
-//    set_break_at_first(lp, TRUE);
+    set_break_at_first(lp, TRUE);
 
     if (ret == 0) {
         /* let us name our variables. Not required, but can be useful for debugging */
@@ -107,18 +105,15 @@ void solve_complex(Complex *A, Complex *B, Complex *fsi) {
 
         // LD FOR STARTS HERE
 
-        for (int i = 0; i < comp->simplexCount; ++i) {
-            Simplex *simp = getSimpexAt(comp, i);
 
-            for (int j = 0; j < simp->elementCount - 1; ++j) {
-                SimplexElem elem = getElementAt(simp, j);
-
+        for (int i = 0; i < matrix->rows; ++i) {
+            for (int j = 0; j < matrix->columns - 1; ++j) {
                 colno[j] = j + 1;
-                row[j]   = elem;
+                row[j]   = getMatrixElem(matrix, i, j);
             }
 
             /* add the row to lpsolve */
-            if (!add_constraintex(lp, Ncol, row, colno, LE, getElementAt(simp, simp->elementIndex)))
+            if (!add_constraintex(lp, Ncol, row, colno, LE, getMatrixElem(matrix, i, matrix->columns - 1)))
                 ret = 3;
 
             if (ret != 0) {
