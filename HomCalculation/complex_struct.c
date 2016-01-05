@@ -40,8 +40,14 @@ double getMatrixElem(Matrix *matrix, int i, int j) {
     return matrix->m[(i * matrix->columns) + j];
 }
 
+void setMatrixElem(Matrix *matrix, int i, int j, double elem) {
+    if(i > matrix->rows || j > matrix->columns) return;
+
+    matrix->m[(i * matrix->columns) + j] = elem;
+}
+
 char *matrixToLiteral(Matrix *matrix) {
-    char literal[1000];
+    char literal[7000];
     int literali = 0;
     for (int i = 0; i < matrix->rows; i++) {
         for (int j = 0; j < matrix->columns; j++) {
@@ -73,10 +79,26 @@ Simplex *Init_Simplex() {
     simplex->allowedSubSimplexes = NULL;
     simplex->dimension = -1;
 
+    simplex->coodinates = NULL;
+    simplex->inequalityMatrix = NULL;
+
     return simplex;
 }
 
 void Dest_Simplex(Simplex *simplex) {
+    if (simplex->allowedSubSimplexes != NULL) {
+        Dest_Complex(simplex->allowedSubSimplexes);
+    }
+
+    if (simplex->coodinates != NULL) {
+        Dest_Matrix(simplex->coodinates);
+    }
+
+    if (simplex->inequalityMatrix != NULL) {
+        Dest_Matrix(simplex->inequalityMatrix);
+    }
+
+
     free(simplex->elements);
     free(simplex);
 }
@@ -176,14 +198,14 @@ bool containsSubSimplex(Simplex *simp, Simplex *sub) {
 }
 
 bool containsSimplex(Complex *comp, Simplex *simp) {
-    char* simpTmp = simplexToLiteral(simp);
+    char *simpTmp = simplexToLiteral(simp);
     for (int i = 0; i < comp->simplexCount; ++i) {
         Simplex *simp2 = getSimpexAt(comp, i);
 
-        char* simp2Tmp = simplexToLiteral(simp2);
+        char *simp2Tmp = simplexToLiteral(simp2);
 
 
-        if(strcmp(simpTmp, simp2Tmp) == 0) {
+        if (strcmp(simpTmp, simp2Tmp) == 0) {
             free(simpTmp);
             free(simp2Tmp);
             return true;
@@ -277,8 +299,8 @@ char *complexToLiteral(Complex *complex, bool pretty) {
         }
         charCount *= 5;
     }
-    char* literal = malloc((size_t) (charCount + 100));
-    int literali  = 0;
+    char *literal = malloc((size_t) (charCount + 100));
+    int literali = 0;
 
     literal[literali] = startingChar;
     literali++;

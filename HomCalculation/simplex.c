@@ -19,9 +19,7 @@ long long homFVector[HOMFVECTORSIZE]; // assuming that maximum dimmension would 
 long long fVectorDim(Complex *comp);
 
 bool geometry_check(Complex *A, Complex *B, Complex *fsi) {
-    solve_complex(A, B, fsi);
-
-    return true;
+    return solve_complex(A, B, fsi);
 }
 
 void saveComplex(Complex *comp) {

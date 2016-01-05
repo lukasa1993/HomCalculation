@@ -99,6 +99,7 @@ void Dest_Matrix(Matrix *m);
 void addMElement(Matrix *matrix, double elem);
 char *matrixToLiteral(Matrix *matrix);
 double getMatrixElem(Matrix *matrix, int i, int j);
+void setMatrixElem(Matrix *matrix, int i, int j, double elem);
 
 #include "simplex_basic.h"
 

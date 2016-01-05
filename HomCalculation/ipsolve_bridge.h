@@ -7,6 +7,6 @@
 
 #include "complex_struct.h"
 
-void solve_complex(Complex *A, Complex *B, Complex *fsi);
+bool solve_complex(Complex *A, Complex *B, Complex *fsi);
 
 #endif //LD_SCIENCE_IPSOLVE_BRIDGE_H
