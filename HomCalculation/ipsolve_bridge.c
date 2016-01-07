@@ -125,6 +125,51 @@ bool solve_complex(Complex *A, Complex *B, Complex *fsi) {
         }
     }
 
+
+    // zero column removal ---------------------------------------
+    int goodIndexes[matrix->columns];
+    int badColumns = 0;
+    for (int i = 0; i < matrix->columns; ++i) {
+        goodIndexes[i] = 0;
+    }
+
+    for (int j = 0; j < matrix->columns; ++j) {
+        bool zeroColumn = true;
+        for (int i = 0; i < matrix->rows; ++i) {
+            double elem = getMatrixElem(matrix, i, j);
+            if(elem != 0) {
+                zeroColumn = false;
+                break;
+            }
+        }
+
+
+        if(!zeroColumn) {
+            goodIndexes[j] = 1;
+        } else {
+            badColumns++;
+        }
+    }
+
+    Matrix *tempMatrix = Init_Matrix();
+    tempMatrix->rows = matrix->rows;
+    tempMatrix->columns = matrix->columns - badColumns;
+    for (int i = 0; i < matrix->rows; ++i) {
+        for (int j = 0; j < matrix->columns; ++j) {
+            if(goodIndexes[j] == 1) {
+                addMElement(tempMatrix, getMatrixElem(matrix, i, j));
+            }
+        }
+    }
+
+    Dest_Matrix(matrix);
+    matrix = tempMatrix;
+    // zero column removal ---------------------------------------
+
+//    printf("\n%s\n", matrixToLiteral(tempMatrix));
+//
+//    exit(-1);
+
 //    printf("\n%d\n", lastRowCount);
 //    printf("\n%s\n", matrixToLiteral(Ai->coodinates));
 
@@ -204,9 +249,9 @@ bool solve_complex(Complex *A, Complex *B, Complex *fsi) {
         /* just out of curiosity, now show the model in lp format on screen */
         /* this only works if this is a console application. If not, use write_lp and a filename */
 //        write_LP(lp, stdout);
-//        if(strcmp(complexToLiteral(fsi, false), "[[1],[2],[3],[4]]") == 0) {
-//            print_lp(lp);
-//        }
+        if(strcmp(complexToLiteral(fsi, false), "[[1],[2],[1,2],[1,2]]") == 0) {
+            print_lp(lp);
+        }
         /* write_lp(lp, "model.lp"); */
 
         /* I only want to see important messages on screen while solving */
@@ -220,9 +265,9 @@ bool solve_complex(Complex *A, Complex *B, Complex *fsi) {
             ret = 5;
     }
 
-//    if(strcmp(complexToLiteral(fsi, false), "[[1],[2],[3],[4]]") == 0) {
-//        printf("\nRet: %d\n", ret);
-//    }
+    if(strcmp(complexToLiteral(fsi, false), "[[1],[2],[3],[4]]") == 0) {
+        printf("\nRet: %d\n", ret);
+    }
     bool retBool = false;
     if (ret == 0) {
         /* a solution is calculated, now lets get some results */
