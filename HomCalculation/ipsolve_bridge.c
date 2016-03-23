@@ -8,6 +8,8 @@
 
 bool solve_complex(Complex *A, Complex *B, Complex *fsi) {
 
+    char* debug_literal = "[[1],[2],[1,2],[1,3]]";
+
     SimplexElem pointNumber = fsi->simplexCount;
     Simplex *Ai = NULL;
 
@@ -173,7 +175,7 @@ bool solve_complex(Complex *A, Complex *B, Complex *fsi) {
 //    printf("\n%d\n", lastRowCount);
 //    printf("\n%s\n", matrixToLiteral(Ai->coodinates));
 
-//    if(strcmp(complexToLiteral(fsi, false), "[[1],[2],[3],[1]]") == 0) {
+//    if(strcmp(complexToLiteral(fsi, false), debug_literal) == 0) {
 //        printf("\n%d\n", dimensionSum);
 //        printf("\n%s\n", complexToLiteral(fsi, true));
 //        printf("\n%s\n", matrixToLiteral(matrix));
@@ -249,7 +251,7 @@ bool solve_complex(Complex *A, Complex *B, Complex *fsi) {
         /* just out of curiosity, now show the model in lp format on screen */
         /* this only works if this is a console application. If not, use write_lp and a filename */
 //        write_LP(lp, stdout);
-        if(strcmp(complexToLiteral(fsi, false), "[[1],[2],[1,2],[1,2]]") == 0) {
+        if(strcmp(complexToLiteral(fsi, false), debug_literal) == 0) {
             print_lp(lp);
         }
         /* write_lp(lp, "model.lp"); */
@@ -265,7 +267,7 @@ bool solve_complex(Complex *A, Complex *B, Complex *fsi) {
             ret = 5;
     }
 
-    if(strcmp(complexToLiteral(fsi, false), "[[1],[2],[3],[4]]") == 0) {
+    if(strcmp(complexToLiteral(fsi, false), debug_literal) == 0) {
         printf("\nRet: %d\n", ret);
     }
     bool retBool = false;
